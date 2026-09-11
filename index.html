@@ -1,35 +1,323 @@
-<!DOCTYPE html>
+<script>
+  const STORAGE_KEY = "rebuildAssistProject";
+  const NOTES_KEY = "rebuildAssistNotes";
 
-<html lang="en">
+  function $(id) {
+    return document.getElementById(id);
+  }
 
-<head>
+  function scrollToSection(id) {
+    $(id).scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 
-  <meta charset="UTF-8">
+  function showStatus(id, message) {
+    const el = $(id);
+    el.textContent = message;
+    el.style.display = "block";
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    setTimeout(() => {
+      el.style.display = "none";
+    }, 2500);
+  }
 
-  <title>Rebuild Assist</title>
+  // -----------------------------
+  // PROJECT
+  // -----------------------------
 
-  <style>
+  function saveProject() {
+    const project = {
+      name: $("projectName").value.trim(),
+      category: $("category").value,
+      budget: $("budget").value,
+      date: $("date").value,
+      condition: $("condition").value,
+      savedAt: new Date().toISOString()
+    };
 
-    * {
-
-      box-sizing: border-box;
-
+    if (!project.name) {
+      showStatus(
+        "saveStatus",
+        "Please enter a project name first."
+      );
+      return;
     }
 
-    body {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(project)
+    );
 
-      margin: 0;
+    refreshProjects();
 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    showStatus(
+      "saveStatus",
+      "Project saved on this device."
+    );
+  }
 
-      background: #f4f6f8;
+  function loadProject() {
+    const saved = localStorage.getItem(STORAGE_KEY);
 
-      color: #1f2937;
-
+    if (!saved) {
+      showStatus(
+        "saveStatus",
+        "No saved project was found."
+      );
+      return;
     }
 
-    header {
+    const project = JSON.parse(saved);
 
-      background: #1f2937;
+    $("projectName").value =
+      project.name || "";
+
+    $("category").value =
+      project.category || "";
+
+    $("budget").value =
+      project.budget || "";
+
+    $("date").value =
+      project.date || "";
+
+    $("condition").value =
+      project.condition || "";
+
+    showStatus(
+      "saveStatus",
+      "Project loaded."
+    );
+  }
+
+  function clearProject() {
+    if (
+      !confirm(
+        "Clear the project fields? This will not delete the saved project."
+      )
+    ) {
+      return;
+    }
+
+    $("projectName").value = "";
+    $("category").value = "";
+    $("budget").value = "";
+    $("date").value = "";
+    $("condition").value = "";
+  }
+
+  // -----------------------------
+  // NOTES
+  // -----------------------------
+
+  function saveNotes() {
+    localStorage.setItem(
+      NOTES_KEY,
+      $("notesText").value
+    );
+
+    showStatus(
+      "notesStatus",
+      "Notes saved on this device."
+    );
+  }
+
+  function loadNotes() {
+    $("notesText").value =
+      localStorage.getItem(NOTES_KEY) || "";
+  }
+
+  // -----------------------------
+  // CHECKLIST
+  // -----------------------------
+
+  function addCustomTask() {
+    const task = prompt(
+      "Enter the new checklist task:"
+    );
+
+    if (!task || !task.trim()) {
+      return;
+    }
+
+    const label =
+      document.createElement("label");
+
+    label.className = "check-item";
+
+    const checkbox =
+      document.createElement("input");
+
+    checkbox.type = "checkbox";
+
+    checkbox.addEventListener(
+      "change",
+      updateProgress
+    );
+
+    const span =
+      document.createElement("span");
+
+    span.textContent = task.trim();
+
+    label.appendChild(checkbox);
+    label.appendChild(span);
+
+    $("checklistItems").appendChild(label);
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const boxes =
+      document.querySelectorAll(
+        "#checklistItems input[type='checkbox']"
+      );
+
+    const completed =
+      [...boxes].filter(
+        box => box.checked
+      ).length;
+
+    const percent =
+      boxes.length
+        ? Math.round(
+            (completed / boxes.length) * 100
+          )
+        : 0;
+
+    $("progressBar").style.width =
+      percent + "%";
+
+    $("progressText").textContent =
+      percent + "%";
+
+    document
+      .querySelectorAll(
+        "#checklistItems .check-item"
+      )
+      .forEach(item => {
+
+        const box =
+          item.querySelector(
+            "input"
+          );
+
+        item.classList.toggle(
+          "done",
+          box.checked
+        );
+
+      });
+  }
+
+  // -----------------------------
+  // SAVED PROJECTS
+  // -----------------------------
+
+  function refreshProjects() {
+    const container =
+      $("projects");
+
+    const saved =
+      localStorage.getItem(
+        STORAGE_KEY
+      );
+
+    if (!saved) {
+      container.innerHTML =
+        '<div class="empty">' +
+        'No saved projects yet.' +
+        '</div>';
+
+      return;
+    }
+
+    const project =
+      JSON.parse(saved);
+
+    const budget =
+      project.budget
+        ? "$" +
+          Number(
+            project.budget
+          ).toLocaleString()
+        : "No budget entered";
+
+    container.innerHTML = `
+      <div class="project">
+        <div>
+          <strong>
+            ${escapeHtml(
+              project.name ||
+              "Unnamed project"
+            )}
+          </strong>
+
+          <small>
+            ${escapeHtml(
+              project.category ||
+              "Project"
+            )}
+            &bull;
+            ${budget}
+          </small>
+        </div>
+
+        <button
+          class="danger"
+          onclick="deleteProject()">
+          Delete
+        </button>
+      </div>
+    `;
+  }
+
+  function deleteProject() {
+    if (
+      !confirm(
+        "Delete the saved project from this device?"
+      )
+    ) {
+      return;
+    }
+
+    localStorage.removeItem(
+      STORAGE_KEY
+    );
+
+    refreshProjects();
+  }
+
+  // -----------------------------
+  // SECURITY
+  // -----------------------------
+
+  function escapeHtml(value) {
+    return String(value).replace(
+      /[&<>"']/g,
+      char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      }[char])
+    );
+  }
+
+  // -----------------------------
+  // START APPLICATION
+  // -----------------------------
+
+  loadProject();
+  loadNotes();
+  refreshProjects();
+  updateProgress();
+
+</script>
+
+</body>
+</html>
