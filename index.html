@@ -1,35 +1,1093 @@
+
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Rebuild Assist</title>
 
   <style>
-
     * {
-
       box-sizing: border-box;
-
     }
 
     body {
-
       margin: 0;
-
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-
-      background: #f4f6f8;
-
-      color: #1f2937;
-
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f2f4f7;
+      color: #222;
     }
 
     header {
-
       background: #1f2937;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 30px;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      color: #d1d5db;
+      font-size: 15px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #1f2937;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 6px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .primary:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .secondary:hover {
+      background: #d1d5db;
+    }
+
+    .danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .danger:hover {
+      background: #b91c1c;
+    }
+
+    .success {
+      background: #16a34a;
+      color: white;
+    }
+
+    .success:hover {
+      background: #15803d;
+    }
+
+    .results {
+      display: none;
+    }
+
+    .result-box {
+      background: #f8fafc;
+      border-left: 5px solid #2563eb;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+    }
+
+    .result-box h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    .parts-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .parts-table th,
+    .parts-table td {
+      border: 1px solid #d1d5db;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .parts-table th {
+      background: #e5e7eb;
+    }
+
+    .estimate {
+      font-size: 24px;
+      font-weight: bold;
+      color: #16a34a;
+    }
+
+    .warning {
+      background: #fff7ed;
+      border-left: 5px solid #f97316;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 6px;
+    }
+
+    .steps {
+      counter-reset: step;
+      padding: 0;
+      list-style: none;
+    }
+
+    .steps li {
+      counter-increment: step;
+      margin-bottom: 12px;
+      padding: 15px 15px 15px 50px;
+      background: #f8fafc;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #2563eb;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .progress-container {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 25px;
+      background: #e5e7eb;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #16a34a;
+      transition: width 0.4s;
+    }
+
+    .progress-text {
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      color: #6b7280;
+      padding: 25px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 700px) {
+      header h1 {
+        font-size: 24px;
+      }
+
+      .container {
+        padding: 12px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .parts-table {
+        font-size: 14px;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>🔧 Rebuild Assist</h1>
+  <p>Your guide to planning and rebuilding a classic vehicle</p>
+</header>
+
+<div class="container">
+
+  <!-- VEHICLE INFORMATION -->
+  <div class="card">
+    <h2>Vehicle Information</h2>
+
+    <label for="year">Year</label>
+    <input
+      type="number"
+      id="year"
+      placeholder="Example: 1968"
+    >
+
+    <label for="make">Make</label>
+    <input
+      type="text"
+      id="make"
+      placeholder="Example: Pontiac"
+    >
+
+    <label for="model">Model</label>
+    <input
+      type="text"
+      id="model"
+      placeholder="Example: Firebird"
+    >
+
+    <label for="engine">Engine</label>
+    <input
+      type="text"
+      id="engine"
+      placeholder="Example: 350 V8"
+    >
+
+    <label for="project">Project Type</label>
+    <select id="project">
+      <option value="restoration">Full Restoration</option>
+      <option value="engine">Engine Rebuild</option>
+      <option value="transmission">Transmission</option>
+      <option value="brakes">Brake System</option>
+      <option value="suspension">Suspension</option>
+      <option value="electrical">Electrical</option>
+      <option value="body">Body Restoration</option>
+      <option value="interior">Interior</option>
+      <option value="custom">Custom Project</option>
+    </select>
+
+    <label for="condition">Current Condition</label>
+    <select id="condition">
+      <option value="complete">Complete Vehicle</option>
+      <option value="mostly">Mostly Complete</option>
+      <option value="incomplete">Incomplete</option>
+      <option value="rough">Rough / Parts Missing</option>
+      <option value="nonrunning">Non-Running</option>
+    </select>
+
+    <div class="button-row">
+      <button class="primary" onclick="createPlan()">
+        Create Rebuild Plan
+      </button>
+
+      <button class="secondary" onclick="clearForm()">
+        Clear
+      </button>
+    </div>
+  </div>
+
+
+  <!-- REBUILD PLAN -->
+  <div class="card results" id="results">
+
+    <h2>Rebuild Plan</h2>
+
+    <div class="result-box">
+      <h3>Vehicle</h3>
+      <p id="vehicleSummary"></p>
+    </div>
+
+    <div class="result-box">
+      <h3>Recommended Approach</h3>
+      <p id="recommendation"></p>
+    </div>
+
+    <div class="result-box">
+      <h3>Estimated Project Cost</h3>
+      <p class="estimate" id="estimatedCost"></p>
+    </div>
+
+    <div class="warning">
+      <strong>Important:</strong>
+      These estimates are general planning numbers. Actual costs can vary
+      significantly depending on the vehicle, parts availability, condition,
+      labor rates, and how much work you perform yourself.
+    </div>
+
+  </div>
+
+
+  <!-- CHECKLIST -->
+  <div class="card results" id="checklistCard">
+
+    <h2>Rebuild Checklist</h2>
+
+    <ol class="steps" id="checklist"></ol>
+
+  </div>
+
+
+  <!-- PARTS LIST -->
+  <div class="card results" id="partsCard">
+
+    <h2>Parts & Materials</h2>
+
+    <table class="parts-table">
+
+      <thead>
+        <tr>
+          <th>Part / Material</th>
+          <th>Priority</th>
+          <th>Estimated Cost</th>
+        </tr>
+      </thead>
+
+      <tbody id="partsList"></tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- PROGRESS -->
+  <div class="card results" id="progressCard">
+
+    <h2>Project Progress</h2>
+
+    <p>
+      Check off the work as you complete it.
+    </p>
+
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="progress-text" id="progressText">
+        0% Complete
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- NOTES -->
+  <div class="card results" id="notesCard">
+
+    <h2>Project Notes</h2>
+
+    <textarea
+      id="notes"
+      placeholder="Enter notes about your rebuild here..."
+    ></textarea>
+
+    <div class="button-row">
+
+      <button class="success" onclick="saveNotes()">
+        Save Notes
+      </button>
+
+      <button class="secondary" onclick="loadNotes()">
+        Load Notes
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<footer>
+  Rebuild Assist &copy; 2026
+</footer>
+
+
+<script>
+
+  function createPlan() {
+
+    const year = document.getElementById("year").value;
+    const make = document.getElementById("make").value.trim();
+    const model = document.getElementById("model").value.trim();
+    const engine = document.getElementById("engine").value.trim();
+
+    const project =
+      document.getElementById("project").value;
+
+    const condition =
+      document.getElementById("condition").value;
+
+
+    if (!year || !make || !model) {
+
+      alert(
+        "Please enter the vehicle year, make, and model."
+      );
+
+      return;
+    }
+
+
+    const projectName =
+      document.getElementById("project")
+      .options[
+        document.getElementById("project").selectedIndex
+      ].text;
+
+
+    const conditionName =
+      document.getElementById("condition")
+      .options[
+        document.getElementById("condition").selectedIndex
+      ].text;
+
+
+    document.getElementById("vehicleSummary").innerHTML =
+      `<strong>${year} ${make} ${model}</strong><br>
+       Engine: ${engine || "Not specified"}<br>
+       Project: ${projectName}<br>
+       Condition: ${conditionName}`;
+
+
+    generateRecommendation(
+      year,
+      make,
+      model,
+      engine,
+      project,
+      condition
+    );
+
+
+    generateChecklist(project);
+
+    generateParts(project);
+
+    showResults();
+
+  }
+
+
+  function generateRecommendation(
+    year,
+    make,
+    model,
+    engine,
+    project,
+    condition
+  ) {
+
+    let recommendation = "";
+
+    if (condition === "nonrunning") {
+
+      recommendation =
+        "Because this vehicle is currently non-running, " +
+        "start with a complete inspection before buying major parts. " +
+        "Verify the engine can rotate, inspect the fuel system, " +
+        "cooling system, brakes, electrical system, and chassis. " +
+        "Do not begin cosmetic restoration until the mechanical condition " +
+        "is understood.";
+
+    }
+
+    else if (project === "restoration") {
+
+      recommendation =
+        "For a full restoration, work from the structure and mechanical " +
+        "systems outward. Document the vehicle before disassembly, " +
+        "photograph wiring and brackets, label every component, " +
+        "inspect rust and structural areas, then rebuild the chassis, " +
+        "engine, drivetrain, brakes, suspension, electrical system, " +
+        "body, paint, and interior.";
+
+    }
+
+    else if (project === "engine") {
+
+      recommendation =
+        "Begin with compression testing, oil-pressure checks, leak-down " +
+        "testing where appropriate, and a careful inspection of the " +
+        "cooling and lubrication systems. Disassemble only after recording " +
+        "the engine's current condition. Measure components rather than " +
+        "assuming standard sizes.";
+
+    }
+
+    else if (project === "transmission") {
+
+      recommendation =
+        "Identify the exact transmission before ordering parts. Record " +
+        "casting numbers and measurements, inspect fluid and debris, " +
+        "then disassemble methodically and document every component.";
+
+    }
+
+    else if (project === "brakes") {
+
+      recommendation =
+        "Brakes should be treated as a safety-critical system. Inspect " +
+        "the master cylinder, wheel cylinders or calipers, hoses, lines, " +
+        "drums or rotors, bearings, parking brake, and hardware.";
+
+    }
+
+    else if (project === "suspension") {
+
+      recommendation =
+        "Inspect the frame and mounting points first. Then inspect ball " +
+        "joints, bushings, control arms, springs, shocks, steering linkage, " +
+        "and wheel bearings.";
+
+    }
+
+    else if (project === "electrical") {
+
+      recommendation =
+        "Start by documenting the existing wiring. Check grounds, battery " +
+        "connections, fuses, switches, connectors, and damaged insulation " +
+        "before replacing components.";
+
+    }
+
+    else if (project === "body") {
+
+      recommendation =
+        "Inspect the vehicle for structural rust before doing cosmetic work. " +
+        "Check floor pans, rocker panels, frame areas, wheel wells, " +
+        "body mounts, door gaps, and panel alignment.";
+
+    }
+
+    else if (project === "interior") {
+
+      recommendation =
+        "Document the original interior before removing anything. " +
+        "Inspect the floor, insulation, seat frames, tracks, wiring, " +
+        "dash components, gauges, and trim.";
+
+    }
+
+    else {
+
+      recommendation =
+        "Break the project into mechanical, electrical, structural, " +
+        "body, and interior systems. Finish safety-critical work first " +
+        "and document everything as you go.";
+
+    }
+
+
+    document.getElementById("recommendation").textContent =
+      recommendation;
+
+
+    let cost = "$1,000 – $5,000";
+
+
+    if (project === "restoration") {
+      cost = "$10,000 – $50,000+";
+    }
+
+    else if (project === "engine") {
+      cost = "$3,000 – $10,000+";
+    }
+
+    else if (project === "transmission") {
+      cost = "$1,500 – $5,000+";
+    }
+
+    else if (project === "brakes") {
+      cost = "$500 – $2,500";
+    }
+
+    else if (project === "suspension") {
+      cost = "$800 – $4,000";
+    }
+
+    else if (project === "electrical") {
+      cost = "$300 – $3,000";
+    }
+
+    else if (project === "body") {
+      cost = "$3,000 – $20,000+";
+    }
+
+    else if (project === "interior") {
+      cost = "$1,000 – $8,000";
+    }
+
+
+    document.getElementById("estimatedCost").textContent =
+      cost;
+
+  }
+
+
+  function generateChecklist(project) {
+
+    const checklist =
+      document.getElementById("checklist");
+
+    checklist.innerHTML = "";
+
+
+    let items = [];
+
+
+    if (project === "restoration") {
+
+      items = [
+
+        "Photograph and document the entire vehicle.",
+
+        "Create an inventory of all parts.",
+
+        "Check frame and structural areas.",
+
+        "Inspect body rust and floor pans.",
+
+        "Inspect brakes and suspension.",
+
+        "Evaluate engine and transmission.",
+
+        "Inspect fuel system.",
+
+        "Inspect cooling system.",
+
+        "Document and inspect electrical wiring.",
+
+        "Remove and label components.",
+
+        "Repair structural rust.",
+
+        "Rebuild suspension and steering.",
+
+        "Rebuild brake system.",
+
+        "Rebuild engine and drivetrain.",
+
+        "Restore electrical system.",
+
+        "Complete bodywork.",
+
+        "Paint vehicle.",
+
+        "Restore interior.",
+
+        "Reassemble vehicle.",
+
+        "Perform complete safety inspection.",
+
+        "Road test carefully."
+
+      ];
+
+    }
+
+    else {
+
+      items = [
+
+        "Photograph the current condition.",
+
+        "Identify the exact component or system.",
+
+        "Inspect surrounding components.",
+
+        "Remove and label parts.",
+
+        "Clean and inspect components.",
+
+        "Replace worn or damaged parts.",
+
+        "Reassemble carefully.",
+
+        "Adjust and test the system.",
+
+        "Check for leaks or abnormal operation.",
+
+        "Perform a final safety inspection."
+
+      ];
+
+    }
+
+
+    items.forEach(
+      function(item, index) {
+
+        const li =
+          document.createElement("li");
+
+        li.innerHTML =
+          `<label style="margin:0;font-weight:normal;">
+             <input
+               type="checkbox"
+               onchange="updateProgress()"
+               style="width:auto;margin-right:10px;"
+             >
+             ${item}
+           </label>`;
+
+        checklist.appendChild(li);
+
+      }
+    );
+
+  }
+
+
+  function generateParts(project) {
+
+    const partsList =
+      document.getElementById("partsList");
+
+    partsList.innerHTML = "";
+
+
+    let parts = [];
+
+
+    if (project === "restoration") {
+
+      parts = [
+
+        ["Brake hoses and lines", "High", "$150–$600"],
+
+        ["Brake hardware", "High", "$100–$400"],
+
+        ["Suspension bushings", "Medium", "$100–$500"],
+
+        ["Fuel hoses and filters", "High", "$100–$400"],
+
+        ["Belts and hoses", "High", "$100–$300"],
+
+        ["Gaskets and seals", "Medium", "$200–$1,000"],
+
+        ["Electrical wiring/components", "Medium", "$200–$2,000"],
+
+        ["Body repair materials", "Medium", "$500–$5,000"],
+
+        ["Paint materials", "Medium", "$500–$5,000"],
+
+        ["Interior materials", "Low", "$500–$5,000"]
+
+      ];
+
+    }
+
+    else if (project === "engine") {
+
+      parts = [
+
+        ["Complete gasket set", "High", "$100–$500"],
+
+        ["Bearings", "High", "$100–$300"],
+
+        ["Piston rings", "High", "$100–$400"],
+
+        ["Oil pump", "High", "$100–$400"],
+
+        ["Timing set", "High", "$100–$400"],
+
+        ["Water pump", "Medium", "$100–$300"],
+
+        ["Engine seals", "Medium", "$50–$200"],
+
+        ["Spark plugs", "Medium", "$30–$100"]
+
+      ];
+
+    }
+
+    else if (project === "brakes") {
+
+      parts = [
+
+        ["Brake hoses", "High", "$50–$200"],
+
+        ["Brake lines", "High", "$50–$300"],
+
+        ["Master cylinder", "High", "$100–$400"],
+
+        ["Brake shoes/pads", "High", "$50–$250"],
+
+        ["Rotors/drums", "High", "$100–$500"],
+
+        ["Wheel cylinders/calipers", "High", "$100–$500"],
+
+        ["Brake fluid", "High", "$10–$40"]
+
+      ];
+
+    }
+
+    else if (project === "electrical") {
+
+      parts = [
+
+        ["Battery", "High", "$100–$250"],
+
+        ["Battery cables", "High", "$30–$100"],
+
+        ["Fuses", "High", "$10–$50"],
+
+        ["Wire", "Medium", "$50–$300"],
+
+        ["Connectors", "Medium", "$20–$150"],
+
+        ["Ground straps", "High", "$20–$100"],
+
+        ["Switches", "Medium", "$20–$200"]
+
+      ];
+
+    }
+
+    else {
+
+      parts = [
+
+        ["Replacement components", "High", "Determine after inspection"],
+
+        ["Gaskets and seals", "Medium", "$50–$500"],
+
+        ["Hardware", "Medium", "$25–$250"],
+
+        ["Cleaning supplies", "Low", "$25–$150"],
+
+        ["Lubricants", "Medium", "$25–$150"]
+
+      ];
+
+    }
+
+
+    parts.forEach(
+      function(part) {
+
+        const row =
+          document.createElement("tr");
+
+        row.innerHTML =
+
+          `<td>${part[0]}</td>
+           <td>${part[1]}</td>
+           <td>${part[2]}</td>`;
+
+        partsList.appendChild(row);
+
+      }
+    );
+
+  }
+
+
+  function showResults() {
+
+    document
+      .querySelectorAll(".results")
+      .forEach(
+        function(element) {
+          element.style.display = "block";
+        }
+      );
+
+
+    document
+      .getElementById("progressContainer")
+      .style.display = "block";
+
+
+    window.scrollTo({
+      top: document
+        .getElementById("results")
+        .offsetTop - 20,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  function updateProgress() {
+
+    const boxes =
+      document.querySelectorAll(
+        "#checklist input[type='checkbox']"
+      );
+
+
+    if (boxes.length === 0) {
+      return;
+    }
+
+
+    let completed = 0;
+
+
+    boxes.forEach(
+      function(box) {
+
+        if (box.checked) {
+          completed++;
+        }
+
+      }
+    );
+
+
+    const percent =
+      Math.round(
+        (completed / boxes.length) * 100
+      );
+
+
+    document.getElementById("progressFill")
+      .style.width =
+      percent + "%";
+
+
+    document.getElementById("progressText")
+      .textContent =
+      percent + "% Complete";
+
+  }
+
+
+  function clearForm() {
+
+    document.getElementById("year").value = "";
+
+    document.getElementById("make").value = "";
+
+    document.getElementById("model").value = "";
+
+    document.getElementById("engine").value = "";
+
+    document.getElementById("project").selectedIndex = 0;
+
+    document.getElementById("condition").selectedIndex = 0;
+
+
+    document
+      .querySelectorAll(".results")
+      .forEach(
+        function(element) {
+          element.style.display = "none";
+        }
+      );
+
+
+    document.getElementById("progressFill")
+      .style.width = "0%";
+
+
+    document.getElementById("progressText")
+      .textContent =
+      "0% Complete";
+
+  }
+
+
+  function saveNotes() {
+
+    const notes =
+      document.getElementById("notes").value;
+
+    localStorage.setItem(
+      "rebuildAssistNotes",
+      notes
+    );
+
+
+    alert("Your notes have been saved.");
+
+  }
+
+
+  function loadNotes() {
+
+    const notes =
+      localStorage.getItem(
+        "rebuildAssistNotes"
+      );
+
+
+    if (notes !== null) {
+
+      document.getElementById("notes")
+        .value = notes;
+
+      alert("Your notes have been loaded.");
+
+    }
+
+    else {
+
+      alert("No saved notes were found.");
+
+    }
+
+  }
+
+
+</script>
+
+</body>
+</html>
