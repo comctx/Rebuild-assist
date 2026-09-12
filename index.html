@@ -287,6 +287,55 @@
       font-size: 14px;
     }
 
+
+    .project-task {
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      padding: 15px;
+      margin-bottom: 12px;
+      background: #fafafa;
+    }
+
+    .project-task.completed {
+      opacity: 0.75;
+    }
+
+    .project-task-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .project-task.completed .project-task-title {
+      text-decoration: line-through;
+    }
+
+    .task-photo {
+      width: 100%;
+      max-width: 260px;
+      max-height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin: 8px 8px 0 0;
+      border: 1px solid #ddd;
+    }
+
+    .task-photo-wrap {
+      display: inline-block;
+      vertical-align: top;
+      margin-top: 8px;
+    }
+
+    .task-photo-wrap button {
+      display: block;
+      margin-top: 4px;
+    }
+
+    .task-empty {
+      color: #666;
+      font-style: italic;
+    }
+
     @media (max-width: 600px) {
       header h1 {
         font-size: 27px;
@@ -383,6 +432,34 @@
     </button>
   </div>
 
+
+
+  <!-- PROJECT TASKS -->
+
+  <div class="section" id="projectTasksSection">
+
+    <h2>📋 My Project Tasks</h2>
+
+    <p>
+      Add the jobs you want to work on. You can attach photos to each task
+      so you can document your project as you go.
+    </p>
+
+    <label for="taskInput">New Task</label>
+    <input
+      type="text"
+      id="taskInput"
+      placeholder="Example: Work on toilet inside"
+      onkeydown="if(event.key === 'Enter') addProjectTask()"
+    >
+
+    <button onclick="addProjectTask()">
+      ➕ Add Task
+    </button>
+
+    <div id="projectTaskList" style="margin-top:18px;"></div>
+
+  </div>
 
   <!-- MAIN REPAIR DATABASE -->
 
@@ -1819,6 +1896,222 @@
   }
 
 
+
+  /*
+   * PROJECT TASKS + PHOTOS
+   */
+
+  let projectTasks =
+    JSON.parse(
+      localStorage.getItem("rebuildAssistProjectTasks")
+    ) || [];
+
+  function saveProjectTasks() {
+    localStorage.setItem(
+      "rebuildAssistProjectTasks",
+      JSON.stringify(projectTasks)
+    );
+  }
+
+  function addProjectTask() {
+    const input = document.getElementById("taskInput");
+    const title = input.value.trim();
+
+    if (!title) {
+      alert("Please enter a task first.");
+      return;
+    }
+
+    projectTasks.push({
+      id: Date.now(),
+      title: title,
+      completed: false,
+      photos: []
+    });
+
+    input.value = "";
+    saveProjectTasks();
+    displayProjectTasks();
+  }
+
+  function toggleProjectTask(taskId) {
+    const task = projectTasks.find(function(item) {
+      return item.id === taskId;
+    });
+
+    if (!task) {
+      return;
+    }
+
+    task.completed = !task.completed;
+    saveProjectTasks();
+    displayProjectTasks();
+  }
+
+  function deleteProjectTask(taskId) {
+    const task = projectTasks.find(function(item) {
+      return item.id === taskId;
+    });
+
+    if (!task) {
+      return;
+    }
+
+    if (!confirm("Delete this task and its photos?")) {
+      return;
+    }
+
+    projectTasks =
+      projectTasks.filter(function(item) {
+        return item.id !== taskId;
+      });
+
+    saveProjectTasks();
+    displayProjectTasks();
+  }
+
+  function addTaskPhoto(taskId, inputElement) {
+    const file = inputElement.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please choose an image file.");
+      inputElement.value = "";
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(event) {
+      const task = projectTasks.find(function(item) {
+        return item.id === taskId;
+      });
+
+      if (!task) {
+        return;
+      }
+
+      task.photos = task.photos || [];
+      task.photos.push(event.target.result);
+
+      saveProjectTasks();
+      displayProjectTasks();
+    };
+
+    reader.readAsDataURL(file);
+    inputElement.value = "";
+  }
+
+  function deleteTaskPhoto(taskId, photoIndex) {
+    const task = projectTasks.find(function(item) {
+      return item.id === taskId;
+    });
+
+    if (!task || !task.photos) {
+      return;
+    }
+
+    if (!confirm("Delete this photo?")) {
+      return;
+    }
+
+    task.photos.splice(photoIndex, 1);
+    saveProjectTasks();
+    displayProjectTasks();
+  }
+
+  function displayProjectTasks() {
+    const container =
+      document.getElementById("projectTaskList");
+
+    if (!container) {
+      return;
+    }
+
+    if (projectTasks.length === 0) {
+      container.innerHTML =
+        '<p class="task-empty">No project tasks yet.</p>';
+      return;
+    }
+
+    container.innerHTML = "";
+
+    projectTasks.forEach(function(task) {
+      const div = document.createElement("div");
+
+      div.className =
+        "project-task" +
+        (task.completed ? " completed" : "");
+
+      let photosHTML = "";
+
+      if (task.photos && task.photos.length > 0) {
+        photosHTML =
+          '<div style="margin-top:10px;">' +
+          task.photos.map(function(photo, index) {
+            return (
+              '<span class="task-photo-wrap">' +
+              '<img class="task-photo" src="' +
+              photo +
+              '" alt="Photo for ' +
+              escapeHtml(task.title) +
+              '">' +
+              '<button class="danger" onclick="deleteTaskPhoto(' +
+              task.id +
+              ',' +
+              index +
+              ')">Delete Photo</button>' +
+              '</span>'
+            );
+          }).join("") +
+          "</div>";
+      }
+
+      div.innerHTML =
+        '<div class="project-task-title">' +
+        escapeHtml(task.title) +
+        "</div>" +
+
+        '<button onclick="toggleProjectTask(' +
+        task.id +
+        ')">' +
+        (task.completed ? "↩ Mark Active" : "✓ Mark Complete") +
+        "</button>" +
+
+        '<label style="display:inline-block;margin:4px 0 0 0;">' +
+        '<input type="file" accept="image/*" capture="environment" ' +
+        'style="display:none;" onchange="addTaskPhoto(' +
+        task.id +
+        ', this)">' +
+        '<button type="button" onclick="this.previousElementSibling.click()">' +
+        '📷 Add Photo' +
+        "</button>" +
+        "</label>" +
+
+        '<button class="danger" onclick="deleteProjectTask(' +
+        task.id +
+        ')">' +
+        "Delete Task" +
+        "</button>" +
+
+        photosHTML;
+
+      container.appendChild(div);
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   /*
    * LOAD APPLICATION
    */
@@ -1832,6 +2125,7 @@
       }
 
       displayHistory();
+      displayProjectTasks();
 
     }
   );
