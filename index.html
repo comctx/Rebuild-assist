@@ -86,6 +86,26 @@
       transition: 0.2s;
     }
 
+
+    .main-choice {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 22px;
+      cursor: pointer;
+      transition: 0.2s;
+      text-align: center;
+    }
+
+    .main-choice:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .main-choice .category-icon {
+      font-size: 42px;
+    }
+
     .category-card:hover {
       transform: translateY(-3px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.12);
@@ -366,9 +386,45 @@
 
 <div class="container">
 
+  <!-- MAIN PROJECT TYPE -->
+
+  <div class="section" id="projectTypeSection">
+
+    <h2>🛠️ What are you working on?</h2>
+
+    <p>
+      Choose the type of project you want to work on.
+    </p>
+
+    <div class="grid">
+
+      <div class="main-choice" onclick="showVehicleProjects()">
+        <div class="category-icon">🚗</div>
+        <h3>Vehicles</h3>
+        <p>
+          Cars, trucks, motorcycles and other vehicle restoration
+          and repair projects.
+        </p>
+      </div>
+
+      <div class="main-choice" onclick="showOtherProjects()">
+        <div class="category-icon">🔨</div>
+        <h3>Everything Else</h3>
+        <p>
+          Home projects, equipment, repairs and other projects
+          you want to document and complete.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+
   <!-- VEHICLE -->
 
-  <div class="section" id="vehicleSetup">
+
+  <div class="section hidden" id="vehicleSetup">
 
     <h2>🚗 My Vehicle</h2>
 
@@ -436,7 +492,7 @@
 
   <!-- PROJECT TASKS -->
 
-  <div class="section" id="projectTasksSection">
+  <div class="section hidden" id="projectTasksSection">
 
     <h2>📋 My Project Tasks</h2>
 
@@ -461,9 +517,36 @@
 
   </div>
 
+  <!-- EVERYTHING ELSE -->
+
+  <div class="section hidden" id="otherProjectsSection">
+
+    <h2>🔨 Everything Else</h2>
+
+    <p>
+      Use project tasks to organize work that is not a vehicle repair.
+      Add photos to document the project as you go.
+    </p>
+
+    <div class="info-box">
+      <strong>Project Tasks</strong>
+      <p>
+        Add each job you need to complete below. You can mark tasks
+        complete and attach photos to any task.
+      </p>
+    </div>
+
+    <button class="secondary" onclick="backToProjectType()">
+      ← Back to Project Types
+    </button>
+
+  </div>
+
+
   <!-- MAIN REPAIR DATABASE -->
 
-  <div class="section" id="repairDatabase">
+
+  <div class="section hidden" id="repairDatabase">
 
     <h2>🔧 Repair Database</h2>
 
@@ -659,7 +742,7 @@
 
   <!-- HISTORY -->
 
-  <div class="section" id="historySection">
+  <div class="section hidden" id="historySection">
 
     <h2>📋 Repair History</h2>
 
@@ -1258,6 +1341,92 @@
   let currentStep = 0;
 
   let completedSteps = [];
+
+
+  function showVehicleProjects() {
+
+    document
+      .getElementById("projectTypeSection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("otherProjectsSection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("vehicleSetup")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("projectTasksSection")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("repairDatabase")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("historySection")
+      .classList.remove("hidden");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+
+  function showOtherProjects() {
+
+    document
+      .getElementById("projectTypeSection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("vehicleSetup")
+      .classList.add("hidden");
+
+    document
+      .getElementById("repairDatabase")
+      .classList.add("hidden");
+
+    document
+      .getElementById("categorySection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("guidedRepair")
+      .classList.add("hidden");
+
+    document
+      .getElementById("notesSection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("historySection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("projectTasksSection")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("otherProjectsSection")
+      .classList.remove("hidden");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+
+  function backToProjectType() {
+
+    document
+      .getElementById("otherProjectsSection")
+      .classList.add("hidden");
+
+    document
+      .getElementById("projectTypeSection")
+      .classList.remove("hidden");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
 
   function openCategory(category) {
