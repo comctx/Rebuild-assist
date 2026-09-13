@@ -2267,6 +2267,24 @@
     updateProjectProgress();
   }
 
+  function editProjectPart(partId) {
+    const part = projectParts.find(function(item){ return item.id === partId; });
+    if (!part) return;
+
+    const newName = prompt("Edit part:", part.name);
+    if (newName === null) return;
+
+    const name = newName.trim();
+    if (!name) {
+      alert("The part name cannot be blank.");
+      return;
+    }
+
+    part.name = name;
+    saveProjectParts();
+    displayProjectParts();
+  }
+
   function displayProjectParts() {
     const container = document.getElementById("projectPartList");
     if (!container) return;
@@ -2281,6 +2299,7 @@
       row.innerHTML = '<span class="part-name">' + escapeHtml(part.name) + '</span>' +
         '<span><button onclick="toggleProjectPart(' + part.id + ')">' +
         (part.installed ? "↩ Not Installed" : "✓ Installed") + '</button>' +
+        '<button type="button" onclick="editProjectPart(' + part.id + ')">✏️ Edit Part</button>' +
         '<button class="danger" onclick="deleteProjectPart(' + part.id + ')">Delete</button></span>';
       container.appendChild(row);
     });
