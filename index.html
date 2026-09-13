@@ -351,6 +351,26 @@
       margin-top: 4px;
     }
 
+    .project-part {
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .project-part.installed {
+      opacity: 0.7;
+    }
+
+    .project-part.installed .part-name {
+      text-decoration: line-through;
+    }
+
     .task-empty {
       color: #666;
       font-style: italic;
@@ -426,12 +446,14 @@
 
   <div class="section hidden" id="vehicleSetup">
 
-    <h2>🚗 My Vehicle</h2>
+    <h2>🚗 Start Vehicle Project</h2>
 
     <p>
-      Tell Rebuild Assist what you are working on.
-      The repair guides will be matched to your vehicle.
+      Start a vehicle project and keep your tasks, parts, photos, notes and progress together.
     </p>
+
+    <label>Project Name</label>
+    <input type="text" id="projectName" placeholder="Example: 1968 Firebird Restoration">
 
     <label>Year</label>
     <input
@@ -517,14 +539,69 @@
 
   </div>
 
+  <!-- PROJECT PARTS -->
+
+  <div class="section hidden" id="projectPartsSection">
+
+    <h2>🔩 Project Parts</h2>
+
+    <p>
+      Keep track of the parts you need, have, or have installed for this project.
+    </p>
+
+    <label for="partInput">New Part</label>
+    <input
+      type="text"
+      id="partInput"
+      placeholder="Enter a part"
+      onkeydown="if(event.key === 'Enter') addProjectPart()"
+    >
+
+    <button onclick="addProjectPart()">➕ Add Part</button>
+
+    <div id="projectPartList" style="margin-top:18px;"></div>
+
+  </div>
+
+
+  <!-- PROJECT NOTES -->
+
+  <div class="section hidden" id="projectNotesSection">
+
+    <h2>📝 Project Notes</h2>
+
+    <textarea id="projectNotes" placeholder="Write notes about this project..."></textarea>
+
+    <button onclick="saveProjectNotes()">Save Project Notes</button>
+
+    <div id="projectNotesMessage" class="info-box hidden">Project notes saved.</div>
+
+  </div>
+
+
+  <!-- PROJECT PROGRESS -->
+
+  <div class="section hidden" id="projectProgressSection">
+
+    <h2>📈 Project Progress</h2>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="projectProgressBar"></div>
+    </div>
+
+    <div class="progress-text" id="projectProgressText">0% complete</div>
+
+  </div>
+
+
   <!-- EVERYTHING ELSE -->
 
   <div class="section hidden" id="otherProjectsSection">
 
-    <h2>🔨 Everything Else</h2>
+    <h2>🔨 Start New Project</h2>
 
     <p>
-      Use project tasks to organize work that is not a vehicle repair.
+      Use Rebuild Assist for anything you take apart, repair, restore or reassemble.
       Add photos to document the project as you go.
     </p>
 
@@ -775,6 +852,8 @@
 
 
   function saveVehicle() {
+
+    saveProjectDetails();
 
     const year =
       document.getElementById("vehicleYear").value.trim();
@@ -1345,118 +1424,70 @@
 
   function showVehicleProjects() {
 
-    document
-      .getElementById("projectTypeSection")
-      .classList.add("hidden");
+    document.getElementById("projectTypeSection").classList.add("hidden");
+    document.getElementById("otherProjectsSection").classList.add("hidden");
 
-    document
-      .getElementById("otherProjectsSection")
-      .classList.add("hidden");
+    document.getElementById("vehicleSetup").classList.remove("hidden");
+    document.getElementById("projectTasksSection").classList.remove("hidden");
+    document.getElementById("projectPartsSection").classList.remove("hidden");
+    document.getElementById("projectNotesSection").classList.remove("hidden");
+    document.getElementById("projectProgressSection").classList.remove("hidden");
+    document.getElementById("repairDatabase").classList.remove("hidden");
+    document.getElementById("historySection").classList.remove("hidden");
 
-    document
-      .getElementById("vehicleSetup")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("projectTasksSection")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("repairDatabase")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("historySection")
-      .classList.remove("hidden");
-
+    loadProjectDetails();
+    displayProjectTasks();
+    displayProjectParts();
+    updateProjectProgress();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
 
   function showOtherProjects() {
 
-    document
-      .getElementById("projectTypeSection")
-      .classList.add("hidden");
+    document.getElementById("projectTypeSection").classList.add("hidden");
+    document.getElementById("vehicleSetup").classList.add("hidden");
+    document.getElementById("repairDatabase").classList.add("hidden");
+    document.getElementById("categorySection").classList.add("hidden");
+    document.getElementById("guidedRepair").classList.add("hidden");
+    document.getElementById("notesSection").classList.add("hidden");
+    document.getElementById("historySection").classList.add("hidden");
 
-    document
-      .getElementById("vehicleSetup")
-      .classList.add("hidden");
+    document.getElementById("projectTasksSection").classList.remove("hidden");
+    document.getElementById("projectPartsSection").classList.remove("hidden");
+    document.getElementById("projectNotesSection").classList.remove("hidden");
+    document.getElementById("projectProgressSection").classList.remove("hidden");
+    document.getElementById("otherProjectsSection").classList.remove("hidden");
 
-    document
-      .getElementById("repairDatabase")
-      .classList.add("hidden");
-
-    document
-      .getElementById("categorySection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("guidedRepair")
-      .classList.add("hidden");
-
-    document
-      .getElementById("notesSection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("historySection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("projectTasksSection")
-      .classList.remove("hidden");
-
-    document
-      .getElementById("otherProjectsSection")
-      .classList.remove("hidden");
-
+    loadProjectDetails();
+    displayProjectTasks();
+    displayProjectParts();
+    updateProjectProgress();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
 
   function backToProjectType() {
 
-    document
-      .getElementById("vehicleSetup")
-      .classList.add("hidden");
+    [
+      "vehicleSetup",
+      "vehicleDisplay",
+      "projectTasksSection",
+      "projectPartsSection",
+      "projectNotesSection",
+      "projectProgressSection",
+      "repairDatabase",
+      "categorySection",
+      "guidedRepair",
+      "notesSection",
+      "historySection",
+      "otherProjectsSection"
+    ].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    });
 
-    document
-      .getElementById("vehicleDisplay")
-      .classList.add("hidden");
-
-    document
-      .getElementById("projectTasksSection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("repairDatabase")
-      .classList.add("hidden");
-
-    document
-      .getElementById("categorySection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("guidedRepair")
-      .classList.add("hidden");
-
-    document
-      .getElementById("notesSection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("historySection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("otherProjectsSection")
-      .classList.add("hidden");
-
-    document
-      .getElementById("projectTypeSection")
-      .classList.remove("hidden");
-
+    document.getElementById("projectTypeSection").classList.remove("hidden");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
@@ -2107,6 +2138,99 @@
       localStorage.getItem("rebuildAssistProjectTasks")
     ) || [];
 
+  let projectParts = JSON.parse(localStorage.getItem("rebuildAssistProjectParts") || "[]");
+
+  function loadProjectDetails() {
+    const name = localStorage.getItem("rebuildAssistProjectName") || "";
+    const nameInput = document.getElementById("projectName");
+    if (nameInput) nameInput.value = name;
+
+    const notes = localStorage.getItem("rebuildAssistProjectNotes") || "";
+    const notesInput = document.getElementById("projectNotes");
+    if (notesInput) notesInput.value = notes;
+  }
+
+  function saveProjectDetails() {
+    const input = document.getElementById("projectName");
+    if (input) localStorage.setItem("rebuildAssistProjectName", input.value.trim());
+  }
+
+  function saveProjectNotes() {
+    const input = document.getElementById("projectNotes");
+    if (!input) return;
+    localStorage.setItem("rebuildAssistProjectNotes", input.value);
+    const message = document.getElementById("projectNotesMessage");
+    if (message) {
+      message.classList.remove("hidden");
+      setTimeout(function(){ message.classList.add("hidden"); }, 2000);
+    }
+  }
+
+  function saveProjectParts() {
+    localStorage.setItem("rebuildAssistProjectParts", JSON.stringify(projectParts));
+  }
+
+  function addProjectPart() {
+    const input = document.getElementById("partInput");
+    const name = input.value.trim();
+    if (!name) { alert("Please enter a part first."); return; }
+    projectParts.push({ id: Date.now(), name: name, installed: false });
+    input.value = "";
+    saveProjectParts();
+    displayProjectParts();
+    updateProjectProgress();
+  }
+
+  function toggleProjectPart(partId) {
+    const part = projectParts.find(function(item){ return item.id === partId; });
+    if (!part) return;
+    part.installed = !part.installed;
+    saveProjectParts();
+    displayProjectParts();
+    updateProjectProgress();
+  }
+
+  function deleteProjectPart(partId) {
+    if (!confirm("Delete this part?")) return;
+    projectParts = projectParts.filter(function(item){ return item.id !== partId; });
+    saveProjectParts();
+    displayProjectParts();
+    updateProjectProgress();
+  }
+
+  function displayProjectParts() {
+    const container = document.getElementById("projectPartList");
+    if (!container) return;
+    if (projectParts.length === 0) {
+      container.innerHTML = '<p class="task-empty">No project parts yet.</p>';
+      return;
+    }
+    container.innerHTML = "";
+    projectParts.forEach(function(part){
+      const row = document.createElement("div");
+      row.className = "project-part" + (part.installed ? " installed" : "");
+      row.innerHTML = '<span class="part-name">' + escapeHtml(part.name) + '</span>' +
+        '<span><button onclick="toggleProjectPart(' + part.id + ')">' +
+        (part.installed ? "↩ Not Installed" : "✓ Installed") + '</button>' +
+        '<button class="danger" onclick="deleteProjectPart(' + part.id + ')">Delete</button></span>';
+      container.appendChild(row);
+    });
+  }
+
+  function updateProjectProgress() {
+    const taskCount = projectTasks.length;
+    const completedTasks = projectTasks.filter(function(t){ return t.completed; }).length;
+    const partCount = projectParts.length;
+    const installedParts = projectParts.filter(function(p){ return p.installed; }).length;
+    const total = taskCount + partCount;
+    const done = completedTasks + installedParts;
+    const percent = total ? Math.round((done / total) * 100) : 0;
+    const bar = document.getElementById("projectProgressBar");
+    const text = document.getElementById("projectProgressText");
+    if (bar) bar.style.width = percent + "%";
+    if (text) text.textContent = percent + "% complete — " + completedTasks + "/" + taskCount + " tasks and " + installedParts + "/" + partCount + " parts complete";
+  }
+
   function saveProjectTasks() {
     localStorage.setItem(
       "rebuildAssistProjectTasks",
@@ -2133,6 +2257,7 @@
     input.value = "";
     saveProjectTasks();
     displayProjectTasks();
+    updateProjectProgress();
   }
 
   function toggleProjectTask(taskId) {
@@ -2147,6 +2272,7 @@
     task.completed = !task.completed;
     saveProjectTasks();
     displayProjectTasks();
+    updateProjectProgress();
   }
 
   function deleteProjectTask(taskId) {
@@ -2169,6 +2295,7 @@
 
     saveProjectTasks();
     displayProjectTasks();
+    updateProjectProgress();
   }
 
   function addTaskPhoto(taskId, inputElement) {
