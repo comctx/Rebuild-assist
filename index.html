@@ -394,10 +394,55 @@
         font-size: 16px;
       }
     }
+
+    .edit-task-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 9999;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .edit-task-dialog {
+      max-width: 620px;
+      margin: 8vh auto 0;
+      background: white;
+      border-radius: 12px;
+      padding: 22px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+
+    .edit-task-dialog h2 {
+      margin-top: 0;
+    }
+
+    .edit-task-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
   </style>
 </head>
 
 <body>
+
+  <div id="editTaskModal" class="edit-task-modal" role="dialog" aria-modal="true" aria-labelledby="editTaskHeading">
+    <div class="edit-task-dialog">
+      <h2 id="editTaskHeading">Edit Task</h2>
+      <label for="editTaskTitleInput"><strong>Task Name</strong></label>
+      <input id="editTaskTitleInput" type="text" placeholder="Enter a task" style="width:100%;margin-top:6px;">
+      <label for="editTaskNotesInput" style="display:block;margin-top:14px;"><strong>Task Notes</strong></label>
+      <textarea id="editTaskNotesInput" rows="5" placeholder="Optional notes" style="width:100%;margin-top:6px;"></textarea>
+      <div class="edit-task-actions">
+        <button type="button" onclick="saveEditedProjectTask()">Save Changes</button>
+        <button type="button" onclick="closeEditTask()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
 
 <header>
   <h1>🔧 Rebuild Assist</h1>
@@ -2304,6 +2349,8 @@
     updateProjectProgress();
   }
 
+  let editingProjectTaskId = null;
+
   function editProjectTask(taskId) {
     const task = projectTasks.find(function(item) {
       return item.id === taskId;
@@ -2313,28 +2360,67 @@
       return;
     }
 
-    const newTitle = prompt("Edit task:", task.title);
-    if (newTitle === null) {
+    editingProjectTaskId = taskId;
+
+    const titleInput = document.getElementById("editTaskTitleInput");
+    const notesInput = document.getElementById("editTaskNotesInput");
+    const modal = document.getElementById("editTaskModal");
+
+    titleInput.value = task.title || "";
+    notesInput.value = task.notes || "";
+    modal.style.display = "block";
+
+    setTimeout(function() {
+      titleInput.focus();
+      titleInput.select();
+    }, 50);
+  }
+
+  function saveEditedProjectTask() {
+    if (editingProjectTaskId === null) {
       return;
     }
 
-    const title = newTitle.trim();
+    const task = projectTasks.find(function(item) {
+      return item.id === editingProjectTaskId;
+    });
+
+    if (!task) {
+      closeEditTask();
+      return;
+    }
+
+    const titleInput = document.getElementById("editTaskTitleInput");
+    const notesInput = document.getElementById("editTaskNotesInput");
+    const title = titleInput.value.trim();
+
     if (!title) {
       alert("The task name cannot be blank.");
-      return;
-    }
-
-    const newNotes = prompt("Edit task notes (optional):", task.notes || "");
-    if (newNotes === null) {
+      titleInput.focus();
       return;
     }
 
     task.title = title;
-    task.notes = newNotes.trim();
+    task.notes = notesInput.value.trim();
 
     saveProjectTasks();
     displayProjectTasks();
+    closeEditTask();
   }
+
+  function closeEditTask() {
+    const modal = document.getElementById("editTaskModal");
+    if (modal) {
+      modal.style.display = "none";
+    }
+    editingProjectTaskId = null;
+  }
+
+  document.addEventListener("keydown", function(event) {
+    if (event.key === "Escape") {
+      closeEditTask();
+    }
+  });
 
   function deleteProjectTask(taskId) {
     const task = projectTasks.find(function(item) {
