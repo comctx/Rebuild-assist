@@ -2304,6 +2304,38 @@
     updateProjectProgress();
   }
 
+  function editProjectTask(taskId) {
+    const task = projectTasks.find(function(item) {
+      return item.id === taskId;
+    });
+
+    if (!task) {
+      return;
+    }
+
+    const newTitle = prompt("Edit task:", task.title);
+    if (newTitle === null) {
+      return;
+    }
+
+    const title = newTitle.trim();
+    if (!title) {
+      alert("The task name cannot be blank.");
+      return;
+    }
+
+    const newNotes = prompt("Edit task notes (optional):", task.notes || "");
+    if (newNotes === null) {
+      return;
+    }
+
+    task.title = title;
+    task.notes = newNotes.trim();
+
+    saveProjectTasks();
+    displayProjectTasks();
+  }
+
   function deleteProjectTask(taskId) {
     const task = projectTasks.find(function(item) {
       return item.id === taskId;
@@ -2442,6 +2474,10 @@
         ')">' +
         (task.completed ? "↩ Mark Active" : "✓ Mark Complete") +
         "</button>" +
+
+        '<button type="button" onclick="editProjectTask(' +
+        task.id +
+        ')">✏️ Edit Task</button>' +
 
         '<label style="display:inline-block;margin:4px 0 0 0;">' +
         '<input type="file" accept="image/*" capture="environment" ' +
