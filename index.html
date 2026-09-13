@@ -531,6 +531,9 @@
       onkeydown="if(event.key === 'Enter') addProjectTask()"
     >
 
+    <label for="taskNotesInput">Task Notes (optional)</label>
+    <textarea id="taskNotesInput" placeholder="Add notes about this task..."></textarea>
+
     <button onclick="addProjectTask()">
       ➕ Add Task
     </button>
@@ -604,6 +607,11 @@
       Use Rebuild Assist for anything you take apart, repair, restore or reassemble.
       Add photos to document the project as you go.
     </p>
+
+    <label for="otherProjectName">Project Name</label>
+    <input type="text" id="otherProjectName" placeholder="Example: Basement Repair">
+
+    <button onclick="startOtherProject()">Start New Project</button>
 
     <div class="info-box">
       <strong>Project Tasks</strong>
@@ -2144,6 +2152,8 @@
     const name = localStorage.getItem("rebuildAssistProjectName") || "";
     const nameInput = document.getElementById("projectName");
     if (nameInput) nameInput.value = name;
+    const otherNameInput = document.getElementById("otherProjectName");
+    if (otherNameInput) otherNameInput.value = name;
 
     const notes = localStorage.getItem("rebuildAssistProjectNotes") || "";
     const notesInput = document.getElementById("projectNotes");
@@ -2153,6 +2163,20 @@
   function saveProjectDetails() {
     const input = document.getElementById("projectName");
     if (input) localStorage.setItem("rebuildAssistProjectName", input.value.trim());
+  }
+
+  function startOtherProject() {
+    const input = document.getElementById("otherProjectName");
+    if (!input) return;
+    const name = input.value.trim();
+    if (!name) {
+      alert("Please enter a project name first.");
+      input.focus();
+      return;
+    }
+    localStorage.setItem("rebuildAssistProjectName", name);
+    loadProjectDetails();
+    document.getElementById("projectTasksSection").scrollIntoView({ behavior: "smooth" });
   }
 
   function saveProjectNotes() {
@@ -2247,14 +2271,19 @@
       return;
     }
 
+    const notesInput = document.getElementById("taskNotesInput");
+    const taskNotes = notesInput ? notesInput.value.trim() : "";
+
     projectTasks.push({
       id: Date.now(),
       title: title,
+      notes: taskNotes,
       completed: false,
       photos: []
     });
 
     input.value = "";
+    if (notesInput) notesInput.value = "";
     saveProjectTasks();
     displayProjectTasks();
     updateProjectProgress();
@@ -2398,10 +2427,15 @@
           "</div>";
       }
 
+      const notesHTML = task.notes
+        ? '<div class="info-box"><strong>Notes:</strong><br>' + escapeHtml(task.notes).replace(/\n/g, '<br>') + '</div>'
+        : '';
+
       div.innerHTML =
         '<div class="project-task-title">' +
         escapeHtml(task.title) +
         "</div>" +
+        notesHTML +
 
         '<button onclick="toggleProjectTask(' +
         task.id +
