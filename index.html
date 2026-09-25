@@ -404,6 +404,29 @@
       font-weight: 850;
     }
 
+    .beginner-guide {
+      margin: 14px 0;
+      padding: 16px;
+      border: 2px solid #9dc0ef;
+      border-radius: 14px;
+      background: #f3f8ff;
+    }
+
+    .beginner-guide strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .beginner-guide ol {
+      margin: 8px 0 0 22px;
+      padding: 0;
+    }
+
+    .beginner-guide li {
+      margin: 8px 0;
+    }
+
     .empty {
       text-align: center;
       color: var(--muted);
@@ -1136,11 +1159,22 @@
           </div>
 
 
-          <button
-            class="secondary"
-            onclick="resetReassembly()">
-            Reset Reassembly
-          </button>
+          <div class="toolbar">
+
+            <button
+              id="beginnerModeButton"
+              class="secondary"
+              onclick="toggleBeginnerMode()">
+              Beginner Mode: OFF
+            </button>
+
+            <button
+              class="secondary"
+              onclick="resetReassembly()">
+              Reset Reassembly
+            </button>
+
+          </div>
 
         </div>
 
@@ -1948,6 +1982,9 @@ function newProject(name) {
     notes:
       "",
 
+    beginnerMode:
+      false,
+
     steps:
       [],
 
@@ -1967,6 +2004,9 @@ function newProject(name) {
 
 
 function normalizeProject() {
+
+  currentProject.beginnerMode =
+    !!currentProject.beginnerMode;
 
   currentProject.notes =
     currentProject.notes ||
@@ -7197,6 +7237,28 @@ async function renderReassemble() {
   }
 
 
+  const beginnerButton =
+    document.getElementById(
+      "beginnerModeButton"
+    );
+
+  if (beginnerButton) {
+
+    beginnerButton.textContent =
+      currentProject.beginnerMode
+      ?
+      "Beginner Mode: ON"
+      :
+      "Beginner Mode: OFF";
+
+    beginnerButton.classList.toggle(
+      "good",
+      currentProject.beginnerMode
+    );
+
+  }
+
+
   const reversedSteps =
     currentProject
       .steps
@@ -7507,6 +7569,48 @@ async function renderReassembleStep(
 
 
       ${
+
+        currentProject.beginnerMode
+        ?
+        `
+        <div class="beginner-guide">
+
+          <strong>
+            👋 Beginner Mode — do just this step
+          </strong>
+
+          <ol>
+            <li>
+              Look at the saved photo or photos below before moving anything.
+            </li>
+
+            <li>
+              Read the saved note and check the fastener or bag information.
+            </li>
+
+            <li>
+              Find the part that was removed in this step.
+            </li>
+
+            <li>
+              Put that part back the way your photo and notes show it.
+            </li>
+
+            <li>
+              When you are satisfied it is back in place, check
+              <strong>This step is reassembled</strong>.
+              Rebuild Assistant will move you to the next step.
+            </li>
+          </ol>
+
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      ${
         step.notes
         ?
         `
@@ -7751,6 +7855,25 @@ async function renderReassembleStep(
       );
 
     };
+
+}
+
+
+
+async function toggleBeginnerMode() {
+
+  if (!currentProject) {
+
+    return;
+
+  }
+
+  currentProject.beginnerMode =
+    !currentProject.beginnerMode;
+
+  await saveCurrentProject();
+
+  await renderReassemble();
 
 }
 
