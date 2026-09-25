@@ -2,4720 +2,7858 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Rebuild Assistant</title>
-  <link rel="icon" type="image/png" href="rebuild-assistant-icon.png">
-  <link rel="apple-touch-icon" href="rebuild-assistant-icon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b4b9b">
+  <title>Rebuild Assistant</title>
 
   <style>
+    :root {
+      --blue: #0b4b9b;
+      --blue2: #0d63cc;
+      --green: #177245;
+      --red: #b42318;
+      --amber: #9a6700;
+      --ink: #172033;
+      --muted: #667085;
+      --line: #d7deea;
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --soft: #eef5ff;
+      --radius: 16px;
+      --shadow: 0 8px 26px rgba(23,32,51,.08);
+    }
+
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f1f3f5;
-      color: #222;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
     }
 
-    header {
-      background: #1f4d3a;
-      color: white;
-      padding: 24px 18px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 34px;
-    }
-
-    header p {
-      margin: 8px 0 0;
-      font-size: 16px;
-    }
-
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      max-width: 780px;
-      margin: 0 auto;
-    }
-
-    .brand-icon {
-      width: 92px;
-      height: 92px;
-      border-radius: 22px;
-      object-fit: cover;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.22);
-      flex: 0 0 auto;
-    }
-
-    .brand-copy {
-      text-align: left;
-    }
-
-    .donco-badge {
-      display: inline-block;
-      margin-top: 10px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.35);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 22px 16px 50px;
-    }
-
-    .card,
-    .section {
-      background: white;
-      border-radius: 12px;
-      padding: 22px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-
-    h2,
-    h3 {
-      color: #1f4d3a;
-    }
-
-    h2 {
-      margin-top: 0;
-    }
-
-    .vehicle-banner {
-      background: #e7f1eb;
-      border-left: 5px solid #1f4d3a;
-      padding: 15px;
-      border-radius: 7px;
-      margin-bottom: 20px;
-    }
-
-    .vehicle-banner strong {
-      color: #1f4d3a;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .category-card {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 20px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .main-choice {
-      background: white;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 22px;
-      cursor: pointer;
-      transition: 0.2s;
-      text-align: center;
-    }
-
-    .main-choice:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    }
-
-    .main-choice .category-icon {
-      font-size: 42px;
-    }
-
-    .category-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    }
-
-    .category-card h3 {
-      margin-top: 0;
-    }
-
-    .category-icon {
-      font-size: 34px;
-      margin-bottom: 10px;
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
     }
 
     button {
-      background: #1f4d3a;
-      color: white;
-      border: none;
-      border-radius: 7px;
-      padding: 11px 17px;
-      font-size: 15px;
       cursor: pointer;
-      margin: 4px 3px 4px 0;
-    }
-
-    button:hover {
-      background: #16392b;
-    }
-
-    button.secondary {
-      background: #666;
-    }
-
-    button.secondary:hover {
-      background: #444;
-    }
-
-    button.warning {
-      background: #a85d00;
-    }
-
-    button.danger {
-      background: #9b2c2c;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 7px;
-      font-size: 15px;
-      margin-bottom: 14px;
-      font-family: inherit;
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 6px;
     }
 
     .hidden {
       display: none !important;
     }
 
-    .repair-card {
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      padding: 17px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-
-    .repair-card h3 {
-      margin-top: 0;
-    }
-
-    .repair-card button {
-      margin-top: 8px;
-    }
-
-    .step-number {
-      display: inline-block;
-      background: #1f4d3a;
+    header {
+      background: linear-gradient(135deg, var(--blue), var(--blue2));
       color: white;
-      border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      line-height: 42px;
-      text-align: center;
-      font-weight: bold;
-      margin-right: 10px;
+      padding: calc(16px + env(safe-area-inset-top)) 16px 18px;
+      box-shadow: 0 2px 14px rgba(0,0,0,.16);
     }
 
-    .step-title {
-      font-size: 22px;
-      font-weight: bold;
-      color: #1f4d3a;
-      vertical-align: middle;
+    .header-inner,
+    .shell {
+      max-width: 1100px;
+      margin: 0 auto;
     }
 
-    .step-text {
-      font-size: 17px;
-      line-height: 1.6;
-      margin-top: 20px;
-    }
-
-    .warning-box {
-      background: #fff4df;
-      border-left: 5px solid #d58a00;
-      padding: 15px;
-      margin: 18px 0;
-      border-radius: 5px;
-    }
-
-    .info-box {
-      background: #e9f3ff;
-      border-left: 5px solid #3978b8;
-      padding: 15px;
-      margin: 18px 0;
-      border-radius: 5px;
-    }
-
-    .tools-box {
-      background: #f4f4f4;
-      padding: 15px;
-      border-radius: 7px;
-      margin-top: 18px;
-    }
-
-    .tools-box ul {
-      margin-bottom: 0;
-    }
-
-    .progress-container {
-      background: #ddd;
-      border-radius: 10px;
-      overflow: hidden;
-      height: 18px;
-      margin: 15px 0;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: #1f4d3a;
-      width: 0%;
-      transition: width 0.3s;
-    }
-
-    .progress-text {
-      font-size: 14px;
-      color: #555;
-    }
-
-    .check-row {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 20px;
-      font-weight: bold;
+      gap: 12px;
     }
 
-    .check-row input {
-      width: auto;
+    .brand-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.22);
+      font-size: 28px;
+      flex: 0 0 auto;
+    }
+
+    h1 {
       margin: 0;
-      transform: scale(1.3);
+      font-size: clamp(1.65rem, 4vw, 2.3rem);
     }
 
-    .history-item {
-      border-bottom: 1px solid #ddd;
-      padding: 12px 0;
+    header p {
+      margin: 4px 0 0;
+      color: #dceaff;
     }
 
-    .history-item:last-child {
-      border-bottom: none;
+    .shell {
+      padding: 16px 12px 44px;
     }
 
-    .status-complete {
-      color: #1f4d3a;
-      font-weight: bold;
-    }
-
-    .status-progress {
-      color: #a85d00;
-      font-weight: bold;
-    }
-
-    .reassemble-card {
-      border: 2px solid #1f4d3a;
-      border-radius: 12px;
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
       padding: 18px;
-      background: #f7fbf9;
-      margin-top: 14px;
+      margin: 14px 0;
     }
 
-    .reassemble-step-number {
-      font-weight: bold;
-      color: #1f4d3a;
-      margin-bottom: 8px;
+    .hero {
+      text-align: center;
+      padding: 26px 18px;
     }
 
-    .reassemble-title {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 10px;
+    .hero h2 {
+      margin: 0 0 8px;
+      font-size: 1.7rem;
     }
 
-    .reassemble-photos {
+    .hero p {
+      max-width: 760px;
+      margin: 0 auto 18px;
+      color: var(--muted);
+    }
+
+    .home-actions,
+    .toolbar,
+    .mini-actions,
+    .tabbar,
+    .row {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 12px;
+      align-items: center;
     }
 
-    .reassemble-photos img {
+    .home-actions {
+      justify-content: center;
+    }
+
+    button,
+    .button-label {
+      border: 0;
+      border-radius: 12px;
+      min-height: 44px;
+      padding: 11px 14px;
+      background: var(--blue);
+      color: white;
+      font-weight: 750;
+    }
+
+    button.secondary,
+    .button-label.secondary {
+      background: #e9eef8;
+      color: #24466f;
+    }
+
+    button.good {
+      background: var(--green);
+    }
+
+    button.warn {
+      background: var(--amber);
+    }
+
+    button.danger {
+      background: var(--red);
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--blue);
+      border: 1px solid var(--line);
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    label {
+      display: block;
+      font-weight: 750;
+      margin: 12px 0 6px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
       width: 100%;
-      max-width: 300px;
-      max-height: 260px;
-      object-fit: contain;
-      border: 1px solid #ddd;
-      border-radius: 9px;
+      border: 1px solid #bcc7d8;
+      border-radius: 12px;
+      padding: 12px;
+      background: white;
+      color: var(--ink);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    input[type="file"] {
+      max-width: 100%;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: .9rem;
+    }
+
+    .tiny {
+      font-size: .82rem;
+    }
+
+    .notice,
+    .warning,
+    .success {
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 10px 0;
+    }
+
+    .notice {
+      background: #f3f7ff;
+      border: 1px solid #cfe0ff;
+      color: #214873;
+    }
+
+    .warning {
+      background: #fff8e8;
+      border: 1px solid #f0d691;
+      color: #7b5600;
+    }
+
+    .success {
+      background: #ecf8f0;
+      border: 1px solid #b7e0c3;
+      color: #126435;
+    }
+
+    .project-heading,
+    .section-heading,
+    .step-top,
+    .task-top,
+    .part-top,
+    .project-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .project-heading h2,
+    .section-heading h3 {
+      margin: 0;
+    }
+
+    .tabbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(244,247,251,.96);
+      padding: 8px 0;
+      backdrop-filter: blur(8px);
+    }
+
+    .tabbar button {
+      background: #e7edf7;
+      color: #24466f;
+      white-space: nowrap;
+    }
+
+    .tabbar button.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .step,
+    .task,
+    .part,
+    .project-row,
+    .photo-card,
+    .voice-note {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin: 12px 0;
       background: white;
     }
 
-    .reassemble-actions {
+    .step-number {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--soft);
+      color: var(--blue);
+      font-weight: 850;
+      flex: 0 0 auto;
+    }
+
+    .pill {
+      display: inline-block;
+      margin: 3px 5px 3px 0;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: #eef2f7;
+      color: #42526b;
+      font-weight: 700;
+      font-size: .82rem;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      background: #111;
+      border-radius: 10px;
+      display: block;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .transcript {
+      background: #f7f8fa;
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+      padding: 9px 10px;
+      margin-top: 8px;
+      white-space: pre-wrap;
+    }
+
+    .progress-track {
+      height: 18px;
+      border-radius: 999px;
+      background: #e5e9f0;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), #2f80ed);
+      transition: width .2s ease;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: #f8fafc;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.4rem;
+    }
+
+    .checkline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkline input {
+      width: 20px;
+      height: 20px;
+    }
+
+    .reassemble-card {
+      border: 2px solid #b8c9e6;
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .reassemble-title {
+      font-size: 1.35rem;
+      font-weight: 850;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 20px;
+    }
+
+    dialog {
+      width: min(96vw, 980px);
+      max-height: 92vh;
+      border: 0;
+      border-radius: 18px;
+      padding: 0;
+      box-shadow: 0 24px 80px rgba(0,0,0,.3);
+    }
+
+    dialog::backdrop {
+      background: rgba(0,0,0,.55);
+    }
+
+    .dialog-head {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: white;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .dialog-head h3 {
+      margin: 0;
+    }
+
+    .dialog-body {
+      padding: 14px;
+      overflow: auto;
+    }
+
+    #markupCanvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #111;
+      border-radius: 10px;
+      touch-action: none;
+    }
+
+    .markup-tools {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 16px;
+      margin-bottom: 10px;
     }
 
-    .reassemble-complete {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 9px;
-      background: #eaf6ef;
-      font-weight: bold;
-      color: #1f4d3a;
+    .markup-tools button {
+      background: #e9eef8;
+      color: #24466f;
+    }
+
+    .markup-tools button.active {
+      background: var(--blue);
+      color: white;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
     }
 
     footer {
       text-align: center;
-      padding: 25px;
-      color: #666;
-      font-size: 14px;
+      color: #617086;
+      padding: 30px 12px 42px;
     }
 
-    .project-task {
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      padding: 15px;
-      margin-bottom: 12px;
-      background: #fafafa;
-    }
-
-    .project-task.completed {
-      opacity: 0.75;
-    }
-
-    .project-task-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    .project-task.completed .project-task-title {
-      text-decoration: line-through;
-    }
-
-    .task-photo {
-      width: 100%;
-      max-width: 260px;
-      max-height: 220px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin: 8px 8px 0 0;
-      border: 1px solid #ddd;
-    }
-
-    .task-photo-wrap {
-      display: inline-block;
-      vertical-align: top;
-      margin-top: 8px;
-    }
-
-    .task-photo-wrap button {
-      display: block;
-      margin-top: 4px;
-    }
-
-    .project-part {
-      border: 1px solid #ddd;
-      border-radius: 9px;
-      padding: 12px 15px;
-      margin-bottom: 10px;
-      background: #fafafa;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .project-part.installed {
-      opacity: 0.7;
-    }
-
-    .project-part.installed .part-name {
-      text-decoration: line-through;
-    }
-
-    .task-empty {
-      color: #666;
-      font-style: italic;
-    }
-
-    @media (max-width: 600px) {
-      .brand-wrap {
-        flex-direction: column;
-        gap: 10px;
+    @media (max-width: 650px) {
+      .shell {
+        padding-left: 10px;
+        padding-right: 10px;
       }
 
-      .brand-copy {
+      .card {
+        padding: 14px;
+      }
+
+      .home-actions button {
+        width: 100%;
+      }
+
+      .toolbar button,
+      .mini-actions button,
+      .button-label {
+        flex: 1 1 145px;
         text-align: center;
       }
 
-      .brand-icon {
-        width: 82px;
-        height: 82px;
-        border-radius: 20px;
+      .tabbar {
+        overflow-x: auto;
+        flex-wrap: nowrap;
       }
 
-      header h1 {
-        font-size: 27px;
+      .photo-card img {
+        height: 220px;
       }
-
-      .card,
-      .section {
-        padding: 17px;
-      }
-
-      .step-title {
-        font-size: 18px;
-      }
-
-      .step-text {
-        font-size: 16px;
-      }
-    }
-
-    .edit-task-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 9999;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .edit-task-dialog {
-      max-width: 620px;
-      margin: 8vh auto 0;
-      background: white;
-      border-radius: 12px;
-      padding: 22px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-    }
-
-    .edit-task-dialog h2 {
-      margin-top: 0;
-    }
-
-    .edit-task-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .edit-part-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.45);
-      z-index: 9999;
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .edit-part-dialog {
-      max-width: 620px;
-      margin: 8vh auto 0;
-      background: white;
-      border-radius: 12px;
-      padding: 22px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-    }
-
-    .edit-part-dialog h2 {
-      margin-top: 0;
-    }
-
-    .edit-part-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 16px;
-    }
-
-    .beginner-mode-box {
-      margin-top: 16px;
-      padding: 16px;
-      border: 2px solid #d9e7f7;
-      border-radius: 12px;
-      background: #f7fbff;
-    }
-
-    .beginner-mode-fields {
-      margin-top: 14px;
-    }
-
-    .beginner-mode-fields.hidden {
-      display: none;
-    }
-
-    .detail-block {
-      margin-top: 10px;
-      padding: 12px;
-      border-radius: 10px;
-      background: #f7f7f7;
-    }
-
-    .detail-block.warning-detail {
-      background: #fff7e6;
-      border-left: 4px solid #d48a00;
     }
   </style>
 </head>
 
 <body>
 
-  <div id="editTaskModal" class="edit-task-modal" role="dialog" aria-modal="true" aria-labelledby="editTaskHeading">
-    <div class="edit-task-dialog">
-      <h2 id="editTaskHeading">Edit Task</h2>
-
-      <label for="editTaskTitleInput">
-        <strong>Task Name</strong>
-      </label>
-
-      <input
-        id="editTaskTitleInput"
-        type="text"
-        placeholder="Enter a task"
-        style="width:100%;margin-top:6px;"
-      >
-
-      <label for="editTaskNotesInput" style="display:block;margin-top:14px;">
-        <strong>Task Notes</strong>
-      </label>
-
-      <textarea
-        id="editTaskNotesInput"
-        rows="5"
-        placeholder="Optional notes"
-        style="width:100%;margin-top:6px;"
-      ></textarea>
-
-      <div class="edit-task-actions">
-        <button type="button" onclick="saveEditedProjectTask()">
-          Save Changes
-        </button>
-
-        <button type="button" onclick="closeEditTask()">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="editPartModal" class="edit-part-modal" role="dialog" aria-modal="true" aria-labelledby="editPartHeading">
-    <div class="edit-part-dialog">
-      <h2 id="editPartHeading">Edit Part</h2>
-
-      <label for="editPartNameInput">
-        <strong>Part Name</strong>
-      </label>
-
-      <input
-        id="editPartNameInput"
-        type="text"
-        placeholder="Enter a part"
-        style="width:100%;margin-top:6px;"
-      >
-
-      <div class="edit-part-actions">
-        <button type="button" onclick="saveEditedProjectPart()">
-          Save Changes
-        </button>
-
-        <button type="button" onclick="closeEditPart()">
-          Cancel
-        </button>
-      </div>
-    </div>
-  </div>
-
-
 <header>
-  <div class="brand-wrap">
-    <img class="brand-icon" src="rebuild-assistant-icon.png" alt="Rebuild Assistant icon">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">🧰</div>
 
-    <div class="brand-copy">
-      <h1>Rebuild Assistant</h1>
-      <p>Your step-by-step restoration and reassembly assistant</p>
+      <div>
+        <h1>Rebuild Assistant</h1>
+        <p>Take it apart. Remember it. Put it back together.</p>
+      </div>
     </div>
   </div>
 </header>
 
+<main class="shell">
 
-<div class="container">
+  <section id="homeView">
 
-  <!-- MAIN PROJECT TYPE -->
+    <div class="card hero">
 
-  <div class="section" id="projectTypeSection">
-
-    <h2>🛠️ Choose Your Project</h2>
-
-    <p>
-      Choose the type of project you want to work on.
-    </p>
-
-    <div class="grid">
-
-      <div class="main-choice" onclick="showVehicleProjects()">
-        <div class="category-icon">🚗</div>
-
-        <h3>Vehicles</h3>
-
-        <p>
-          Cars, trucks, motorcycles and other vehicle restoration
-          and repair projects.
-        </p>
-      </div>
-
-
-      <div class="main-choice" onclick="showOtherProjects()">
-        <div class="category-icon">🔨</div>
-
-        <h3>Everything Else</h3>
-
-        <p>
-          Home projects, equipment, repairs and other projects
-          you want to document and complete.
-        </p>
-      </div>
-
-    </div>
-  </div>
-
-
-  <!-- VEHICLE -->
-
-  <div class="section hidden" id="vehicleSetup">
-
-    <h2>🚗 Start Vehicle Project</h2>
-
-    <p>
-      Start a vehicle project and keep your tasks, parts, photos, notes and progress together.
-    </p>
-
-    <label>Project Name</label>
-    <input type="text" id="projectName" placeholder="Example: 1968 Firebird Restoration">
-
-    <label>Year</label>
-    <input
-      type="number"
-      id="vehicleYear"
-      placeholder="Example: 1968"
-    >
-
-    <label>Make</label>
-    <input
-      type="text"
-      id="vehicleMake"
-      placeholder="Example: Pontiac"
-    >
-
-    <label>Model</label>
-    <input
-      type="text"
-      id="vehicleModel"
-      placeholder="Example: Firebird"
-    >
-
-    <label>Engine</label>
-    <input
-      type="text"
-      id="vehicleEngine"
-      placeholder="Example: 350 V8"
-    >
-
-    <label>Transmission</label>
-    <input
-      type="text"
-      id="vehicleTransmission"
-      placeholder="Example: TH350 Automatic"
-    >
-
-    <button onclick="saveVehicle()">
-      Save Vehicle
-    </button>
-
-  </div>
-
-
-  <!-- CURRENT VEHICLE -->
-
-  <div id="vehicleDisplay" class="vehicle-banner hidden">
-    <strong>Current Project:</strong>
-    <span id="vehicleDisplayText"></span>
-
-    <br><br>
-
-    <button onclick="editVehicle()">
-      Edit Vehicle
-    </button>
-  </div>
-
-
-  <!-- PROJECT TASKS -->
-
-  <div class="section hidden" id="projectTasksSection">
-
-    <h2>📋 My Project Tasks</h2>
-
-    <p>
-      Add the jobs you want to work on. You can attach photos to each task
-      so you can document your project as you go.
-    </p>
-
-    <label for="taskInput">New Task</label>
-
-    <input
-      type="text"
-      id="taskInput"
-      placeholder="Enter a task"
-      onkeydown="if(event.key === 'Enter') addProjectTask()"
-    >
-
-    <label for="taskNotesInput">Task Notes (optional)</label>
-
-    <textarea
-      id="taskNotesInput"
-      placeholder="Add notes about this task..."
-    ></textarea>
-
-    <button onclick="addProjectTask()">
-      ➕ Add Task
-    </button>
-
-    <div id="projectTaskList" style="margin-top:18px;"></div>
-
-  </div>
-
-
-  <!-- PROJECT PARTS -->
-
-  <div class="section hidden" id="projectPartsSection">
-
-    <h2>🔩 My Project Parts</h2>
-
-    <p>
-      Keep track of the parts you need, have, or have installed for this project.
-    </p>
-
-    <label for="partInput">New Part</label>
-
-    <input
-      type="text"
-      id="partInput"
-      placeholder="Enter a part"
-      onkeydown="if(event.key === 'Enter') addProjectPart()"
-    >
-
-    <button onclick="addProjectPart()">➕ Add Part</button>
-
-    <div id="projectPartList" style="margin-top:18px;"></div>
-
-  </div>
-
-
-  <!-- PROJECT NOTES -->
-
-  <div class="section hidden" id="projectNotesSection">
-
-    <h2>📝 My Project Notes</h2>
-
-    <textarea
-      id="projectNotes"
-      placeholder="Write notes about this project..."
-    ></textarea>
-
-    <button onclick="saveProjectNotes()">
-      Save Project Notes
-    </button>
-
-    <div id="projectNotesMessage" class="info-box hidden">
-      Project notes saved.
-    </div>
-
-  </div>
-
-
-  <!-- PROJECT PROGRESS -->
-
-  <div class="section hidden" id="projectProgressSection">
-
-    <h2>📈 My Project Progress</h2>
-
-    <div class="progress-container">
-      <div class="progress-bar" id="projectProgressBar"></div>
-    </div>
-
-    <div class="progress-text" id="projectProgressText">
-      0% complete
-    </div>
-
-    <button
-      type="button"
-      onclick="startReassemble()"
-      style="margin-top:16px;"
-    >
-      🔧 Start Reassemble
-    </button>
-
-  </div>
-
-
-  <!-- REASSEMBLE -->
-
-  <div class="section hidden" id="reassembleSection">
-
-    <h2>🔧 Reassemble</h2>
-
-    <p>
-      Rebuild Assistant is walking you back through your project in reverse order.
-      Use your saved notes and photos as a guide.
-    </p>
-
-    <div class="progress-container">
-      <div class="progress-bar" id="reassembleProgressBar"></div>
-    </div>
-
-    <div class="progress-text" id="reassembleProgressText">
-      0% reassembled
-    </div>
-
-    <div id="reassembleStepCard" class="reassemble-card"></div>
-
-    <button
-      class="secondary"
-      type="button"
-      onclick="exitReassemble()"
-      style="margin-top:14px;"
-    >
-      ← Back to Project
-    </button>
-
-  </div>
-
-
-  <!-- EVERYTHING ELSE -->
-
-  <div class="section hidden" id="otherProjectsSection">
-
-    <h2>🔨 Start New Project</h2>
-
-    <p>
-      Use Rebuild Assistant for anything you take apart, repair, restore or reassemble.
-      Add photos to document the project as you go.
-    </p>
-
-    <label for="otherProjectName">
-      Project Name
-    </label>
-
-    <input
-      type="text"
-      id="otherProjectName"
-      placeholder="Example: Basement Repair"
-    >
-
-    <button onclick="startOtherProject()">
-      Start New Project
-    </button>
-
-    <div class="info-box">
-      <strong>Project Tasks</strong>
+      <h2>Your project memory system</h2>
 
       <p>
-        Add each job you need to complete below. You can mark tasks
-        complete and attach photos to any task.
+        Document disassembly with photos, audio, voice-to-text and photo markup,
+        then let Rebuild Assistant guide you back through everything in reverse order.
       </p>
-    </div>
 
-    <button
-      class="secondary"
-      onclick="backToProjectType()"
-    >
-      ← Back to Project Types
-    </button>
+      <div class="home-actions">
 
-  </div>
+        <button onclick="showNewProject()">
+          ➕ Start New Project
+        </button>
 
+        <button
+          class="secondary"
+          onclick="showProjectPicker()">
+          📂 Continue Project
+        </button>
 
-  <!-- MAIN REPAIR DATABASE -->
-
-  <div class="section hidden" id="repairDatabase">
-
-    <h2>🔧 Vehicle Repair Guides</h2>
-
-    <p>
-      Choose a system to see available guided repairs
-      for your vehicle.
-    </p>
-
-    <div class="grid">
-
-      <div class="category-card" onclick="openCategory('cooling')">
-        <div class="category-icon">🌡️</div>
-        <h3>Cooling System</h3>
-
-        <p>
-          Radiator, water pump, thermostat, hoses,
-          coolant and related repairs.
-        </p>
-      </div>
-
-      <div class="category-card" onclick="openCategory('engine')">
-        <div class="category-icon">⚙️</div>
-        <h3>Engine</h3>
-
-        <p>
-          Engine components, belts, ignition,
-          lubrication and other repairs.
-        </p>
-      </div>
-
-      <div class="category-card" onclick="openCategory('brakes')">
-        <div class="category-icon">🛑</div>
-        <h3>Brakes</h3>
-
-        <p>
-          Brake service, drums, discs, hydraulics
-          and related components.
-        </p>
-      </div>
-
-      <div class="category-card" onclick="openCategory('electrical')">
-        <div class="category-icon">⚡</div>
-        <h3>Electrical</h3>
-
-        <p>
-          Wiring, battery, alternator, starter,
-          lighting and electrical troubleshooting.
-        </p>
-      </div>
-
-      <div class="category-card" onclick="openCategory('fuel')">
-        <div class="category-icon">⛽</div>
-        <h3>Fuel System</h3>
-
-        <p>
-          Fuel pump, carburetor, lines, filters
-          and fuel system repairs.
-        </p>
-      </div>
-
-      <div class="category-card" onclick="openCategory('suspension')">
-        <div class="category-icon">🔩</div>
-        <h3>Suspension</h3>
-
-        <p>
-          Springs, shocks, control arms,
-          bushings and suspension components.
-        </p>
-      </div>
-
-      <div class="category-card" onclick="openCategory('steering')">
-        <div class="category-icon">🛞</div>
-        <h3>Steering</h3>
-
-        <p>
-          Steering components, linkage and
-          steering system repairs.
-        </p>
-      </div>
-
-      <div class="category-card" onclick="openCategory('body')">
-        <div class="category-icon">🚘</div>
-        <h3>Body & Interior</h3>
-
-        <p>
-          Body panels, trim, interior components
-          and restoration work.
-        </p>
       </div>
 
     </div>
-  </div>
+
+    <div class="card">
+
+      <strong>One simple system for any project.</strong>
+
+      <p class="muted">
+        No car section and no category required.
+        The project name is the reference.
+      </p>
+
+    </div>
+
+  </section>
 
 
-  <!-- CATEGORY -->
+  <section
+    id="newProjectView"
+    class="hidden">
 
-  <div class="section hidden" id="categorySection">
+    <div class="card">
 
-    <h2 id="categoryTitle"></h2>
+      <h2>Start New Project</h2>
 
-    <div id="repairList"></div>
-
-    <button class="secondary" onclick="backToDatabase()">
-      ← Back to Repair Categories
-    </button>
-
-  </div>
-
-
-  <!-- GUIDED REPAIR -->
-
-  <div class="section hidden" id="guidedRepair">
-
-    <h2 id="repairTitle"></h2>
-
-    <div id="repairVehicleInfo" class="info-box"></div>
-
-    <div class="beginner-mode-box">
-      <label style="display:flex;gap:10px;align-items:center;cursor:pointer;">
-        <input
-          type="checkbox"
-          id="guidedBeginnerModeToggle"
-          onchange="toggleGuidedBeginnerMode()"
-          style="width:auto;margin:0;"
-        >
-        <strong>Beginner Mode — Extra Detailed Instructions</strong>
+      <label for="newProjectName">
+        Project Name
       </label>
 
-      <p style="margin-bottom:0;">
-        Turn this on for simpler, more detailed step-by-step directions.
-      </p>
-    </div>
-
-    <div class="warning-box">
-      <strong>⚠️ Important Safety Notice</strong>
-
-      <p>
-        These instructions are a demonstration guide.
-        Always verify procedures, specifications and
-        torque values against the correct factory service
-        information for your exact vehicle and engine.
-      </p>
-    </div>
-
-    <h3>Progress</h3>
-
-    <div class="progress-container">
-      <div
-        class="progress-bar"
-        id="progressBar"
-      ></div>
-    </div>
-
-    <div
-      class="progress-text"
-      id="progressText"
-    ></div>
-
-    <hr>
-
-    <div id="stepContent"></div>
-
-    <div class="check-row">
       <input
-        type="checkbox"
-        id="stepComplete"
-        onchange="markStepComplete()"
-      >
+        id="newProjectName"
+        type="text"
+        placeholder="Example: 1957 Thunderbird Front Brakes">
 
-      <label for="stepComplete">
-        I have completed this step
-      </label>
+      <div
+        class="toolbar"
+        style="margin-top:14px">
+
+        <button onclick="createProject()">
+          Start Project
+        </button>
+
+        <button
+          class="secondary"
+          onclick="goHome()">
+          Cancel
+        </button>
+
+      </div>
+
     </div>
 
-    <br>
-
-    <button onclick="previousStep()">
-      ← Previous
-    </button>
-
-    <button onclick="nextStep()">
-      Next →
-    </button>
-
-    <button
-      class="secondary"
-      onclick="exitRepair()"
-    >
-      Exit Repair
-    </button>
-
-  </div>
+  </section>
 
 
-  <!-- NOTES -->
+  <section
+    id="pickerView"
+    class="hidden">
 
-  <div class="section hidden" id="notesSection">
+    <div class="card">
 
-    <h2>📝 Repair Notes</h2>
+      <div class="section-heading">
 
-    <textarea
-      id="repairNotes"
-      placeholder="Write notes about this repair..."
-    ></textarea>
+        <h2 style="margin:0">
+          Continue Project
+        </h2>
 
-    <button onclick="saveRepairNotes()">
-      Save Notes
-    </button>
+        <button
+          class="secondary"
+          onclick="goHome()">
+          ← Home
+        </button>
+
+      </div>
+
+      <div id="projectPickerList"></div>
+
+    </div>
+
+  </section>
+
+
+  <section
+    id="projectView"
+    class="hidden">
+
+    <div class="card project-heading">
+
+      <div>
+
+        <div class="muted tiny">
+          CURRENT PROJECT
+        </div>
+
+        <h2 id="currentProjectName">
+          Project
+        </h2>
+
+      </div>
+
+      <div class="toolbar">
+
+        <button
+          class="secondary"
+          onclick="renameCurrentProject()">
+          ✏️ Rename
+        </button>
+
+        <button
+          class="secondary"
+          onclick="showProjectPicker()">
+          Switch Project
+        </button>
+
+        <button
+          class="secondary"
+          onclick="goHome()">
+          Home
+        </button>
+
+      </div>
+
+    </div>
+
 
     <div
-      id="notesMessage"
-      class="info-box hidden"
-    >
-      Notes saved.
+      class="tabbar"
+      id="tabbar">
+
+      <button
+        data-tab="disassembly"
+        onclick="openTab('disassembly')">
+        🔧 Disassembly
+      </button>
+
+      <button
+        data-tab="tasks"
+        onclick="openTab('tasks')">
+        ✅ Tasks
+      </button>
+
+      <button
+        data-tab="parts"
+        onclick="openTab('parts')">
+        🔩 Parts
+      </button>
+
+      <button
+        data-tab="notes"
+        onclick="openTab('notes')">
+        📝 Notes
+      </button>
+
+      <button
+        data-tab="progress"
+        onclick="openTab('progress')">
+        📈 Progress
+      </button>
+
+      <button
+        data-tab="reassemble"
+        onclick="openTab('reassemble')">
+        ↩️ Reassemble
+      </button>
+
     </div>
 
-  </div>
+
+    <section
+      id="tab-disassembly"
+      class="tabpage">
+
+      <div class="card">
+
+        <div class="section-heading">
+
+          <div>
+
+            <h3>
+              Disassembly Steps
+            </h3>
+
+            <div class="muted">
+              Save the order you take things apart.
+              Reassemble will reverse it.
+            </div>
+
+          </div>
+
+          <button onclick="toggleStepForm(true)">
+            ➕ Add Step
+          </button>
+
+        </div>
 
 
-  <!-- HISTORY -->
+        <div
+          id="stepForm"
+          class="hidden">
 
-  <div class="section hidden" id="historySection">
+          <hr>
 
-    <h2>📋 Repair History</h2>
+          <label for="stepTitle">
+            What did you remove or do?
+          </label>
 
-    <div id="repairHistory">
-      <p>
-        No repairs have been started yet.
-      </p>
-    </div>
+          <input
+            id="stepTitle"
+            type="text"
+            placeholder="Example: Removed left headlight bracket">
 
-  </div>
 
-</div>
+          <label for="stepNotes">
+            Written / Voice Note
+          </label>
+
+          <textarea
+            id="stepNotes"
+            placeholder="Anything you want to remember about this step...">
+          </textarea>
+
+
+          <div class="toolbar">
+
+            <button
+              id="dictateStepBtn"
+              class="secondary"
+              onclick="dictateInto('stepNotes', this)">
+              🎙️ Dictate Note
+            </button>
+
+            <button
+              id="recordStepBtn"
+              class="secondary"
+              onclick="toggleAudioRecording('step', this, 'stepNotes')">
+              🎤 Record + Transcribe
+            </button>
+
+          </div>
+
+          <div
+            id="stepRecordingStatus"
+            class="muted small">
+          </div>
+
+
+          <label for="stepFasteners">
+            Fasteners / Bolts / Clips
+          </label>
+
+          <input
+            id="stepFasteners"
+            type="text"
+            placeholder="Example: 2 short bolts, 1 long bolt">
+
+
+          <label for="stepBag">
+            Bag / Container Number
+          </label>
+
+          <input
+            id="stepBag"
+            type="text"
+            placeholder="Example: Bag 4">
+
+
+          <label for="stepPhotoInput">
+            Photos
+          </label>
+
+          <input
+            id="stepPhotoInput"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            multiple>
+
+
+          <div class="notice small">
+            After the step is saved, each photo can have its own
+            audio note, transcript, written note and markup.
+          </div>
+
+
+          <div
+            class="toolbar"
+            style="margin-top:12px">
+
+            <button onclick="saveNewStep()">
+              Save Disassembly Step
+            </button>
+
+            <button
+              class="secondary"
+              onclick="toggleStepForm(false)">
+              Cancel
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div id="stepsList"></div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      id="tab-tasks"
+      class="tabpage hidden">
+
+      <div class="card">
+
+        <h3>
+          Project Tasks
+        </h3>
+
+        <label for="taskTitle">
+          New Task
+        </label>
+
+        <input
+          id="taskTitle"
+          type="text"
+          placeholder="Example: Clean mounting surface">
+
+
+        <label for="taskNotes">
+          Task Notes
+        </label>
+
+        <textarea
+          id="taskNotes"
+          placeholder="Optional notes...">
+        </textarea>
+
+
+        <button onclick="addTask()">
+          ➕ Add Task
+        </button>
+
+        <div id="tasksList"></div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      id="tab-parts"
+      class="tabpage hidden">
+
+      <div class="card">
+
+        <h3>
+          Project Parts
+        </h3>
+
+        <label for="partName">
+          Part
+        </label>
+
+        <input
+          id="partName"
+          type="text"
+          placeholder="Example: Water pump gasket">
+
+
+        <label for="partStatus">
+          Status
+        </label>
+
+        <select id="partStatus">
+
+          <option value="need">
+            Need
+          </option>
+
+          <option value="have">
+            Have
+          </option>
+
+          <option value="installed">
+            Installed
+          </option>
+
+        </select>
+
+
+        <button
+          onclick="addPart()"
+          style="margin-top:12px">
+          ➕ Add Part
+        </button>
+
+        <div id="partsList"></div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      id="tab-notes"
+      class="tabpage hidden">
+
+      <div class="card">
+
+        <h3>
+          Project Notes
+        </h3>
+
+        <textarea
+          id="projectNotes"
+          placeholder="General notes about this project...">
+        </textarea>
+
+
+        <div class="toolbar">
+
+          <button onclick="saveProjectNotes()">
+            Save Project Notes
+          </button>
+
+          <button
+            class="secondary"
+            onclick="dictateInto('projectNotes', this)">
+            🎙️ Dictate Note
+          </button>
+
+          <button
+            id="generalRecordBtn"
+            class="secondary"
+            onclick="toggleGeneralVoiceNote(this)">
+            🎤 Add General Voice Note
+          </button>
+
+        </div>
+
+
+        <div
+          id="generalRecordingStatus"
+          class="muted small">
+        </div>
+
+
+        <div
+          id="notesSaved"
+          class="success hidden">
+          Project notes saved.
+        </div>
+
+
+        <div id="generalVoiceNotes"></div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      id="tab-progress"
+      class="tabpage hidden">
+
+      <div class="card">
+
+        <h3>
+          Project Progress
+        </h3>
+
+
+        <div class="metric-grid">
+
+          <div class="metric">
+
+            <span class="muted">
+              Disassembly steps
+            </span>
+
+            <strong id="metricSteps">
+              0
+            </strong>
+
+          </div>
+
+
+          <div class="metric">
+
+            <span class="muted">
+              Tasks complete
+            </span>
+
+            <strong id="metricTasks">
+              0/0
+            </strong>
+
+          </div>
+
+
+          <div class="metric">
+
+            <span class="muted">
+              Parts installed
+            </span>
+
+            <strong id="metricParts">
+              0/0
+            </strong>
+
+          </div>
+
+
+          <div class="metric">
+
+            <span class="muted">
+              Reassembled
+            </span>
+
+            <strong id="metricReassembled">
+              0/0
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="progress-track">
+
+          <div
+            class="progress-bar"
+            id="overallProgressBar">
+          </div>
+
+        </div>
+
+
+        <div
+          id="overallProgressText"
+          class="muted"
+          style="margin-top:8px">
+          0% complete
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <section
+      id="tab-reassemble"
+      class="tabpage hidden">
+
+      <div class="card">
+
+        <div class="section-heading">
+
+          <div>
+
+            <h3>
+              Reassemble
+            </h3>
+
+            <div class="muted">
+              Your saved disassembly steps appear in reverse order.
+            </div>
+
+          </div>
+
+
+          <button
+            class="secondary"
+            onclick="resetReassembly()">
+            Reset Reassembly
+          </button>
+
+        </div>
+
+
+        <div
+          class="progress-track"
+          style="margin-top:14px">
+
+          <div
+            class="progress-bar"
+            id="reassemblyProgressBar">
+          </div>
+
+        </div>
+
+
+        <div
+          id="reassemblyProgressText"
+          class="muted"
+          style="margin:8px 0 14px">
+          0% reassembled
+        </div>
+
+
+        <div id="reassembleCard"></div>
+
+      </div>
+
+    </section>
+
+  </section>
+
+</main>
 
 
 <footer>
-  Rebuild Assistant &copy; 2026<br>
-  <strong>A DONCO-BAYCITY™ App</strong>
+
+  Rebuild Assistant &copy; 2026
+  <br>
+
+  <strong>
+    A DONCO-BAYCITY™ App
+  </strong>
+
 </footer>
+
+
+<dialog id="photoDialog">
+
+  <div class="dialog-head">
+
+    <h3>
+      Photo Notes & Markup
+    </h3>
+
+    <button
+      class="secondary"
+      onclick="closePhotoDialog()">
+      Close
+    </button>
+
+  </div>
+
+
+  <div class="dialog-body">
+
+    <img
+      id="photoDialogImage"
+      alt="Project photo"
+      style="
+        width:100%;
+        max-height:55vh;
+        object-fit:contain;
+        background:#111;
+        border-radius:12px;
+      ">
+
+
+    <div
+      class="toolbar"
+      style="margin-top:10px">
+
+      <button onclick="openMarkup()">
+        ✏️ Mark Up Photo
+      </button>
+
+      <button
+        id="photoRecordBtn"
+        class="secondary"
+        onclick="toggleAudioRecording('photo', this, 'photoTranscript')">
+        🎤 Record + Transcribe
+      </button>
+
+      <button
+        id="photoDictateBtn"
+        class="secondary"
+        onclick="dictateInto('photoTranscript', this)">
+        🎙️ Dictate Note
+      </button>
+
+    </div>
+
+
+    <div
+      id="photoRecordingStatus"
+      class="muted small">
+    </div>
+
+
+    <label for="photoTranscript">
+      Audio Note Transcript
+    </label>
+
+    <textarea
+      id="photoTranscript"
+      placeholder="Example: This long bolt goes in the lower hole.">
+    </textarea>
+
+
+    <label for="photoTextNote">
+      Additional Text Note
+    </label>
+
+    <textarea
+      id="photoTextNote"
+      placeholder="Optional note...">
+    </textarea>
+
+
+    <div id="photoAudioPreview"></div>
+
+
+    <div class="toolbar">
+
+      <button onclick="savePhotoDetails()">
+        Save Photo Notes
+      </button>
+
+      <button
+        class="danger"
+        onclick="deleteCurrentPhoto()">
+        Delete Photo
+      </button>
+
+    </div>
+
+  </div>
+
+</dialog>
+
+
+<dialog id="markupDialog">
+
+  <div class="dialog-head">
+
+    <h3>
+      Mark Up Photo
+    </h3>
+
+    <button
+      class="secondary"
+      onclick="closeMarkup()">
+      Close
+    </button>
+
+  </div>
+
+
+  <div class="dialog-body">
+
+    <div class="markup-tools">
+
+      <button
+        data-tool="arrow"
+        onclick="setMarkupTool('arrow')">
+        ➜ Arrow
+      </button>
+
+      <button
+        data-tool="circle"
+        onclick="setMarkupTool('circle')">
+        ◯ Circle
+      </button>
+
+      <button
+        data-tool="draw"
+        onclick="setMarkupTool('draw')">
+        ✍ Draw
+      </button>
+
+      <button
+        data-tool="text"
+        onclick="setMarkupTool('text')">
+        T Text
+      </button>
+
+      <button onclick="undoMarkup()">
+        ↶ Undo
+      </button>
+
+      <button onclick="clearMarkup()">
+        Clear
+      </button>
+
+      <button
+        class="good"
+        onclick="saveMarkup()">
+        Save Markup
+      </button>
+
+    </div>
+
+
+    <canvas id="markupCanvas"></canvas>
+
+
+    <div
+      class="muted small"
+      style="margin-top:8px">
+
+      Use a finger, mouse or stylus.
+      Text labels are placed where you tap.
+
+    </div>
+
+  </div>
+
+</dialog>
 
 
 <script>
 
-  /*
-   * VEHICLE DATA
-   */
-
-  let vehicle =
-    JSON.parse(
-      localStorage.getItem(
-        "rebuildAssistVehicle"
-      )
-    ) || null;
+"use strict";
 
 
-  function saveVehicle() {
+const DB_NAME =
+  "RebuildAssistantDB";
 
-    saveProjectDetails();
+const DB_VERSION =
+  1;
 
-    const year =
-      document.getElementById(
-        "vehicleYear"
-      ).value.trim();
+const PROJECT_STORE =
+  "projects";
 
-    const make =
-      document.getElementById(
-        "vehicleMake"
-      ).value.trim();
+const ASSET_STORE =
+  "assets";
 
-    const model =
-      document.getElementById(
-        "vehicleModel"
-      ).value.trim();
+let db =
+  null;
 
-    const engine =
-      document.getElementById(
-        "vehicleEngine"
-      ).value.trim();
 
-    const transmission =
-      document.getElementById(
-        "vehicleTransmission"
-      ).value.trim();
 
-    if (
-      !year ||
-      !make ||
-      !model
-    ) {
-      alert(
-        "Please enter the year, make and model."
-      );
+function makeId(prefix = "id") {
 
-      return;
-    }
+  if (
+    window.crypto &&
+    crypto.randomUUID
+  ) {
 
-    vehicle = {
-      year: year,
-      make: make,
-      model: model,
-      engine: engine,
-      transmission: transmission
-    };
-
-    localStorage.setItem(
-      "rebuildAssistVehicle",
-      JSON.stringify(
-        vehicle
-      )
+    return (
+      prefix +
+      "_" +
+      crypto.randomUUID()
     );
 
-    displayVehicle();
-
-    alert(
-      "Vehicle saved successfully!"
-    );
   }
 
+  return (
+    prefix +
+    "_" +
+    Date.now() +
+    "_" +
+    Math.random()
+      .toString(36)
+      .slice(2)
+  );
 
-  function displayVehicle() {
+}
 
-    if (!vehicle) {
-      return;
-    }
 
-    document
-      .getElementById(
-        "vehicleDisplay"
-      )
-      .classList.remove(
-        "hidden"
-      );
 
-    let text =
-      vehicle.year +
-      " " +
-      vehicle.make +
-      " " +
-      vehicle.model;
+function openDatabase() {
 
-    if (vehicle.engine) {
-      text +=
-        " • " +
-        vehicle.engine;
-    }
+  return new Promise(
+    function(resolve, reject) {
 
-    document.getElementById(
-      "vehicleDisplayText"
-    ).textContent =
-      text;
-
-    document.getElementById(
-      "vehicleYear"
-    ).value =
-      vehicle.year || "";
-
-    document.getElementById(
-      "vehicleMake"
-    ).value =
-      vehicle.make || "";
-
-    document.getElementById(
-      "vehicleModel"
-    ).value =
-      vehicle.model || "";
-
-    document.getElementById(
-      "vehicleEngine"
-    ).value =
-      vehicle.engine || "";
-
-    document.getElementById(
-      "vehicleTransmission"
-    ).value =
-      vehicle.transmission || "";
-  }
-
-
-  function editVehicle() {
-
-    document
-      .getElementById(
-        "vehicleSetup"
-      )
-      .scrollIntoView({
-        behavior: "smooth"
-      });
-
-  }
-
-
-  /*
-   * REPAIR DATABASE
-   */
-
-  const repairDatabase = {
-
-    cooling: {
-
-      title:
-        "🌡️ Cooling System",
-
-      repairs: [
-
-        {
-          id:
-            "water-pump",
-
-          title:
-            "Water Pump Replacement",
-
-          description:
-            "Remove and replace the engine water pump.",
-
-          time:
-            "Varies by vehicle",
-
-          difficulty:
-            "Intermediate"
-        },
-
-        {
-          id:
-            "thermostat",
-
-          title:
-            "Thermostat Replacement",
-
-          description:
-            "Remove and replace the engine thermostat.",
-
-          time:
-            "Varies by vehicle",
-
-          difficulty:
-            "Beginner"
-        },
-
-        {
-          id:
-            "radiator",
-
-          title:
-            "Radiator Replacement",
-
-          description:
-            "Remove and replace the radiator.",
-
-          time:
-            "Varies by vehicle",
-
-          difficulty:
-            "Intermediate"
-        }
-
-      ]
-    },
-
-
-    engine: {
-
-      title:
-        "⚙️ Engine",
-
-      repairs: [
-
-        {
-          id:
-            "belts",
-
-          title:
-            "Accessory Belt Inspection",
-
-          description:
-            "Inspect belts for wear, cracking and improper tension.",
-
-          time:
-            "30–60 minutes",
-
-          difficulty:
-            "Beginner"
-        }
-
-      ]
-    },
-
-
-    brakes: {
-
-      title:
-        "🛑 Brakes",
-
-      repairs: [
-
-        {
-          id:
-            "brake-inspection",
-
-          title:
-            "Brake System Inspection",
-
-          description:
-            "Inspect major brake system components.",
-
-          time:
-            "1 hour",
-
-          difficulty:
-            "Beginner"
-        }
-
-      ]
-    },
-
-
-    electrical: {
-
-      title:
-        "⚡ Electrical",
-
-      repairs: [
-
-        {
-          id:
-            "battery",
-
-          title:
-            "Battery Inspection",
-
-          description:
-            "Inspect battery condition and connections.",
-
-          time:
-            "15–30 minutes",
-
-          difficulty:
-            "Beginner"
-        }
-
-      ]
-    },
-
-
-    fuel: {
-
-      title:
-        "⛽ Fuel System",
-
-      repairs: [
-
-        {
-          id:
-            "fuel-filter",
-
-          title:
-            "Fuel Filter Replacement",
-
-          description:
-            "Inspect and replace the fuel filter.",
-
-          time:
-            "Varies by vehicle",
-
-          difficulty:
-            "Beginner"
-        }
-
-      ]
-    },
-
-
-    suspension: {
-
-      title:
-        "🔩 Suspension",
-
-      repairs: [
-
-        {
-          id:
-            "shock-inspection",
-
-          title:
-            "Shock Absorber Inspection",
-
-          description:
-            "Inspect shocks for leaks and damage.",
-
-          time:
-            "30 minutes",
-
-          difficulty:
-            "Beginner"
-        }
-
-      ]
-    },
-
-
-    steering: {
-
-      title:
-        "🛞 Steering",
-
-      repairs: [
-
-        {
-          id:
-            "steering-inspection",
-
-          title:
-            "Steering System Inspection",
-
-          description:
-            "Inspect steering linkage and related components.",
-
-          time:
-            "1 hour",
-
-          difficulty:
-            "Beginner"
-        }
-
-      ]
-    },
-
-
-    body: {
-
-      title:
-        "🚘 Body & Interior",
-
-      repairs: [
-
-        {
-          id:
-            "body-inspection",
-
-          title:
-            "Body Condition Inspection",
-
-          description:
-            "Inspect body panels, rust and structural areas.",
-
-          time:
-            "1–2 hours",
-
-          difficulty:
-            "Beginner"
-        }
-
-      ]
-    }
-
-  };
-
-
-  /*
-   * WATER PUMP REPAIR
-   */
-
-  const waterPumpSteps = [
-
-    {
-      title:
-        "Prepare the vehicle",
-
-      text:
-        "Park the vehicle on a level surface. Allow the engine to cool completely before beginning work. Set the parking brake and make sure the vehicle cannot move.",
-
-      warning:
-        "Never open a pressurized cooling system while the engine is hot.",
-
-      tools: [
-        "Basic hand tools",
-        "Safety glasses",
-        "Work gloves",
-        "Drain pan"
-      ]
-    },
-
-    {
-      title:
-        "Disconnect the battery",
-
-      text:
-        "Disconnect the negative battery cable before beginning work. This helps prevent accidental electrical shorts while working around the engine.",
-
-      warning:
-        "Keep the disconnected cable positioned so it cannot accidentally contact the battery terminal.",
-
-      tools: [
-        "Wrench or socket appropriate for the battery terminal"
-      ]
-    },
-
-    {
-      title:
-        "Drain the cooling system",
-
-      text:
-        "Place an appropriate drain pan under the cooling system. Open the radiator drain point if equipped and allow the coolant to drain. Dispose of used coolant properly.",
-
-      warning:
-        "Engine coolant is toxic. Keep it away from children and pets and never leave an open container unattended.",
-
-      tools: [
-        "Drain pan",
-        "Gloves",
-        "Shop towels"
-      ]
-    },
-
-    {
-      title:
-        "Remove components blocking access",
-
-      text:
-        "Depending on the exact engine configuration, remove belts, hoses, pulleys or other components that prevent access to the water pump. Take photographs before removing parts so their original routing can be referenced during reassembly.",
-
-      warning:
-        "Do not force components that appear stuck. Identify all fasteners and brackets before applying excessive force.",
-
-      tools: [
-        "Socket set",
-        "Wrenches",
-        "Screwdrivers",
-        "Camera or phone for reference photos"
-      ]
-    },
-
-    {
-      title:
-        "Disconnect the water pump hoses",
-
-      text:
-        "Identify and disconnect the hoses attached to the water pump. Work carefully around old rubber hoses and clamps because aged components may be brittle.",
-
-      warning:
-        "Residual coolant may remain inside the hoses and pump housing.",
-
-      tools: [
-        "Pliers",
-        "Screwdriver",
-        "Drain pan",
-        "Shop towels"
-      ]
-    },
-
-    {
-      title:
-        "Remove the water pump",
-
-      text:
-        "Locate all water-pump mounting fasteners and remove them carefully. Keep track of the location and length of each fastener. Once all fasteners are removed, separate the pump from the engine.",
-
-      warning:
-        "Do not pry against sealing surfaces in a way that could damage the engine or mounting surface.",
-
-      tools: [
-        "Socket set",
-        "Ratchet",
-        "Extensions",
-        "Torque wrench for reassembly"
-      ]
-    },
-
-    {
-      title:
-        "Clean the mounting surfaces",
-
-      text:
-        "Remove the old gasket material and clean the mating surfaces carefully. The surfaces should be clean and free of old gasket material before installing the replacement pump.",
-
-      warning:
-        "Avoid gouging aluminum or machined sealing surfaces.",
-
-      tools: [
-        "Plastic scraper",
-        "Gasket-removal tools",
-        "Shop towels",
-        "Appropriate cleaning solvent"
-      ]
-    },
-
-    {
-      title:
-        "Prepare the replacement pump",
-
-      text:
-        "Compare the replacement water pump with the original pump before installation. Verify mounting holes, hose connections and pulley or accessory configuration. Make sure the replacement part is correct for the engine.",
-
-      warning:
-        "Do not install a replacement part until you have confirmed that it matches the vehicle and engine configuration.",
-
-      tools: [
-        "Replacement water pump",
-        "New gasket",
-        "Required sealant if specified by the manufacturer"
-      ]
-    },
-
-    {
-      title:
-        "Install the new water pump",
-
-      text:
-        "Position the new gasket and water pump according to the correct service procedure. Install the mounting bolts and tighten them in the proper sequence using the factory torque specification for the exact engine.",
-
-      warning:
-        "Do not guess at torque specifications. Verify the correct specification for the exact engine before final tightening.",
-
-      tools: [
-        "Torque wrench",
-        "Socket set",
-        "Correct replacement gasket"
-      ]
-    },
-
-    {
-      title:
-        "Reconnect hoses and components",
-
-      text:
-        "Reconnect the cooling-system hoses and reinstall the belts, pulleys and any other components that were removed. Compare your work with the photographs you took before disassembly.",
-
-      warning:
-        "Make sure belts are routed correctly before starting the engine.",
-
-      tools: [
-        "Socket set",
-        "Wrenches",
-        "Pliers",
-        "Belt-routing reference"
-      ]
-    },
-
-    {
-      title:
-        "Reconnect the battery",
-
-      text:
-        "Reconnect the negative battery cable after all mechanical work has been completed and you have verified that tools and loose parts have been removed from the engine compartment.",
-
-      warning:
-        "Perform a final visual inspection before reconnecting the battery.",
-
-      tools: [
-        "Wrench or socket"
-      ]
-    },
-
-    {
-      title:
-        "Refill the cooling system",
-
-      text:
-        "Fill the cooling system with the correct coolant mixture specified for the vehicle. Follow the proper filling and air-bleeding procedure for the exact engine.",
-
-      warning:
-        "Do not simply assume that every vehicle uses the same coolant type or mixture.",
-
-      tools: [
-        "Correct coolant",
-        "Distilled water if required",
-        "Funnel",
-        "Coolant container"
-      ]
-    },
-
-    {
-      title:
-        "Check for leaks",
-
-      text:
-        "Before operating the vehicle normally, inspect the water pump, hoses and surrounding areas for leaks. Start the engine only when the system is correctly filled and you have verified the correct procedure for the vehicle.",
-
-      warning:
-        "Keep hands, clothing and tools away from moving belts and pulleys while the engine is running.",
-
-      tools: [
-        "Flashlight",
-        "Shop towels",
-        "Coolant"
-      ]
-    },
-
-    {
-      title:
-        "Final inspection",
-
-      text:
-        "Verify coolant level, belt routing, hose connections and temperature behavior. After the vehicle cools again, recheck the coolant level and inspect for signs of leakage.",
-
-      warning:
-        "If the engine overheats, develops a major leak or behaves abnormally, shut it down and diagnose the problem before continuing to operate it.",
-
-      tools: [
-        "Flashlight",
-        "Shop towels"
-      ]
-    }
-
-  ];
-
-
-  /*
-   * CURRENT REPAIR
-   */
-
-  let currentRepair = null;
-  let currentStep = 0;
-  let completedSteps = [];
-
-
-  function showVehicleProjects() {
-
-    document.getElementById("projectTypeSection").classList.add("hidden");
-    document.getElementById("otherProjectsSection").classList.add("hidden");
-
-    document.getElementById("vehicleSetup").classList.remove("hidden");
-    document.getElementById("projectTasksSection").classList.remove("hidden");
-    document.getElementById("projectPartsSection").classList.remove("hidden");
-    document.getElementById("projectNotesSection").classList.remove("hidden");
-    document.getElementById("projectProgressSection").classList.remove("hidden");
-    document.getElementById("repairDatabase").classList.remove("hidden");
-    document.getElementById("historySection").classList.remove("hidden");
-
-    loadProjectDetails();
-    displayProjectTasks();
-    displayProjectParts();
-    updateProjectProgress();
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
-
-
-  function showOtherProjects() {
-
-    document.getElementById("projectTypeSection").classList.add("hidden");
-    document.getElementById("vehicleSetup").classList.add("hidden");
-    document.getElementById("repairDatabase").classList.add("hidden");
-    document.getElementById("categorySection").classList.add("hidden");
-    document.getElementById("guidedRepair").classList.add("hidden");
-    document.getElementById("notesSection").classList.add("hidden");
-    document.getElementById("historySection").classList.add("hidden");
-
-    document.getElementById("projectTasksSection").classList.remove("hidden");
-    document.getElementById("projectPartsSection").classList.remove("hidden");
-    document.getElementById("projectNotesSection").classList.remove("hidden");
-    document.getElementById("projectProgressSection").classList.remove("hidden");
-    document.getElementById("otherProjectsSection").classList.remove("hidden");
-
-    loadProjectDetails();
-    displayProjectTasks();
-    displayProjectParts();
-    updateProjectProgress();
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
-
-
-  function backToProjectType() {
-
-    [
-      "vehicleSetup",
-      "vehicleDisplay",
-      "projectTasksSection",
-      "projectPartsSection",
-      "projectNotesSection",
-      "projectProgressSection",
-      "reassembleSection",
-      "repairDatabase",
-      "categorySection",
-      "guidedRepair",
-      "notesSection",
-      "historySection",
-      "otherProjectsSection"
-    ].forEach(function(id) {
-
-      const el =
-        document.getElementById(id);
-
-      if (el) {
-        el.classList.add("hidden");
-      }
-
-    });
-
-    document
-      .getElementById(
-        "projectTypeSection"
-      )
-      .classList.remove(
-        "hidden"
-      );
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
-
-
-  function openCategory(category) {
-
-    const data =
-      repairDatabase[category];
-
-    if (!data) {
-      return;
-    }
-
-    document
-      .getElementById(
-        "repairDatabase"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "categorySection"
-      )
-      .classList.remove(
-        "hidden"
-      );
-
-    document.getElementById(
-      "categoryTitle"
-    ).textContent =
-      data.title;
-
-    const list =
-      document.getElementById(
-        "repairList"
-      );
-
-    list.innerHTML =
-      "";
-
-    data.repairs.forEach(
-      function(repair) {
-
-        const div =
-          document.createElement(
-            "div"
-          );
-
-        div.className =
-          "repair-card";
-
-        div.innerHTML = `
-          <h3>${repair.title}</h3>
-
-          <p>${repair.description}</p>
-
-          <p>
-            <strong>Difficulty:</strong>
-            ${repair.difficulty}
-          </p>
-
-          <p>
-            <strong>Typical time:</strong>
-            ${repair.time}
-          </p>
-
-          <button onclick="startRepair('${repair.id}')">
-            Start Guided Repair
-          </button>
-        `;
-
-        list.appendChild(
-          div
+      const request =
+        indexedDB.open(
+          DB_NAME,
+          DB_VERSION
         );
 
-      }
-    );
-  }
 
+      request.onupgradeneeded =
+        function(event) {
 
-  function backToDatabase() {
+          const database =
+            event.target.result;
 
-    document
-      .getElementById(
-        "categorySection"
-      )
-      .classList.add(
-        "hidden"
-      );
 
-    document
-      .getElementById(
-        "repairDatabase"
-      )
-      .classList.remove(
-        "hidden"
-      );
-
-  }
-
-
-  /*
-   * START REPAIR
-   */
-
-  function startRepair(repairId) {
-
-    if (!vehicle) {
-
-      alert(
-        "Please save your vehicle information first."
-      );
-
-      document
-        .getElementById(
-          "vehicleSetup"
-        )
-        .scrollIntoView({
-          behavior: "smooth"
-        });
-
-      return;
-    }
-
-    if (
-      repairId ===
-      "water-pump"
-    ) {
-
-      currentRepair = {
-
-        id:
-          "water-pump",
-
-        title:
-          "Water Pump Replacement",
-
-        steps:
-          waterPumpSteps
-
-      };
-
-    } else {
-
-      alert(
-        "This guided repair is not built yet. The database is ready for us to add it."
-      );
-
-      return;
-    }
-
-    currentStep = 0;
-
-    const saved =
-      JSON.parse(
-        localStorage.getItem(
-          "rebuildAssistProgress"
-        )
-      );
-
-    if (
-      saved &&
-      saved.repairId ===
-        currentRepair.id &&
-      saved.vehicle &&
-      saved.vehicle.year ===
-        vehicle.year &&
-      saved.vehicle.make ===
-        vehicle.make &&
-      saved.vehicle.model ===
-        vehicle.model
-    ) {
-
-      currentStep =
-        saved.currentStep || 0;
-
-      completedSteps =
-        saved.completedSteps || [];
-
-    } else {
-
-      completedSteps =
-        [];
-
-    }
-
-    document
-      .getElementById(
-        "categorySection"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "repairDatabase"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "guidedRepair"
-      )
-      .classList.remove(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "notesSection"
-      )
-      .classList.remove(
-        "hidden"
-      );
-
-    document.getElementById(
-      "repairTitle"
-    ).textContent =
-      "🔧 " +
-      currentRepair.title;
-
-    document.getElementById(
-      "repairVehicleInfo"
-    ).innerHTML =
-      "<strong>Vehicle:</strong> " +
-      vehicle.year +
-      " " +
-      vehicle.make +
-      " " +
-      vehicle.model +
-      "<br>" +
-      "<strong>Engine:</strong> " +
-      (
-        vehicle.engine ||
-        "Not specified"
-      ) +
-      "<br>" +
-      "<strong>Transmission:</strong> " +
-      (
-        vehicle.transmission ||
-        "Not specified"
-      );
-
-    loadRepairNotes();
-
-    const guidedBeginnerToggle =
-      document.getElementById(
-        "guidedBeginnerModeToggle"
-      );
-
-    if (
-      guidedBeginnerToggle
-    ) {
-
-      guidedBeginnerToggle.checked =
-        localStorage.getItem(
-          "rebuildAssistGuidedBeginnerMode"
-        ) === "1";
-
-    }
-
-    displayStep();
-
-    document
-      .getElementById(
-        "guidedRepair"
-      )
-      .scrollIntoView({
-        behavior: "smooth"
-      });
-
-  }
-
-
-  /*
-   * BEGINNER MODE DETAILS
-   */
-
-  const guidedBeginnerDetails = {
-
-    "Prepare the vehicle": `
-      <ol>
-        <li>Park on a flat, solid surface.</li>
-        <li>Put the transmission in Park or in gear.</li>
-        <li>Set the parking brake.</li>
-        <li>Let the engine become completely cold.</li>
-        <li>Open the hood and make sure you have good lighting.</li>
-        <li>Take a photo of the engine compartment before removing anything.</li>
-      </ol>
-
-      <div class="info-box">
-        <strong>📷 Photo reminder:</strong>
-        Take one wide photo of the engine area before you touch anything.
-      </div>
-    `,
-
-    "Disconnect the battery": `
-      <ol>
-        <li>Locate the battery.</li>
-        <li>Find the terminal marked negative or “−”.</li>
-        <li>Use the correct wrench or socket to loosen the negative terminal.</li>
-        <li>Lift the cable off the battery post.</li>
-        <li>Move it aside so it cannot spring back onto the terminal.</li>
-      </ol>
-
-      <div class="warning-box">
-        <strong>⚠️ Easy mistake:</strong>
-        Do not let your wrench bridge between the battery terminal and metal bodywork.
-      </div>
-    `,
-
-    "Drain the cooling system": `
-      <ol>
-        <li>Make sure the engine is completely cold.</li>
-        <li>Place a drain pan under the radiator drain area.</li>
-        <li>Slowly remove the radiator cap only when the system is cold.</li>
-        <li>Open the radiator drain if your vehicle has one.</li>
-        <li>Allow the coolant to drain into the pan.</li>
-        <li>Keep coolant away from children and animals.</li>
-      </ol>
-
-      <div class="info-box">
-        <strong>Tip:</strong>
-        Have shop towels ready. Some coolant usually spills when hoses are removed later.
-      </div>
-    `,
-
-    "Remove components blocking access": `
-      <ol>
-        <li>Look carefully at everything between you and the water pump.</li>
-        <li>Take several photos before removing anything.</li>
-        <li>Photograph belt routing, brackets, hoses and wiring.</li>
-        <li>Remove only the components needed to reach the pump.</li>
-        <li>Put bolts from each component in a separate labeled bag or container.</li>
-      </ol>
-
-      <div class="info-box">
-        <strong>📷 Photo reminder:</strong>
-        Get a close photo of belt routing and bracket positions.
-      </div>
-    `,
-
-    "Disconnect the water pump hoses": `
-      <ol>
-        <li>Take a photo showing exactly where each hose connects.</li>
-        <li>Move the hose clamps away from the pump connection.</li>
-        <li>Gently twist the hose to break it loose.</li>
-        <li>Do not pull hard on an old or brittle hose.</li>
-        <li>Keep the drain pan underneath because more coolant may come out.</li>
-      </ol>
-    `,
-
-    "Remove the water pump": `
-      <ol>
-        <li>Take a clear photo of all water-pump bolts before removal.</li>
-        <li>Loosen the mounting bolts.</li>
-        <li>Keep track of where every bolt came from.</li>
-        <li>Some bolts may be different lengths, so label their locations.</li>
-        <li>Once every bolt is removed, gently separate the pump from the engine.</li>
-        <li>Do not pry against a machined sealing surface.</li>
-      </ol>
-
-      <div class="info-box">
-        <strong>Bag and label:</strong>
-        Put the pump bolts in a labeled bag. If lengths differ, note each bolt location.
-      </div>
-    `,
-
-    "Clean the mounting surfaces": `
-      <ol>
-        <li>Cover openings where debris could fall inside the engine.</li>
-        <li>Carefully remove the old gasket material.</li>
-        <li>Use a plastic scraper whenever possible.</li>
-        <li>Do not gouge or scratch the sealing surface.</li>
-        <li>Wipe the area clean before installing the new pump.</li>
-      </ol>
-    `,
-
-    "Prepare the replacement pump": `
-      <ol>
-        <li>Place the old and new pumps next to each other.</li>
-        <li>Compare the mounting holes.</li>
-        <li>Compare hose connections.</li>
-        <li>Compare pulley and accessory mounting points.</li>
-        <li>Confirm the gasket matches.</li>
-        <li>Do not install the new pump if something does not match.</li>
-      </ol>
-    `,
-
-    "Install the new water pump": `
-      <ol>
-        <li>Position the new gasket correctly.</li>
-        <li>Place the new pump against the engine without disturbing the gasket.</li>
-        <li>Start all bolts by hand before tightening any of them.</li>
-        <li>Make sure the pump sits evenly against the mounting surface.</li>
-        <li>Tighten the bolts gradually.</li>
-        <li>Use the correct factory torque specification for your exact engine.</li>
-      </ol>
-
-      <div class="warning-box">
-        <strong>⚠️ Do not guess torque:</strong>
-        Use the factory specification for the exact engine.
-      </div>
-    `,
-
-    "Reconnect hoses and components": `
-      <ol>
-        <li>Use your earlier photos as a reference.</li>
-        <li>Reconnect the water-pump hoses.</li>
-        <li>Return the hose clamps to their proper positions.</li>
-        <li>Reinstall brackets, pulleys and other removed parts.</li>
-        <li>Route belts exactly as they were originally installed.</li>
-        <li>Make sure no wires or hoses are trapped or pinched.</li>
-      </ol>
-    `,
-
-    "Reconnect the battery": `
-      <ol>
-        <li>Check the engine compartment for forgotten tools.</li>
-        <li>Make sure all loose parts have been removed.</li>
-        <li>Place the negative battery cable back onto the negative terminal.</li>
-        <li>Tighten the connection securely without overtightening it.</li>
-      </ol>
-    `,
-
-    "Refill the cooling system": `
-      <ol>
-        <li>Confirm all drain points are closed.</li>
-        <li>Use the correct coolant specified for the vehicle.</li>
-        <li>Fill the system slowly.</li>
-        <li>Follow the correct air-bleeding procedure for the exact engine.</li>
-        <li>Watch for leaks while filling.</li>
-      </ol>
-    `,
-
-    "Check for leaks": `
-      <ol>
-        <li>Look underneath the vehicle before starting the engine.</li>
-        <li>Check around the water pump and hose connections.</li>
-        <li>Start the engine only after the cooling system is properly filled.</li>
-        <li>Keep hands and clothing away from moving belts and pulleys.</li>
-        <li>Watch carefully for coolant leaks.</li>
-      </ol>
-    `,
-
-    "Final inspection": `
-      <ol>
-        <li>Verify all hoses are secure.</li>
-        <li>Verify the belt is routed correctly.</li>
-        <li>Watch the engine temperature.</li>
-        <li>Check again for leaks.</li>
-        <li>After the engine cools completely, recheck the coolant level.</li>
-      </ol>
-    `
-
-  };
-
-
-  function toggleGuidedBeginnerMode() {
-
-    const toggle =
-      document.getElementById(
-        "guidedBeginnerModeToggle"
-      );
-
-    if (toggle) {
-
-      localStorage.setItem(
-        "rebuildAssistGuidedBeginnerMode",
-        toggle.checked
-          ? "1"
-          : "0"
-      );
-
-    }
-
-    displayStep();
-  }
-
-
-  /*
-   * DISPLAY STEP
-   */
-
-  function displayStep() {
-
-    if (!currentRepair) {
-      return;
-    }
-
-    const total =
-      currentRepair.steps.length;
-
-    const step =
-      currentRepair.steps[
-        currentStep
-      ];
-
-    const beginnerMode =
-      document.getElementById(
-        "guidedBeginnerModeToggle"
-      )?.checked || false;
-
-    const beginnerHTML =
-      beginnerMode
-
-        ? `
-          <div
-            class="beginner-mode-box"
-            style="margin-top:18px;"
-          >
-            <strong>
-              👣 Beginner Mode — Detailed Instructions
-            </strong>
-
-            ${
-              guidedBeginnerDetails[
-                step.title
-              ] ||
-              "<p>Follow the normal instructions carefully. Take reference photos before removing parts, label fasteners, and stop if anything does not match your vehicle.</p>"
-            }
-          </div>
-        `
-
-        : "";
-
-    document.getElementById(
-      "stepContent"
-    ).innerHTML = `
-
-      <div>
-        <span class="step-number">
-          ${currentStep + 1}
-        </span>
-
-        <span class="step-title">
-          ${step.title}
-        </span>
-      </div>
-
-      <div class="step-text">
-        ${step.text}
-      </div>
-
-      ${beginnerHTML}
-
-      ${
-        step.warning
-
-          ? `
-            <div class="warning-box">
-              <strong>⚠️ Warning</strong>
-              <p>${step.warning}</p>
-            </div>
-          `
-
-          : ""
-      }
-
-      <div class="tools-box">
-        <strong>🛠️ Tools / Supplies</strong>
-
-        <ul>
-          ${
-            step.tools
-              .map(
-                function(tool) {
-                  return (
-                    "<li>" +
-                    tool +
-                    "</li>"
-                  );
-                }
+          if (
+            !database
+              .objectStoreNames
+              .contains(
+                PROJECT_STORE
               )
-              .join("")
+          ) {
+
+            database
+              .createObjectStore(
+                PROJECT_STORE,
+                {
+                  keyPath: "id"
+                }
+              );
+
           }
-        </ul>
-      </div>
-    `;
-
-    const percent =
-      (
-        (
-          currentStep + 1
-        ) /
-        total
-      ) * 100;
-
-    document.getElementById(
-      "progressBar"
-    ).style.width =
-      percent + "%";
-
-    document.getElementById(
-      "progressText"
-    ).textContent =
-      "Step " +
-      (
-        currentStep + 1
-      ) +
-      " of " +
-      total +
-      " • " +
-      Math.round(
-        percent
-      ) +
-      "%";
-
-    document.getElementById(
-      "stepComplete"
-    ).checked =
-      completedSteps.includes(
-        currentStep
-      );
-
-    saveProgress();
-  }
 
 
-  /*
-   * COMPLETE STEP
-   */
+          if (
+            !database
+              .objectStoreNames
+              .contains(
+                ASSET_STORE
+              )
+          ) {
 
-  function markStepComplete() {
+            database
+              .createObjectStore(
+                ASSET_STORE,
+                {
+                  keyPath: "id"
+                }
+              );
 
-    const checkbox =
-      document.getElementById(
-        "stepComplete"
-      );
-
-    if (
-      checkbox.checked
-    ) {
-
-      if (
-        !completedSteps.includes(
-          currentStep
-        )
-      ) {
-
-        completedSteps.push(
-          currentStep
-        );
-
-      }
-
-    } else {
-
-      completedSteps =
-        completedSteps.filter(
-          function(step) {
-            return (
-              step !==
-              currentStep
-            );
           }
-        );
 
-    }
+        };
 
-    saveProgress();
-  }
 
+      request.onsuccess =
+        function(event) {
 
-  /*
-   * NEXT STEP
-   */
+          db =
+            event.target.result;
 
-  function nextStep() {
+          resolve(db);
 
-    if (
-      !document.getElementById(
-        "stepComplete"
-      ).checked
-    ) {
+        };
 
-      const proceed =
-        confirm(
-          "You have not marked this step complete. Continue anyway?"
-        );
 
-      if (!proceed) {
-        return;
-      }
-
-    }
-
-    if (
-      currentStep <
-      currentRepair.steps.length - 1
-    ) {
-
-      currentStep++;
-
-      displayStep();
-
-      return;
-    }
-
-    finishRepair();
-  }
-
-
-  /*
-   * PREVIOUS STEP
-   */
-
-  function previousStep() {
-
-    if (
-      currentStep > 0
-    ) {
-
-      currentStep--;
-
-      displayStep();
-
-    }
-  }
-
-
-  /*
-   * SAVE PROGRESS
-   */
-
-  function saveProgress() {
-
-    if (
-      !currentRepair ||
-      !vehicle
-    ) {
-      return;
-    }
-
-    const progress = {
-
-      repairId:
-        currentRepair.id,
-
-      repairTitle:
-        currentRepair.title,
-
-      vehicle:
-        vehicle,
-
-      currentStep:
-        currentStep,
-
-      completedSteps:
-        completedSteps,
-
-      updated:
-        new Date()
-          .toLocaleString()
-
-    };
-
-    localStorage.setItem(
-      "rebuildAssistProgress",
-      JSON.stringify(
-        progress
-      )
-    );
-  }
-
-
-  /*
-   * FINISH REPAIR
-   */
-
-  function finishRepair() {
-
-    const history =
-      JSON.parse(
-        localStorage.getItem(
-          "rebuildAssistHistory"
-        )
-      ) || [];
-
-    history.push({
-
-      repairId:
-        currentRepair.id,
-
-      repairTitle:
-        currentRepair.title,
-
-      vehicle:
-        vehicle.year +
-        " " +
-        vehicle.make +
-        " " +
-        vehicle.model,
-
-      date:
-        new Date()
-          .toLocaleString()
-
-    });
-
-    localStorage.setItem(
-      "rebuildAssistHistory",
-      JSON.stringify(
-        history
-      )
-    );
-
-    localStorage.removeItem(
-      "rebuildAssistProgress"
-    );
-
-    alert(
-      "🎉 Repair completed! Rebuild Assistant has added it to your repair history."
-    );
-
-    currentRepair =
-      null;
-
-    document
-      .getElementById(
-        "guidedRepair"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "notesSection"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "repairDatabase"
-      )
-      .classList.remove(
-        "hidden"
-      );
-
-    displayHistory();
-  }
-
-
-  /*
-   * EXIT REPAIR
-   */
-
-  function exitRepair() {
-
-    saveProgress();
-
-    currentRepair =
-      null;
-
-    document
-      .getElementById(
-        "guidedRepair"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "notesSection"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "repairDatabase"
-      )
-      .classList.remove(
-        "hidden"
-      );
-  }
-
-
-  /*
-   * REPAIR NOTES
-   */
-
-  function saveRepairNotes() {
-
-    if (!currentRepair) {
-      return;
-    }
-
-    const notes =
-      document.getElementById(
-        "repairNotes"
-      ).value;
-
-    localStorage.setItem(
-      "repairNotes_" +
-      currentRepair.id,
-      notes
-    );
-
-    const message =
-      document.getElementById(
-        "notesMessage"
-      );
-
-    message.classList.remove(
-      "hidden"
-    );
-
-    setTimeout(
-      function() {
-
-        message.classList.add(
-          "hidden"
-        );
-
-      },
-      2000
-    );
-  }
-
-
-  function loadRepairNotes() {
-
-    if (!currentRepair) {
-      return;
-    }
-
-    const notes =
-      localStorage.getItem(
-        "repairNotes_" +
-        currentRepair.id
-      );
-
-    document.getElementById(
-      "repairNotes"
-    ).value =
-      notes || "";
-  }
-
-
-  /*
-   * HISTORY
-   */
-
-  function displayHistory() {
-
-    const history =
-      JSON.parse(
-        localStorage.getItem(
-          "rebuildAssistHistory"
-        )
-      ) || [];
-
-    const container =
-      document.getElementById(
-        "repairHistory"
-      );
-
-    if (
-      history.length === 0
-    ) {
-
-      container.innerHTML =
-        "<p>No repairs have been completed yet.</p>";
-
-      return;
-    }
-
-    container.innerHTML =
-      "";
-
-    history
-      .slice()
-      .reverse()
-      .forEach(
-        function(item) {
-
-          const div =
-            document.createElement(
-              "div"
-            );
-
-          div.className =
-            "history-item";
-
-          div.innerHTML =
-            "<strong>" +
-            item.repairTitle +
-            "</strong><br>" +
-            item.vehicle +
-            "<br>" +
-            "<span class='status-complete'>" +
-            "Completed: " +
-            item.date +
-            "</span>";
-
-          container.appendChild(
-            div
-          );
-        }
-      );
-  }
-
-
-  /*
-   * PROJECT TASKS + PHOTOS
-   */
-
-  let projectTasks =
-    JSON.parse(
-      localStorage.getItem(
-        "rebuildAssistProjectTasks"
-      )
-    ) || [];
-
-
-  let projectParts =
-    JSON.parse(
-      localStorage.getItem(
-        "rebuildAssistProjectParts"
-      ) || "[]"
-    );
-
-
-  function loadProjectDetails() {
-
-    const name =
-      localStorage.getItem(
-        "rebuildAssistProjectName"
-      ) || "";
-
-    const nameInput =
-      document.getElementById(
-        "projectName"
-      );
-
-    if (nameInput) {
-      nameInput.value =
-        name;
-    }
-
-    const otherNameInput =
-      document.getElementById(
-        "otherProjectName"
-      );
-
-    if (
-      otherNameInput
-    ) {
-      otherNameInput.value =
-        name;
-    }
-
-    const notes =
-      localStorage.getItem(
-        "rebuildAssistProjectNotes"
-      ) || "";
-
-    const notesInput =
-      document.getElementById(
-        "projectNotes"
-      );
-
-    if (
-      notesInput
-    ) {
-      notesInput.value =
-        notes;
-    }
-  }
-
-
-  function saveProjectDetails() {
-
-    const input =
-      document.getElementById(
-        "projectName"
-      );
-
-    if (input) {
-
-      localStorage.setItem(
-        "rebuildAssistProjectName",
-        input.value.trim()
-      );
-
-    }
-  }
-
-
-  function startOtherProject() {
-
-    const input =
-      document.getElementById(
-        "otherProjectName"
-      );
-
-    if (!input) {
-      return;
-    }
-
-    const name =
-      input.value.trim();
-
-    if (!name) {
-
-      alert(
-        "Please enter a project name first."
-      );
-
-      input.focus();
-
-      return;
-    }
-
-    localStorage.setItem(
-      "rebuildAssistProjectName",
-      name
-    );
-
-    loadProjectDetails();
-
-    document
-      .getElementById(
-        "projectTasksSection"
-      )
-      .scrollIntoView({
-        behavior: "smooth"
-      });
-  }
-
-
-  function saveProjectNotes() {
-
-    const input =
-      document.getElementById(
-        "projectNotes"
-      );
-
-    if (!input) {
-      return;
-    }
-
-    localStorage.setItem(
-      "rebuildAssistProjectNotes",
-      input.value
-    );
-
-    const message =
-      document.getElementById(
-        "projectNotesMessage"
-      );
-
-    if (message) {
-
-      message.classList.remove(
-        "hidden"
-      );
-
-      setTimeout(
+      request.onerror =
         function() {
 
-          message.classList.add(
-            "hidden"
+          reject(
+            request.error
           );
 
-        },
-        2000
-      );
-    }
-  }
+        };
 
-
-  function saveProjectParts() {
-
-    localStorage.setItem(
-      "rebuildAssistProjectParts",
-      JSON.stringify(
-        projectParts
-      )
-    );
-  }
-
-
-  function addProjectPart() {
-
-    const input =
-      document.getElementById(
-        "partInput"
-      );
-
-    const name =
-      input.value.trim();
-
-    if (!name) {
-
-      alert(
-        "Please enter a part first."
-      );
-
-      return;
-    }
-
-    projectParts.push({
-      id: Date.now(),
-      name: name,
-      installed: false
-    });
-
-    input.value =
-      "";
-
-    saveProjectParts();
-    displayProjectParts();
-    updateProjectProgress();
-  }
-
-
-  function toggleProjectPart(
-    partId
-  ) {
-
-    const part =
-      projectParts.find(
-        function(item) {
-          return (
-            item.id ===
-            partId
-          );
-        }
-      );
-
-    if (!part) {
-      return;
-    }
-
-    part.installed =
-      !part.installed;
-
-    saveProjectParts();
-    displayProjectParts();
-    updateProjectProgress();
-  }
-
-
-  function deleteProjectPart(
-    partId
-  ) {
-
-    if (
-      !confirm(
-        "Delete this part?"
-      )
-    ) {
-      return;
-    }
-
-    projectParts =
-      projectParts.filter(
-        function(item) {
-          return (
-            item.id !==
-            partId
-          );
-        }
-      );
-
-    saveProjectParts();
-    displayProjectParts();
-    updateProjectProgress();
-  }
-
-
-  let editingProjectPartId =
-    null;
-
-
-  function editProjectPart(
-    partId
-  ) {
-
-    const part =
-      projectParts.find(
-        function(item) {
-          return (
-            item.id ===
-            partId
-          );
-        }
-      );
-
-    if (!part) {
-      return;
-    }
-
-    editingProjectPartId =
-      partId;
-
-    const input =
-      document.getElementById(
-        "editPartNameInput"
-      );
-
-    const modal =
-      document.getElementById(
-        "editPartModal"
-      );
-
-    if (
-      !input ||
-      !modal
-    ) {
-      return;
-    }
-
-    input.value =
-      part.name || "";
-
-    modal.style.display =
-      "block";
-
-    setTimeout(
-      function() {
-
-        input.focus();
-        input.select();
-
-      },
-      0
-    );
-  }
-
-
-  function saveEditedProjectPart() {
-
-    if (
-      editingProjectPartId ===
-      null
-    ) {
-      return;
-    }
-
-    const part =
-      projectParts.find(
-        function(item) {
-          return (
-            item.id ===
-            editingProjectPartId
-          );
-        }
-      );
-
-    const input =
-      document.getElementById(
-        "editPartNameInput"
-      );
-
-    if (
-      !part ||
-      !input
-    ) {
-
-      closeEditPart();
-
-      return;
-    }
-
-    const name =
-      input.value.trim();
-
-    if (!name) {
-
-      alert(
-        "The part name cannot be blank."
-      );
-
-      input.focus();
-
-      return;
-    }
-
-    part.name =
-      name;
-
-    saveProjectParts();
-    displayProjectParts();
-    closeEditPart();
-  }
-
-
-  function closeEditPart() {
-
-    const modal =
-      document.getElementById(
-        "editPartModal"
-      );
-
-    if (modal) {
-
-      modal.style.display =
-        "none";
-
-    }
-
-    editingProjectPartId =
-      null;
-  }
-
-
-  function displayProjectParts() {
-
-    const container =
-      document.getElementById(
-        "projectPartList"
-      );
-
-    if (!container) {
-      return;
-    }
-
-    if (
-      projectParts.length ===
-      0
-    ) {
-
-      container.innerHTML =
-        '<p class="task-empty">No project parts yet.</p>';
-
-      return;
-    }
-
-    container.innerHTML =
-      "";
-
-    projectParts.forEach(
-      function(part) {
-
-        const row =
-          document.createElement(
-            "div"
-          );
-
-        row.className =
-          "project-part" +
-          (
-            part.installed
-              ? " installed"
-              : ""
-          );
-
-        row.innerHTML =
-          '<span class="part-name">' +
-          escapeHtml(
-            part.name
-          ) +
-          "</span>" +
-          "<span>" +
-          '<button onclick="toggleProjectPart(' +
-          part.id +
-          ')">' +
-          (
-            part.installed
-              ? "↩ Not Installed"
-              : "✓ Installed"
-          ) +
-          "</button>" +
-          '<button type="button" onclick="editProjectPart(' +
-          part.id +
-          ')">' +
-          "✏️ Edit Part" +
-          "</button>" +
-          '<button class="danger" onclick="deleteProjectPart(' +
-          part.id +
-          ')">' +
-          "Delete" +
-          "</button>" +
-          "</span>";
-
-        container.appendChild(
-          row
-        );
-
-      }
-    );
-  }
-
-
-  function updateProjectProgress() {
-
-    const taskCount =
-      projectTasks.length;
-
-    const completedTasks =
-      projectTasks.filter(
-        function(task) {
-          return (
-            task.completed
-          );
-        }
-      ).length;
-
-    const partCount =
-      projectParts.length;
-
-    const installedParts =
-      projectParts.filter(
-        function(part) {
-          return (
-            part.installed
-          );
-        }
-      ).length;
-
-    const total =
-      taskCount +
-      partCount;
-
-    const done =
-      completedTasks +
-      installedParts;
-
-    const percent =
-      total
-        ? Math.round(
-            (
-              done /
-              total
-            ) *
-            100
-          )
-        : 0;
-
-    const bar =
-      document.getElementById(
-        "projectProgressBar"
-      );
-
-    const text =
-      document.getElementById(
-        "projectProgressText"
-      );
-
-    if (bar) {
-      bar.style.width =
-        percent + "%";
-    }
-
-    if (text) {
-
-      text.textContent =
-        percent +
-        "% complete — " +
-        completedTasks +
-        "/" +
-        taskCount +
-        " tasks and " +
-        installedParts +
-        "/" +
-        partCount +
-        " parts complete";
-
-    }
-  }
-
-
-  function saveProjectTasks() {
-
-    localStorage.setItem(
-      "rebuildAssistProjectTasks",
-      JSON.stringify(
-        projectTasks
-      )
-    );
-  }
-
-
-  function addProjectTask() {
-
-    const input =
-      document.getElementById(
-        "taskInput"
-      );
-
-    const title =
-      input.value.trim();
-
-    if (!title) {
-
-      alert(
-        "Please enter a task first."
-      );
-
-      return;
-    }
-
-    const notesInput =
-      document.getElementById(
-        "taskNotesInput"
-      );
-
-    const taskNotes =
-      notesInput
-        ? notesInput.value.trim()
-        : "";
-
-    projectTasks.push({
-
-      id:
-        Date.now(),
-
-      title:
-        title,
-
-      notes:
-        taskNotes,
-
-      completed:
-        false,
-
-      photos:
-        []
-
-    });
-
-    input.value =
-      "";
-
-    if (notesInput) {
-      notesInput.value =
-        "";
-    }
-
-    saveProjectTasks();
-    displayProjectTasks();
-    updateProjectProgress();
-  }
-
-
-  function toggleProjectTask(
-    taskId
-  ) {
-
-    const task =
-      projectTasks.find(
-        function(item) {
-          return (
-            item.id ===
-            taskId
-          );
-        }
-      );
-
-    if (!task) {
-      return;
-    }
-
-    task.completed =
-      !task.completed;
-
-    saveProjectTasks();
-    displayProjectTasks();
-    updateProjectProgress();
-  }
-
-
-  let editingProjectTaskId =
-    null;
-
-
-  function editProjectTask(
-    taskId
-  ) {
-
-    const task =
-      projectTasks.find(
-        function(item) {
-          return (
-            item.id ===
-            taskId
-          );
-        }
-      );
-
-    if (!task) {
-      return;
-    }
-
-    editingProjectTaskId =
-      taskId;
-
-    const titleInput =
-      document.getElementById(
-        "editTaskTitleInput"
-      );
-
-    const notesInput =
-      document.getElementById(
-        "editTaskNotesInput"
-      );
-
-    const modal =
-      document.getElementById(
-        "editTaskModal"
-      );
-
-    titleInput.value =
-      task.title || "";
-
-    notesInput.value =
-      task.notes || "";
-
-    modal.style.display =
-      "block";
-
-    setTimeout(
-      function() {
-
-        titleInput.focus();
-        titleInput.select();
-
-      },
-      50
-    );
-  }
-
-
-  function saveEditedProjectTask() {
-
-    if (
-      editingProjectTaskId ===
-      null
-    ) {
-      return;
-    }
-
-    const task =
-      projectTasks.find(
-        function(item) {
-          return (
-            item.id ===
-            editingProjectTaskId
-          );
-        }
-      );
-
-    if (!task) {
-
-      closeEditTask();
-
-      return;
-    }
-
-    const titleInput =
-      document.getElementById(
-        "editTaskTitleInput"
-      );
-
-    const notesInput =
-      document.getElementById(
-        "editTaskNotesInput"
-      );
-
-    const title =
-      titleInput.value.trim();
-
-    if (!title) {
-
-      alert(
-        "The task name cannot be blank."
-      );
-
-      titleInput.focus();
-
-      return;
-    }
-
-    task.title =
-      title;
-
-    task.notes =
-      notesInput.value.trim();
-
-    saveProjectTasks();
-    displayProjectTasks();
-    closeEditTask();
-  }
-
-
-  function closeEditTask() {
-
-    const modal =
-      document.getElementById(
-        "editTaskModal"
-      );
-
-    if (modal) {
-
-      modal.style.display =
-        "none";
-
-    }
-
-    editingProjectTaskId =
-      null;
-  }
-
-
-  document.addEventListener(
-    "keydown",
-    function(event) {
-
-      if (
-        event.key ===
-        "Escape"
-      ) {
-
-        closeEditTask();
-        closeEditPart();
-
-      }
     }
   );
 
-
-  function deleteProjectTask(
-    taskId
-  ) {
-
-    const task =
-      projectTasks.find(
-        function(item) {
-          return (
-            item.id ===
-            taskId
-          );
-        }
-      );
-
-    if (!task) {
-      return;
-    }
-
-    if (
-      !confirm(
-        "Delete this task and its photos?"
-      )
-    ) {
-      return;
-    }
-
-    projectTasks =
-      projectTasks.filter(
-        function(item) {
-          return (
-            item.id !==
-            taskId
-          );
-        }
-      );
-
-    saveProjectTasks();
-    displayProjectTasks();
-    updateProjectProgress();
-  }
+}
 
 
-  function addTaskPhoto(
-    taskId,
-    inputElement
-  ) {
 
-    const file =
-      inputElement.files[0];
+function getProject(projectId) {
 
-    if (!file) {
-      return;
-    }
+  return new Promise(
+    function(resolve, reject) {
 
-    if (
-      !file.type.startsWith(
-        "image/"
-      )
-    ) {
-
-      alert(
-        "Please choose an image file."
-      );
-
-      inputElement.value =
-        "";
-
-      return;
-    }
-
-    const reader =
-      new FileReader();
-
-    reader.onload =
-      function(event) {
-
-        const task =
-          projectTasks.find(
-            function(item) {
-              return (
-                item.id ===
-                taskId
-              );
-            }
-          );
-
-        if (!task) {
-          return;
-        }
-
-        task.photos =
-          task.photos || [];
-
-        task.photos.push(
-          event.target.result
+      const transaction =
+        db.transaction(
+          PROJECT_STORE,
+          "readonly"
         );
 
-        saveProjectTasks();
-        displayProjectTasks();
+      const request =
+        transaction
+          .objectStore(
+            PROJECT_STORE
+          )
+          .get(
+            projectId
+          );
 
-      };
 
-    reader.readAsDataURL(
-      file
+      request.onsuccess =
+        function() {
+
+          resolve(
+            request.result ||
+            null
+          );
+
+        };
+
+
+      request.onerror =
+        function() {
+
+          reject(
+            request.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+
+function getAllProjects() {
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const transaction =
+        db.transaction(
+          PROJECT_STORE,
+          "readonly"
+        );
+
+      const request =
+        transaction
+          .objectStore(
+            PROJECT_STORE
+          )
+          .getAll();
+
+
+      request.onsuccess =
+        function() {
+
+          resolve(
+            request.result ||
+            []
+          );
+
+        };
+
+
+      request.onerror =
+        function() {
+
+          reject(
+            request.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+
+function putProject(project) {
+
+  project.updatedAt =
+    new Date()
+      .toISOString();
+
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const transaction =
+        db.transaction(
+          PROJECT_STORE,
+          "readwrite"
+        );
+
+      const request =
+        transaction
+          .objectStore(
+            PROJECT_STORE
+          )
+          .put(
+            project
+          );
+
+
+      request.onsuccess =
+        function() {
+
+          resolve();
+
+        };
+
+
+      request.onerror =
+        function() {
+
+          reject(
+            request.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+
+function deleteProjectRecord(
+  projectId
+) {
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const transaction =
+        db.transaction(
+          PROJECT_STORE,
+          "readwrite"
+        );
+
+      const request =
+        transaction
+          .objectStore(
+            PROJECT_STORE
+          )
+          .delete(
+            projectId
+          );
+
+
+      request.onsuccess =
+        function() {
+
+          resolve();
+
+        };
+
+
+      request.onerror =
+        function() {
+
+          reject(
+            request.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+
+function putAsset(
+  blob,
+  meta = {}
+) {
+
+  const asset = {
+
+    id:
+      makeId(
+        "asset"
+      ),
+
+    blob:
+      blob,
+
+    meta:
+      meta,
+
+    createdAt:
+      new Date()
+        .toISOString()
+
+  };
+
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const transaction =
+        db.transaction(
+          ASSET_STORE,
+          "readwrite"
+        );
+
+      const request =
+        transaction
+          .objectStore(
+            ASSET_STORE
+          )
+          .put(
+            asset
+          );
+
+
+      request.onsuccess =
+        function() {
+
+          resolve(
+            asset.id
+          );
+
+        };
+
+
+      request.onerror =
+        function() {
+
+          reject(
+            request.error
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+
+function getAsset(assetId) {
+
+  if (!assetId) {
+
+    return Promise.resolve(
+      null
     );
 
-    inputElement.value =
-      "";
   }
 
 
-  function deleteTaskPhoto(
-    taskId,
-    photoIndex
-  ) {
+  return new Promise(
+    function(resolve, reject) {
 
-    const task =
-      projectTasks.find(
-        function(item) {
-          return (
-            item.id ===
-            taskId
+      const transaction =
+        db.transaction(
+          ASSET_STORE,
+          "readonly"
+        );
+
+      const request =
+        transaction
+          .objectStore(
+            ASSET_STORE
+          )
+          .get(
+            assetId
           );
-        }
-      );
 
-    if (
-      !task ||
-      !task.photos
-    ) {
-      return;
+
+      request.onsuccess =
+        function() {
+
+          resolve(
+            request.result ||
+            null
+          );
+
+        };
+
+
+      request.onerror =
+        function() {
+
+          reject(
+            request.error
+          );
+
+        };
+
     }
+  );
 
-    if (
-      !confirm(
-        "Delete this photo?"
-      )
-    ) {
-      return;
-    }
+}
 
-    task.photos.splice(
-      photoIndex,
-      1
-    );
 
-    saveProjectTasks();
-    displayProjectTasks();
+
+function deleteAsset(assetId) {
+
+  if (!assetId) {
+
+    return Promise.resolve();
+
   }
 
 
-  function displayProjectTasks() {
+  return new Promise(
+    function(resolve, reject) {
 
-    const container =
-      document.getElementById(
-        "projectTaskList"
-      );
+      const transaction =
+        db.transaction(
+          ASSET_STORE,
+          "readwrite"
+        );
 
-    if (!container) {
-      return;
-    }
-
-    if (
-      projectTasks.length ===
-      0
-    ) {
-
-      container.innerHTML =
-        '<p class="task-empty">No project tasks yet.</p>';
-
-      return;
-    }
-
-    container.innerHTML =
-      "";
-
-    projectTasks.forEach(
-      function(task) {
-
-        const div =
-          document.createElement(
-            "div"
+      const request =
+        transaction
+          .objectStore(
+            ASSET_STORE
+          )
+          .delete(
+            assetId
           );
 
-        div.className =
-          "project-task" +
-          (
-            task.completed
-              ? " completed"
-              : ""
+
+      request.onsuccess =
+        function() {
+
+          resolve();
+
+        };
+
+
+      request.onerror =
+        function() {
+
+          reject(
+            request.error
           );
 
-        let photosHTML =
+        };
+
+    }
+  );
+
+}
+
+
+
+let currentProject =
+  null;
+
+let currentTab =
+  "disassembly";
+
+let activeObjectUrls =
+  [];
+
+let pendingStepAudioBlob =
+  null;
+
+let pendingGeneralAudioBlob =
+  null;
+
+let currentPhotoAudioBlob =
+  null;
+
+let mediaRecorder =
+  null;
+
+let mediaChunks =
+  [];
+
+let recordingStream =
+  null;
+
+let recordingTarget =
+  null;
+
+let liveRecognition =
+  null;
+
+let liveRecognitionStartingText =
+  "";
+
+let liveRecognitionFinalText =
+  "";
+
+let liveRecognitionTextareaId =
+  null;
+
+let currentPhotoContext =
+  null;
+
+
+
+function newProject(name) {
+
+  return {
+
+    id:
+      makeId(
+        "project"
+      ),
+
+    name:
+      name.trim(),
+
+    createdAt:
+      new Date()
+        .toISOString(),
+
+    updatedAt:
+      new Date()
+        .toISOString(),
+
+    notes:
+      "",
+
+    steps:
+      [],
+
+    tasks:
+      [],
+
+    parts:
+      [],
+
+    voiceNotes:
+      []
+
+  };
+
+}
+
+
+
+function normalizeProject() {
+
+  currentProject.notes =
+    currentProject.notes ||
+    "";
+
+  currentProject.steps =
+    currentProject.steps ||
+    [];
+
+  currentProject.tasks =
+    currentProject.tasks ||
+    [];
+
+  currentProject.parts =
+    currentProject.parts ||
+    [];
+
+  currentProject.voiceNotes =
+    currentProject.voiceNotes ||
+    [];
+
+
+  currentProject.steps
+    .forEach(
+      function(step) {
+
+        step.photos =
+          step.photos ||
+          [];
+
+        step.reassembled =
+          !!step.reassembled;
+
+        step.notes =
+          step.notes ||
           "";
 
-        if (
-          task.photos &&
-          task.photos.length > 0
-        ) {
-
-          photosHTML =
-            '<div style="margin-top:10px;">' +
-
-            task.photos
-              .map(
-                function(
-                  photo,
-                  index
-                ) {
-
-                  return (
-                    '<span class="task-photo-wrap">' +
-
-                    '<img class="task-photo" src="' +
-                    photo +
-                    '" alt="Photo for ' +
-                    escapeHtml(
-                      task.title
-                    ) +
-                    '">' +
-
-                    '<button class="danger" onclick="deleteTaskPhoto(' +
-                    task.id +
-                    "," +
-                    index +
-                    ')">' +
-
-                    "Delete Photo" +
-
-                    "</button>" +
-
-                    "</span>"
-                  );
-
-                }
-              )
-              .join("") +
-
-            "</div>";
-
-        }
-
-        const notesHTML =
-          task.notes
-
-            ? '<div class="info-box"><strong>Notes:</strong><br>' +
-              escapeHtml(
-                task.notes
-              ).replace(
-                /\n/g,
-                "<br>"
-              ) +
-              "</div>"
-
-            : "";
-
-        let beginnerHTML =
+        step.fasteners =
+          step.fasteners ||
           "";
 
-        if (
-          task.beginnerMode ||
-          task.tools ||
-          task.detailedSteps ||
-          task.warning ||
-          task.photoGuide ||
-          task.reassemblyNotes
-        ) {
+        step.bag =
+          step.bag ||
+          "";
 
-          beginnerHTML +=
-            '<div class="detail-block"><strong>🧰 Tools Needed</strong><br>' +
+      }
+    );
 
-            (
-              task.tools
-                ? escapeHtml(
-                    task.tools
-                  ).replace(
-                    /\n/g,
-                    "<br>"
-                  )
-                : "No tools listed."
-            ) +
+}
 
-            "</div>";
 
-          beginnerHTML +=
-            '<div class="detail-block"><strong>👣 Detailed Instructions</strong><br>' +
 
-            (
-              task.detailedSteps
-                ? escapeHtml(
-                    task.detailedSteps
-                  ).replace(
-                    /\n/g,
-                    "<br>"
-                  )
-                : "No detailed instructions added yet."
-            ) +
+function escapeHtml(value) {
 
-            "</div>";
+  return String(
+    value || ""
+  )
 
-          if (
-            task.warning
-          ) {
+  .replace(
+    /&/g,
+    "&amp;"
+  )
 
-            beginnerHTML +=
-              '<div class="detail-block warning-detail"><strong>⚠️ Warning</strong><br>' +
-              escapeHtml(
-                task.warning
-              ).replace(
-                /\n/g,
-                "<br>"
-              ) +
-              "</div>";
+  .replace(
+    /</g,
+    "&lt;"
+  )
 
-          }
+  .replace(
+    />/g,
+    "&gt;"
+  )
 
-          if (
-            task.photoGuide
-          ) {
+  .replace(
+    /"/g,
+    "&quot;"
+  )
 
-            beginnerHTML +=
-              '<div class="detail-block"><strong>📷 What to Photograph</strong><br>' +
-              escapeHtml(
-                task.photoGuide
-              ).replace(
-                /\n/g,
-                "<br>"
-              ) +
-              "</div>";
+  .replace(
+    /'/g,
+    "&#039;"
+  );
 
-          }
+}
 
-          if (
-            task.reassemblyNotes
-          ) {
 
-            beginnerHTML +=
-              '<div class="detail-block"><strong>🔧 Reassembly Notes</strong><br>' +
-              escapeHtml(
-                task.reassemblyNotes
-              ).replace(
-                /\n/g,
-                "<br>"
-              ) +
-              "</div>";
 
-          }
+function nl(value) {
 
-        }
+  return escapeHtml(
+    value
+  ).replace(
+    /\n/g,
+    "<br>"
+  );
 
-        div.innerHTML =
-          '<div class="project-task-title">' +
-          escapeHtml(
-            task.title
-          ) +
-          "</div>" +
+}
 
-          notesHTML +
 
-          beginnerHTML +
 
-          '<button onclick="toggleProjectTask(' +
-          task.id +
-          ')">' +
+function formatDate(iso) {
 
-          (
-            task.completed
-              ? "↩ Mark Active"
-              : "✓ Mark Complete"
-          ) +
+  try {
 
-          "</button>" +
+    return new Date(
+      iso
+    ).toLocaleString();
 
-          '<button type="button" onclick="editProjectTask(' +
-          task.id +
-          ')">' +
+  }
 
-          "✏️ Edit Task" +
+  catch {
 
-          "</button>" +
+    return "";
 
-          '<label style="display:inline-block;margin:4px 0 0 0;">' +
+  }
 
-          '<input type="file" accept="image/*" capture="environment" ' +
-          'style="display:none;" onchange="addTaskPhoto(' +
-          task.id +
-          ', this)">' +
+}
 
-          '<button type="button" onclick="this.previousElementSibling.click()">' +
 
-          "📷 Add Photo" +
 
-          "</button>" +
+function createObjectUrl(blob) {
 
-          "</label>" +
+  const url =
+    URL.createObjectURL(
+      blob
+    );
 
-          '<button class="danger" onclick="deleteProjectTask(' +
-          task.id +
-          ')">' +
+  activeObjectUrls.push(
+    url
+  );
 
-          "Delete Task" +
+  return url;
 
-          "</button>" +
+}
 
-          photosHTML;
 
-        container.appendChild(
-          div
+
+function releaseObjectUrls() {
+
+  activeObjectUrls
+    .forEach(
+      function(url) {
+
+        URL.revokeObjectURL(
+          url
         );
 
       }
     );
+
+
+  activeObjectUrls =
+    [];
+
+}
+
+
+
+async function saveCurrentProject() {
+
+  if (
+    currentProject
+  ) {
+
+    await putProject(
+      currentProject
+    );
+
+  }
+
+}
+
+
+
+function showOnly(viewId) {
+
+  [
+    "homeView",
+    "newProjectView",
+    "pickerView",
+    "projectView"
+  ]
+
+  .forEach(
+    function(id) {
+
+      document
+        .getElementById(
+          id
+        )
+        .classList
+        .toggle(
+          "hidden",
+          id !== viewId
+        );
+
+    }
+  );
+
+}
+
+
+
+function goHome() {
+
+  stopAnyRecording();
+
+  showOnly(
+    "homeView"
+  );
+
+}
+
+
+
+function showNewProject() {
+
+  showOnly(
+    "newProjectView"
+  );
+
+
+  setTimeout(
+    function() {
+
+      document
+        .getElementById(
+          "newProjectName"
+        )
+        .focus();
+
+    },
+    0
+  );
+
+}
+
+
+
+async function showProjectPicker() {
+
+  stopAnyRecording();
+
+  showOnly(
+    "pickerView"
+  );
+
+  await renderProjectPicker();
+
+}
+
+
+
+async function renderProjectPicker() {
+
+  const container =
+    document.getElementById(
+      "projectPickerList"
+    );
+
+
+  const projects =
+    (
+      await getAllProjects()
+    )
+    .sort(
+      function(a, b) {
+
+        return String(
+          b.updatedAt
+        )
+        .localeCompare(
+          String(
+            a.updatedAt
+          )
+        );
+
+      }
+    );
+
+
+  if (
+    projects.length === 0
+  ) {
+
+    container.innerHTML =
+      '<div class="empty">' +
+      'No saved projects yet.' +
+      '</div>';
+
+    return;
+
   }
 
 
-  /*
-   * REASSEMBLE
-   */
-
-  let reassembleIndex =
-    0;
+  container.innerHTML =
+    "";
 
 
-  function getReassembleTasks() {
+  projects.forEach(
+    function(project) {
 
-    return projectTasks
-      .slice()
-      .reverse();
+      const row =
+        document.createElement(
+          "div"
+        );
+
+      row.className =
+        "project-row";
+
+
+      row.innerHTML =
+        `
+        <div>
+
+          <strong>
+            ${escapeHtml(project.name)}
+          </strong>
+
+          <div class="muted small">
+            Last updated:
+            ${escapeHtml(formatDate(project.updatedAt))}
+          </div>
+
+          <div class="muted small">
+            ${project.steps ? project.steps.length : 0}
+            disassembly steps
+          </div>
+
+        </div>
+
+        <div class="mini-actions">
+
+          <button data-open>
+            Open
+          </button>
+
+          <button
+            class="danger"
+            data-delete>
+            Delete
+          </button>
+
+        </div>
+        `;
+
+
+      container.appendChild(
+        row
+      );
+
+
+      row
+        .querySelector(
+          "[data-open]"
+        )
+        .onclick =
+        function() {
+
+          openProject(
+            project.id
+          );
+
+        };
+
+
+      row
+        .querySelector(
+          "[data-delete]"
+        )
+        .onclick =
+        function() {
+
+          deleteProject(
+            project.id
+          );
+
+        };
+
+    }
+  );
+
+}
+
+
+
+async function createProject() {
+
+  const input =
+    document.getElementById(
+      "newProjectName"
+    );
+
+  const name =
+    input.value.trim();
+
+
+  if (!name) {
+
+    alert(
+      "Please enter a project name."
+    );
+
+    input.focus();
+
+    return;
 
   }
 
 
-  function startReassemble() {
+  const project =
+    newProject(
+      name
+    );
+
+
+  await putProject(
+    project
+  );
+
+
+  input.value =
+    "";
+
+
+  await openProject(
+    project.id
+  );
+
+}
+
+
+
+async function openProject(
+  projectId
+) {
+
+  const project =
+    await getProject(
+      projectId
+    );
+
+
+  if (!project) {
+
+    alert(
+      "That project could not be found."
+    );
+
+    return;
+
+  }
+
+
+  currentProject =
+    project;
+
+
+  normalizeProject();
+
+
+  document
+    .getElementById(
+      "currentProjectName"
+    )
+    .textContent =
+    currentProject.name;
+
+
+  document
+    .getElementById(
+      "projectNotes"
+    )
+    .value =
+    currentProject.notes ||
+    "";
+
+
+  showOnly(
+    "projectView"
+  );
+
+
+  openTab(
+    "disassembly"
+  );
+
+
+  await renderAll();
+
+}
+
+
+
+async function renameCurrentProject() {
+
+  if (
+    !currentProject
+  ) {
+
+    return;
+
+  }
+
+
+  const name =
+    prompt(
+      "Project name:",
+      currentProject.name
+    );
+
+
+  if (
+    name === null
+  ) {
+
+    return;
+
+  }
+
+
+  const clean =
+    name.trim();
+
+
+  if (!clean) {
+
+    alert(
+      "Project name cannot be blank."
+    );
+
+    return;
+
+  }
+
+
+  currentProject.name =
+    clean;
+
+
+  document
+    .getElementById(
+      "currentProjectName"
+    )
+    .textContent =
+    clean;
+
+
+  await saveCurrentProject();
+
+}
+
+
+
+async function deleteProject(
+  projectId
+) {
+
+  const project =
+    await getProject(
+      projectId
+    );
+
+
+  if (!project) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      'Delete "' +
+      project.name +
+      '" and all saved photos and audio?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  for (
+    const step
+    of project.steps || []
+  ) {
 
     if (
-      projectTasks.length ===
+      step.audioAssetId
+    ) {
+
+      await deleteAsset(
+        step.audioAssetId
+      );
+
+    }
+
+
+    for (
+      const photo
+      of step.photos || []
+    ) {
+
+      if (
+        photo.assetId
+      ) {
+
+        await deleteAsset(
+          photo.assetId
+        );
+
+      }
+
+
+      if (
+        photo.markupAssetId
+      ) {
+
+        await deleteAsset(
+          photo.markupAssetId
+        );
+
+      }
+
+
+      if (
+        photo.audioAssetId
+      ) {
+
+        await deleteAsset(
+          photo.audioAssetId
+        );
+
+      }
+
+    }
+
+  }
+
+
+  for (
+    const note
+    of project.voiceNotes || []
+  ) {
+
+    if (
+      note.audioAssetId
+    ) {
+
+      await deleteAsset(
+        note.audioAssetId
+      );
+
+    }
+
+  }
+
+
+  await deleteProjectRecord(
+    projectId
+  );
+
+
+  if (
+    currentProject &&
+    currentProject.id ===
+    projectId
+  ) {
+
+    currentProject =
+      null;
+
+  }
+
+
+  await renderProjectPicker();
+
+}
+
+
+
+function openTab(tab) {
+
+  currentTab =
+    tab;
+
+
+  document
+    .querySelectorAll(
+      ".tabpage"
+    )
+    .forEach(
+      function(page) {
+
+        page
+          .classList
+          .add(
+            "hidden"
+          );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "tab-" +
+      tab
+    )
+    .classList
+    .remove(
+      "hidden"
+    );
+
+
+  document
+    .querySelectorAll(
+      "#tabbar button"
+    )
+    .forEach(
+      function(button) {
+
+        button
+          .classList
+          .toggle(
+            "active",
+            button.dataset.tab ===
+            tab
+          );
+
+      }
+    );
+
+
+  if (
+    tab ===
+    "progress"
+  ) {
+
+    renderProgress();
+
+  }
+
+
+  if (
+    tab ===
+    "reassemble"
+  ) {
+
+    renderReassemble();
+
+  }
+
+
+  if (
+    tab ===
+    "notes"
+  ) {
+
+    renderGeneralVoiceNotes();
+
+  }
+
+}
+
+
+
+async function renderAll() {
+
+  releaseObjectUrls();
+
+  await renderSteps();
+
+  renderTasks();
+
+  renderParts();
+
+  await renderGeneralVoiceNotes();
+
+  renderProgress();
+
+
+  if (
+    currentTab ===
+    "reassemble"
+  ) {
+
+    await renderReassemble();
+
+  }
+
+}
+
+
+
+function toggleStepForm(show) {
+
+  document
+    .getElementById(
+      "stepForm"
+    )
+    .classList
+    .toggle(
+      "hidden",
+      !show
+    );
+
+
+  if (show) {
+
+    setTimeout(
+      function() {
+
+        document
+          .getElementById(
+            "stepTitle"
+          )
+          .focus();
+
+      },
       0
+    );
+
+  }
+
+}
+
+
+
+async function saveNewStep() {
+
+  const title =
+    document
+      .getElementById(
+        "stepTitle"
+      )
+      .value
+      .trim();
+
+
+  if (!title) {
+
+    alert(
+      "Please enter what you removed or did."
+    );
+
+    document
+      .getElementById(
+        "stepTitle"
+      )
+      .focus();
+
+    return;
+
+  }
+
+
+  let audioAssetId =
+    null;
+
+
+  if (
+    pendingStepAudioBlob
+  ) {
+
+    audioAssetId =
+      await putAsset(
+        pendingStepAudioBlob,
+        {
+          type:
+            "step-audio"
+        }
+      );
+
+  }
+
+
+  const step = {
+
+    id:
+      makeId(
+        "step"
+      ),
+
+    title:
+      title,
+
+    notes:
+      document
+        .getElementById(
+          "stepNotes"
+        )
+        .value
+        .trim(),
+
+    fasteners:
+      document
+        .getElementById(
+          "stepFasteners"
+        )
+        .value
+        .trim(),
+
+    bag:
+      document
+        .getElementById(
+          "stepBag"
+        )
+        .value
+        .trim(),
+
+    audioAssetId:
+      audioAssetId,
+
+    photos:
+      [],
+
+    reassembled:
+      false,
+
+    createdAt:
+      new Date()
+        .toISOString()
+
+  };
+
+
+  const photoFiles =
+    Array.from(
+      document
+        .getElementById(
+          "stepPhotoInput"
+        )
+        .files
+    );
+
+
+  for (
+    const file
+    of photoFiles
+  ) {
+
+    const assetId =
+      await putAsset(
+        file,
+        {
+          type:
+            "photo",
+
+          name:
+            file.name
+        }
+      );
+
+
+    step.photos.push({
+
+      id:
+        makeId(
+          "photo"
+        ),
+
+      assetId:
+        assetId,
+
+      markupAssetId:
+        null,
+
+      audioAssetId:
+        null,
+
+      transcript:
+        "",
+
+      textNote:
+        ""
+
+    });
+
+  }
+
+
+  currentProject
+    .steps
+    .push(
+      step
+    );
+
+
+  await saveCurrentProject();
+
+
+  document
+    .getElementById(
+      "stepTitle"
+    )
+    .value =
+    "";
+
+
+  document
+    .getElementById(
+      "stepNotes"
+    )
+    .value =
+    "";
+
+
+  document
+    .getElementById(
+      "stepFasteners"
+    )
+    .value =
+    "";
+
+
+  document
+    .getElementById(
+      "stepBag"
+    )
+    .value =
+    "";
+
+
+  document
+    .getElementById(
+      "stepPhotoInput"
+    )
+    .value =
+    "";
+
+
+  document
+    .getElementById(
+      "stepRecordingStatus"
+    )
+    .textContent =
+    "";
+
+
+  pendingStepAudioBlob =
+    null;
+
+
+  toggleStepForm(
+    false
+  );
+
+
+  await renderAll();
+
+}
+
+
+
+function findStep(stepId) {
+
+  return currentProject
+    .steps
+    .find(
+      function(step) {
+
+        return (
+          step.id ===
+          stepId
+        );
+
+      }
+    );
+
+}
+
+
+
+async function editStep(stepId) {
+
+  const step =
+    findStep(
+      stepId
+    );
+
+
+  if (!step) {
+
+    return;
+
+  }
+
+
+  const title =
+    prompt(
+      "Step title:",
+      step.title
+    );
+
+
+  if (
+    title === null
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !title.trim()
+  ) {
+
+    alert(
+      "Step title cannot be blank."
+    );
+
+    return;
+
+  }
+
+
+  const notes =
+    prompt(
+      "Written note:",
+      step.notes || ""
+    );
+
+
+  if (
+    notes === null
+  ) {
+
+    return;
+
+  }
+
+
+  const fasteners =
+    prompt(
+      "Fasteners / bolts / clips:",
+      step.fasteners || ""
+    );
+
+
+  if (
+    fasteners === null
+  ) {
+
+    return;
+
+  }
+
+
+  const bag =
+    prompt(
+      "Bag / container number:",
+      step.bag || ""
+    );
+
+
+  if (
+    bag === null
+  ) {
+
+    return;
+
+  }
+
+
+  step.title =
+    title.trim();
+
+  step.notes =
+    notes.trim();
+
+  step.fasteners =
+    fasteners.trim();
+
+  step.bag =
+    bag.trim();
+
+
+  await saveCurrentProject();
+
+  await renderAll();
+
+}
+
+
+
+async function deleteStep(stepId) {
+
+  const step =
+    findStep(
+      stepId
+    );
+
+
+  if (!step) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      'Delete this disassembly step: "' +
+      step.title +
+      '"?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    step.audioAssetId
+  ) {
+
+    await deleteAsset(
+      step.audioAssetId
+    );
+
+  }
+
+
+  for (
+    const photo
+    of step.photos || []
+  ) {
+
+    if (
+      photo.assetId
+    ) {
+
+      await deleteAsset(
+        photo.assetId
+      );
+
+    }
+
+
+    if (
+      photo.markupAssetId
+    ) {
+
+      await deleteAsset(
+        photo.markupAssetId
+      );
+
+    }
+
+
+    if (
+      photo.audioAssetId
+    ) {
+
+      await deleteAsset(
+        photo.audioAssetId
+      );
+
+    }
+
+  }
+
+
+  currentProject.steps =
+    currentProject
+      .steps
+      .filter(
+        function(item) {
+
+          return (
+            item.id !==
+            stepId
+          );
+
+        }
+      );
+
+
+  await saveCurrentProject();
+
+  await renderAll();
+
+}
+
+
+
+async function addPhotosToStep(
+  stepId,
+  input
+) {
+
+  const step =
+    findStep(
+      stepId
+    );
+
+
+  if (!step) {
+
+    return;
+
+  }
+
+
+  for (
+    const file
+    of Array.from(
+      input.files
+    )
+  ) {
+
+    const assetId =
+      await putAsset(
+        file,
+        {
+          type:
+            "photo",
+
+          name:
+            file.name
+        }
+      );
+
+
+    step.photos.push({
+
+      id:
+        makeId(
+          "photo"
+        ),
+
+      assetId:
+        assetId,
+
+      markupAssetId:
+        null,
+
+      audioAssetId:
+        null,
+
+      transcript:
+        "",
+
+      textNote:
+        ""
+
+    });
+
+  }
+
+
+  input.value =
+    "";
+
+
+  await saveCurrentProject();
+
+  await renderAll();
+
+}
+
+
+
+async function renderSteps() {
+
+  const container =
+    document.getElementById(
+      "stepsList"
+    );
+
+
+  if (
+    currentProject.steps.length ===
+    0
+  ) {
+
+    container.innerHTML =
+      '<div class="empty">' +
+      'No disassembly steps yet. ' +
+      'Tap <strong>Add Step</strong> when you begin taking something apart.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+
+  for (
+    let index = 0;
+    index < currentProject.steps.length;
+    index++
+  ) {
+
+    const step =
+      currentProject.steps[
+        index
+      ];
+
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+    card.className =
+      "step";
+
+
+    let stepAudioHtml =
+      "";
+
+
+    if (
+      step.audioAssetId
+    ) {
+
+      const audioAsset =
+        await getAsset(
+          step.audioAssetId
+        );
+
+
+      if (
+        audioAsset &&
+        audioAsset.blob
+      ) {
+
+        stepAudioHtml =
+          '<audio controls src="' +
+          createObjectUrl(
+            audioAsset.blob
+          ) +
+          '"></audio>';
+
+      }
+
+    }
+
+
+    card.innerHTML =
+      `
+
+      <div class="step-top">
+
+        <div
+          style="
+            display:flex;
+            gap:10px;
+            align-items:flex-start;
+          ">
+
+          <span class="step-number">
+            ${index + 1}
+          </span>
+
+          <div>
+
+            <strong>
+              ${escapeHtml(step.title)}
+            </strong>
+
+            <div class="muted small">
+              ${escapeHtml(formatDate(step.createdAt))}
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="mini-actions">
+
+          <button
+            class="secondary"
+            data-edit-step>
+            Edit
+          </button>
+
+          <button
+            class="danger"
+            data-delete-step>
+            Delete
+          </button>
+
+        </div>
+
+      </div>
+
+
+      ${
+        step.notes
+        ?
+        `
+        <div class="notice">
+
+          <strong>
+            Note:
+          </strong>
+
+          <br>
+
+          ${nl(step.notes)}
+
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      ${
+        step.fasteners
+        ?
+        `
+        <span class="pill">
+          🔩
+          ${escapeHtml(step.fasteners)}
+        </span>
+        `
+        :
+        ""
+      }
+
+
+      ${
+        step.bag
+        ?
+        `
+        <span class="pill">
+          🏷️
+          ${escapeHtml(step.bag)}
+        </span>
+        `
+        :
+        ""
+      }
+
+
+      ${stepAudioHtml}
+
+
+      <div
+        class="photo-grid"
+        data-photo-grid>
+      </div>
+
+
+      <div
+        class="toolbar"
+        style="margin-top:10px">
+
+        <label class="button-label secondary">
+
+          📷 Add Photo
+
+          <input
+            class="sr-only"
+            type="file"
+            accept="image/*"
+            capture="environment"
+            multiple
+            data-add-photo>
+
+        </label>
+
+      </div>
+      `;
+
+
+    container.appendChild(
+      card
+    );
+
+
+    card
+      .querySelector(
+        "[data-edit-step]"
+      )
+      .onclick =
+      function() {
+
+        editStep(
+          step.id
+        );
+
+      };
+
+
+    card
+      .querySelector(
+        "[data-delete-step]"
+      )
+      .onclick =
+      function() {
+
+        deleteStep(
+          step.id
+        );
+
+      };
+
+
+    card
+      .querySelector(
+        "[data-add-photo]"
+      )
+      .onchange =
+      function(event) {
+
+        addPhotosToStep(
+          step.id,
+          event.target
+        );
+
+      };
+
+
+    await renderPhotoGrid(
+      step,
+      card.querySelector(
+        "[data-photo-grid]"
+      )
+    );
+
+  }
+
+}
+
+
+
+async function renderPhotoGrid(
+  step,
+  grid
+) {
+
+  if (
+    step.photos.length ===
+    0
+  ) {
+
+    grid.innerHTML =
+      '<div class="muted small">' +
+      'No photos for this step yet.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  grid.innerHTML =
+    "";
+
+
+  for (
+    const photo
+    of step.photos
+  ) {
+
+    const imageAsset =
+      await getAsset(
+        photo.markupAssetId ||
+        photo.assetId
+      );
+
+
+    if (
+      !imageAsset ||
+      !imageAsset.blob
+    ) {
+
+      continue;
+
+    }
+
+
+    let audioHtml =
+      "";
+
+
+    if (
+      photo.audioAssetId
+    ) {
+
+      const audioAsset =
+        await getAsset(
+          photo.audioAssetId
+        );
+
+
+      if (
+        audioAsset &&
+        audioAsset.blob
+      ) {
+
+        audioHtml =
+          '<audio controls src="' +
+          createObjectUrl(
+            audioAsset.blob
+          ) +
+          '"></audio>';
+
+      }
+
+    }
+
+
+    const card =
+      document.createElement(
+        "div"
+      );
+
+
+    card.className =
+      "photo-card";
+
+
+    card.innerHTML =
+      `
+
+      <img
+        src="${createObjectUrl(imageAsset.blob)}"
+        alt="Saved project photo">
+
+
+      ${audioHtml}
+
+
+      ${
+        photo.transcript
+        ?
+        `
+        <div class="transcript">
+
+          <strong>
+            Audio note:
+          </strong>
+
+          <br>
+
+          ${nl(photo.transcript)}
+
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      ${
+        photo.textNote
+        ?
+        `
+        <div
+          class="muted small"
+          style="margin-top:7px">
+
+          ${nl(photo.textNote)}
+
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      <button
+        class="secondary"
+        style="
+          width:100%;
+          margin-top:8px;
+        ">
+
+        Open Photo
+
+      </button>
+      `;
+
+
+    card
+      .querySelector(
+        "button"
+      )
+      .onclick =
+      function() {
+
+        openPhotoDialog(
+          step.id,
+          photo.id
+        );
+
+      };
+
+
+    grid.appendChild(
+      card
+    );
+
+  }
+
+}
+
+
+
+async function addTask() {
+
+  const title =
+    document
+      .getElementById(
+        "taskTitle"
+      )
+      .value
+      .trim();
+
+
+  if (!title) {
+
+    alert(
+      "Please enter a task."
+    );
+
+    return;
+
+  }
+
+
+  currentProject.tasks.push({
+
+    id:
+      makeId(
+        "task"
+      ),
+
+    title:
+      title,
+
+    notes:
+      document
+        .getElementById(
+          "taskNotes"
+        )
+        .value
+        .trim(),
+
+    completed:
+      false
+
+  });
+
+
+  document
+    .getElementById(
+      "taskTitle"
+    )
+    .value =
+    "";
+
+
+  document
+    .getElementById(
+      "taskNotes"
+    )
+    .value =
+    "";
+
+
+  await saveCurrentProject();
+
+  renderTasks();
+
+  renderProgress();
+
+}
+
+
+
+function renderTasks() {
+
+  const container =
+    document.getElementById(
+      "tasksList"
+    );
+
+
+  const tasks =
+    currentProject.tasks ||
+    [];
+
+
+  if (
+    tasks.length ===
+    0
+  ) {
+
+    container.innerHTML =
+      '<div class="empty">' +
+      'No project tasks yet.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+
+  tasks.forEach(
+    function(task) {
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "task";
+
+
+      card.innerHTML =
+        `
+
+        <div class="task-top">
+
+          <div>
+
+            <div class="checkline">
+
+              <input
+                type="checkbox"
+                ${
+                  task.completed
+                  ?
+                  "checked"
+                  :
+                  ""
+                }>
+
+              <strong
+                style="
+                  ${
+                    task.completed
+                    ?
+                    "text-decoration:line-through"
+                    :
+                    ""
+                  }
+                ">
+
+                ${escapeHtml(task.title)}
+
+              </strong>
+
+            </div>
+
+
+            ${
+              task.notes
+              ?
+              `
+              <div
+                class="muted small"
+                style="margin-top:6px">
+
+                ${nl(task.notes)}
+
+              </div>
+              `
+              :
+              ""
+            }
+
+          </div>
+
+
+          <div class="mini-actions">
+
+            <button
+              class="secondary"
+              data-edit-task>
+              Edit
+            </button>
+
+            <button
+              class="danger"
+              data-delete-task>
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+        `;
+
+
+      card
+        .querySelector(
+          'input[type="checkbox"]'
+        )
+        .onchange =
+        async function(event) {
+
+          task.completed =
+            event.target.checked;
+
+          await saveCurrentProject();
+
+          renderTasks();
+
+          renderProgress();
+
+        };
+
+
+      card
+        .querySelector(
+          "[data-edit-task]"
+        )
+        .onclick =
+        function() {
+
+          editTask(
+            task.id
+          );
+
+        };
+
+
+      card
+        .querySelector(
+          "[data-delete-task]"
+        )
+        .onclick =
+        function() {
+
+          deleteTask(
+            task.id
+          );
+
+        };
+
+
+      container.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+
+async function editTask(taskId) {
+
+  const task =
+    currentProject.tasks
+      .find(
+        function(item) {
+
+          return (
+            item.id ===
+            taskId
+          );
+
+        }
+      );
+
+
+  if (!task) {
+
+    return;
+
+  }
+
+
+  const title =
+    prompt(
+      "Task title:",
+      task.title
+    );
+
+
+  if (
+    title === null
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !title.trim()
+  ) {
+
+    alert(
+      "Task title cannot be blank."
+    );
+
+    return;
+
+  }
+
+
+  const notes =
+    prompt(
+      "Task notes:",
+      task.notes || ""
+    );
+
+
+  if (
+    notes === null
+  ) {
+
+    return;
+
+  }
+
+
+  task.title =
+    title.trim();
+
+  task.notes =
+    notes.trim();
+
+
+  await saveCurrentProject();
+
+  renderTasks();
+
+}
+
+
+
+async function deleteTask(taskId) {
+
+  const task =
+    currentProject.tasks
+      .find(
+        function(item) {
+
+          return (
+            item.id ===
+            taskId
+          );
+
+        }
+      );
+
+
+  if (!task) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      'Delete task "' +
+      task.title +
+      '"?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  currentProject.tasks =
+    currentProject.tasks
+      .filter(
+        function(item) {
+
+          return (
+            item.id !==
+            taskId
+          );
+
+        }
+      );
+
+
+  await saveCurrentProject();
+
+  renderTasks();
+
+  renderProgress();
+
+}
+
+
+
+async function addPart() {
+
+  const name =
+    document
+      .getElementById(
+        "partName"
+      )
+      .value
+      .trim();
+
+
+  if (!name) {
+
+    alert(
+      "Please enter a part."
+    );
+
+    return;
+
+  }
+
+
+  currentProject.parts.push({
+
+    id:
+      makeId(
+        "part"
+      ),
+
+    name:
+      name,
+
+    status:
+      document
+        .getElementById(
+          "partStatus"
+        )
+        .value
+
+  });
+
+
+  document
+    .getElementById(
+      "partName"
+    )
+    .value =
+    "";
+
+
+  await saveCurrentProject();
+
+  renderParts();
+
+  renderProgress();
+
+}
+
+
+
+function renderParts() {
+
+  const container =
+    document.getElementById(
+      "partsList"
+    );
+
+
+  const parts =
+    currentProject.parts ||
+    [];
+
+
+  if (
+    parts.length ===
+    0
+  ) {
+
+    container.innerHTML =
+      '<div class="empty">' +
+      'No project parts yet.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+
+  parts.forEach(
+    function(part) {
+
+      const card =
+        document.createElement(
+          "div"
+        );
+
+
+      card.className =
+        "part";
+
+
+      card.innerHTML =
+        `
+
+        <div class="part-top">
+
+          <div>
+
+            <strong>
+              ${escapeHtml(part.name)}
+            </strong>
+
+            <br>
+
+            <span class="pill">
+
+              ${
+                part.status ===
+                "installed"
+                ?
+                "✓ Installed"
+                :
+                part.status ===
+                "have"
+                ?
+                "Have"
+                :
+                "Need"
+              }
+
+            </span>
+
+          </div>
+
+
+          <div class="mini-actions">
+
+            <select data-part-status>
+
+              <option
+                value="need"
+                ${
+                  part.status ===
+                  "need"
+                  ?
+                  "selected"
+                  :
+                  ""
+                }>
+                Need
+              </option>
+
+              <option
+                value="have"
+                ${
+                  part.status ===
+                  "have"
+                  ?
+                  "selected"
+                  :
+                  ""
+                }>
+                Have
+              </option>
+
+              <option
+                value="installed"
+                ${
+                  part.status ===
+                  "installed"
+                  ?
+                  "selected"
+                  :
+                  ""
+                }>
+                Installed
+              </option>
+
+            </select>
+
+
+            <button
+              class="secondary"
+              data-edit-part>
+              Edit
+            </button>
+
+            <button
+              class="danger"
+              data-delete-part>
+              Delete
+            </button>
+
+          </div>
+
+        </div>
+        `;
+
+
+      card
+        .querySelector(
+          "[data-part-status]"
+        )
+        .onchange =
+        async function(event) {
+
+          part.status =
+            event.target.value;
+
+          await saveCurrentProject();
+
+          renderParts();
+
+          renderProgress();
+
+        };
+
+
+      card
+        .querySelector(
+          "[data-edit-part]"
+        )
+        .onclick =
+        function() {
+
+          editPart(
+            part.id
+          );
+
+        };
+
+
+      card
+        .querySelector(
+          "[data-delete-part]"
+        )
+        .onclick =
+        function() {
+
+          deletePart(
+            part.id
+          );
+
+        };
+
+
+      container.appendChild(
+        card
+      );
+
+    }
+  );
+
+}
+
+
+
+async function editPart(partId) {
+
+  const part =
+    currentProject.parts
+      .find(
+        function(item) {
+
+          return (
+            item.id ===
+            partId
+          );
+
+        }
+      );
+
+
+  if (!part) {
+
+    return;
+
+  }
+
+
+  const name =
+    prompt(
+      "Part name:",
+      part.name
+    );
+
+
+  if (
+    name === null
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !name.trim()
+  ) {
+
+    alert(
+      "Part name cannot be blank."
+    );
+
+    return;
+
+  }
+
+
+  part.name =
+    name.trim();
+
+
+  await saveCurrentProject();
+
+  renderParts();
+
+}
+
+
+
+async function deletePart(partId) {
+
+  const part =
+    currentProject.parts
+      .find(
+        function(item) {
+
+          return (
+            item.id ===
+            partId
+          );
+
+        }
+      );
+
+
+  if (!part) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      'Delete part "' +
+      part.name +
+      '"?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  currentProject.parts =
+    currentProject.parts
+      .filter(
+        function(item) {
+
+          return (
+            item.id !==
+            partId
+          );
+
+        }
+      );
+
+
+  await saveCurrentProject();
+
+  renderParts();
+
+  renderProgress();
+
+}
+
+
+
+async function saveProjectNotes() {
+
+  currentProject.notes =
+    document
+      .getElementById(
+        "projectNotes"
+      )
+      .value;
+
+
+  await saveCurrentProject();
+
+
+  const message =
+    document.getElementById(
+      "notesSaved"
+    );
+
+
+  message
+    .classList
+    .remove(
+      "hidden"
+    );
+
+
+  setTimeout(
+    function() {
+
+      message
+        .classList
+        .add(
+          "hidden"
+        );
+
+    },
+    1600
+  );
+
+}
+
+
+
+async function toggleGeneralVoiceNote(
+  button
+) {
+
+  if (
+    mediaRecorder &&
+    mediaRecorder.state ===
+    "recording"
+  ) {
+
+    if (
+      recordingTarget !==
+      "general"
     ) {
 
       alert(
-        "Add at least one project task before starting Reassemble."
+        "Another recording is already in progress."
       );
 
       return;
+
     }
 
-    reassembleIndex =
-      0;
 
-    document
-      .getElementById(
-        "reassembleSection"
-      )
-      .classList.remove(
-        "hidden"
-      );
+    mediaRecorder.stop();
 
-    displayReassembleStep();
-
-    document
-      .getElementById(
-        "reassembleSection"
-      )
-      .scrollIntoView({
-        behavior: "smooth"
-      });
+    return;
 
   }
 
 
-  function displayReassembleStep() {
+  pendingGeneralAudioBlob =
+    null;
 
-    const reverseTasks =
-      getReassembleTasks();
+
+  await startAudioRecording(
+    "general",
+    button,
+    null
+  );
+
+}
+
+
+
+async function savePendingGeneralVoiceNote() {
+
+  if (
+    !pendingGeneralAudioBlob
+  ) {
+
+    return;
+
+  }
+
+
+  const audioAssetId =
+    await putAsset(
+      pendingGeneralAudioBlob,
+      {
+        type:
+          "general-audio"
+      }
+    );
+
+
+  currentProject.voiceNotes.push({
+
+    id:
+      makeId(
+        "voice"
+      ),
+
+    audioAssetId:
+      audioAssetId,
+
+    transcript:
+      "",
+
+    createdAt:
+      new Date()
+        .toISOString()
+
+  });
+
+
+  pendingGeneralAudioBlob =
+    null;
+
+
+  await saveCurrentProject();
+
+  await renderGeneralVoiceNotes();
+
+}
+
+
+
+async function renderGeneralVoiceNotes() {
+
+  const container =
+    document.getElementById(
+      "generalVoiceNotes"
+    );
+
+
+  if (
+    !container ||
+    !currentProject
+  ) {
+
+    return;
+
+  }
+
+
+  const notes =
+    currentProject.voiceNotes ||
+    [];
+
+
+  if (
+    notes.length ===
+    0
+  ) {
+
+    container.innerHTML =
+      '<div class="empty">' +
+      'No general voice notes yet.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+
+  for (
+    const note
+    of notes
+  ) {
 
     const card =
-      document.getElementById(
-        "reassembleStepCard"
+      document.createElement(
+        "div"
       );
 
-    const bar =
-      document.getElementById(
-        "reassembleProgressBar"
+
+    card.className =
+      "voice-note";
+
+
+    const asset =
+      await getAsset(
+        note.audioAssetId
       );
 
-    const text =
-      document.getElementById(
-        "reassembleProgressText"
-      );
+
+    let audioHtml =
+      "";
+
 
     if (
-      !card ||
-      reverseTasks.length ===
-      0
+      asset &&
+      asset.blob
     ) {
+
+      audioHtml =
+        '<audio controls src="' +
+        createObjectUrl(
+          asset.blob
+        ) +
+        '"></audio>';
+
+    }
+
+
+    card.innerHTML =
+      `
+
+      <strong>
+        Voice Note
+      </strong>
+
+      <div class="muted small">
+        ${escapeHtml(formatDate(note.createdAt))}
+      </div>
+
+      ${audioHtml}
+
+
+      ${
+        note.transcript
+        ?
+        `
+        <div class="transcript">
+          ${nl(note.transcript)}
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      <button
+        class="danger"
+        style="margin-top:8px">
+        Delete
+      </button>
+      `;
+
+
+    card
+      .querySelector(
+        "button"
+      )
+      .onclick =
+      function() {
+
+        deleteGeneralVoiceNote(
+          note.id
+        );
+
+      };
+
+
+    container.appendChild(
+      card
+    );
+
+  }
+
+}
+
+
+
+async function deleteGeneralVoiceNote(
+  noteId
+) {
+
+  const note =
+    currentProject.voiceNotes
+      .find(
+        function(item) {
+
+          return (
+            item.id ===
+            noteId
+          );
+
+        }
+      );
+
+
+  if (!note) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      "Delete this voice note?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    note.audioAssetId
+  ) {
+
+    await deleteAsset(
+      note.audioAssetId
+    );
+
+  }
+
+
+  currentProject.voiceNotes =
+    currentProject.voiceNotes
+      .filter(
+        function(item) {
+
+          return (
+            item.id !==
+            noteId
+          );
+
+        }
+      );
+
+
+  await saveCurrentProject();
+
+  await renderGeneralVoiceNotes();
+
+}
+
+
+
+function renderProgress() {
+
+  if (
+    !currentProject
+  ) {
+
+    return;
+
+  }
+
+
+  const steps =
+    currentProject
+      .steps
+      .length;
+
+
+  const reassembled =
+    currentProject
+      .steps
+      .filter(
+        function(step) {
+
+          return (
+            step.reassembled
+          );
+
+        }
+      )
+      .length;
+
+
+  const tasks =
+    currentProject
+      .tasks
+      .length;
+
+
+  const tasksDone =
+    currentProject
+      .tasks
+      .filter(
+        function(task) {
+
+          return (
+            task.completed
+          );
+
+        }
+      )
+      .length;
+
+
+  const parts =
+    currentProject
+      .parts
+      .length;
+
+
+  const partsInstalled =
+    currentProject
+      .parts
+      .filter(
+        function(part) {
+
+          return (
+            part.status ===
+            "installed"
+          );
+
+        }
+      )
+      .length;
+
+
+  document
+    .getElementById(
+      "metricSteps"
+    )
+    .textContent =
+    steps;
+
+
+  document
+    .getElementById(
+      "metricTasks"
+    )
+    .textContent =
+    tasksDone +
+    "/" +
+    tasks;
+
+
+  document
+    .getElementById(
+      "metricParts"
+    )
+    .textContent =
+    partsInstalled +
+    "/" +
+    parts;
+
+
+  document
+    .getElementById(
+      "metricReassembled"
+    )
+    .textContent =
+    reassembled +
+    "/" +
+    steps;
+
+
+  const total =
+    tasks +
+    parts +
+    steps;
+
+
+  const done =
+    tasksDone +
+    partsInstalled +
+    reassembled;
+
+
+  const percent =
+    total
+    ?
+    Math.round(
+      done /
+      total *
+      100
+    )
+    :
+    0;
+
+
+  document
+    .getElementById(
+      "overallProgressBar"
+    )
+    .style
+    .width =
+    percent +
+    "%";
+
+
+  document
+    .getElementById(
+      "overallProgressText"
+    )
+    .textContent =
+    percent +
+    "% complete";
+
+}
+
+
+
+function getSpeechRecognitionClass() {
+
+  return (
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition ||
+    null
+  );
+
+}
+
+
+
+function dictateInto(
+  textareaId,
+  button
+) {
+
+  const SpeechRecognition =
+    getSpeechRecognitionClass();
+
+
+  if (
+    !SpeechRecognition
+  ) {
+
+    alert(
+      "Speech-to-text is not supported in this browser. Audio recording can still work."
+    );
+
+    return;
+
+  }
+
+
+  const textarea =
+    document.getElementById(
+      textareaId
+    );
+
+
+  const recognition =
+    new SpeechRecognition();
+
+
+  const startingText =
+    textarea.value.trim();
+
+
+  let finalText =
+    "";
+
+
+  const originalLabel =
+    button.textContent;
+
+
+  recognition.lang =
+    "en-US";
+
+  recognition.interimResults =
+    true;
+
+  recognition.continuous =
+    false;
+
+
+  button.textContent =
+    "🎙️ Listening…";
+
+
+  recognition.onresult =
+    function(event) {
+
+      let interimText =
+        "";
+
+
+      for (
+        let i =
+          event.resultIndex;
+
+        i <
+          event.results.length;
+
+        i++
+      ) {
+
+        const words =
+          event.results[
+            i
+          ][0]
+          .transcript;
+
+
+        if (
+          event.results[
+            i
+          ]
+          .isFinal
+        ) {
+
+          finalText +=
+            words;
+
+        }
+
+        else {
+
+          interimText +=
+            words;
+
+        }
+
+      }
+
+
+      const combined =
+        startingText
+        ?
+        startingText +
+        " " +
+        finalText +
+        interimText
+        :
+        finalText +
+        interimText;
+
+
+      textarea.value =
+        combined.trim();
+
+    };
+
+
+  recognition.onerror =
+    function() {
+
+      button.textContent =
+        originalLabel;
+
+    };
+
+
+  recognition.onend =
+    function() {
+
+      button.textContent =
+        originalLabel;
+
+    };
+
+
+  try {
+
+    recognition.start();
+
+  }
+
+  catch {
+
+    button.textContent =
+      originalLabel;
+
+  }
+
+}
+
+
+
+async function toggleAudioRecording(
+  target,
+  button,
+  transcriptTextareaId = null
+) {
+
+  if (
+    mediaRecorder &&
+    mediaRecorder.state ===
+    "recording"
+  ) {
+
+    if (
+      recordingTarget !==
+      target
+    ) {
+
+      alert(
+        "Another recording is already in progress."
+      );
+
       return;
+
     }
+
+
+    mediaRecorder.stop();
+
+    return;
+
+  }
+
+
+  await startAudioRecording(
+    target,
+    button,
+    transcriptTextareaId
+  );
+
+}
+
+
+
+async function startAudioRecording(
+  target,
+  button,
+  transcriptTextareaId
+) {
+
+  if (
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia ||
+    !window.MediaRecorder
+  ) {
+
+    alert(
+      "Audio recording is not supported in this browser."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    recordingTarget =
+      target;
+
+
+    recordingStream =
+      await navigator
+        .mediaDevices
+        .getUserMedia({
+          audio: true
+        });
+
+
+    mediaChunks =
+      [];
+
+
+    mediaRecorder =
+      new MediaRecorder(
+        recordingStream
+      );
+
+
+    mediaRecorder.ondataavailable =
+      function(event) {
+
+        if (
+          event.data.size
+        ) {
+
+          mediaChunks.push(
+            event.data
+          );
+
+        }
+
+      };
+
+
+    startLiveRecognition(
+      transcriptTextareaId
+    );
+
+
+    mediaRecorder.onstop =
+      async function() {
+
+        stopLiveRecognition();
+
+
+        const blob =
+          new Blob(
+            mediaChunks,
+            {
+              type:
+                mediaRecorder.mimeType ||
+                "audio/webm"
+            }
+          );
+
+
+        if (
+          recordingTarget ===
+          "step"
+        ) {
+
+          pendingStepAudioBlob =
+            blob;
+
+
+          document
+            .getElementById(
+              "stepRecordingStatus"
+            )
+            .textContent =
+            "Audio recorded and ready to save with this disassembly step.";
+
+        }
+
+
+        if (
+          recordingTarget ===
+          "photo"
+        ) {
+
+          currentPhotoAudioBlob =
+            blob;
+
+
+          document
+            .getElementById(
+              "photoRecordingStatus"
+            )
+            .textContent =
+            "Audio recorded. Tap Save Photo Notes.";
+
+
+          renderPendingPhotoAudio();
+
+        }
+
+
+        if (
+          recordingTarget ===
+          "general"
+        ) {
+
+          pendingGeneralAudioBlob =
+            blob;
+
+
+          document
+            .getElementById(
+              "generalRecordingStatus"
+            )
+            .textContent =
+            "Voice note recorded and saved.";
+
+
+          await savePendingGeneralVoiceNote();
+
+        }
+
+
+        if (
+          recordingStream
+        ) {
+
+          recordingStream
+            .getTracks()
+            .forEach(
+              function(track) {
+
+                track.stop();
+
+              }
+            );
+
+        }
+
+
+        button.textContent =
+          target ===
+          "general"
+          ?
+          "🎤 Add General Voice Note"
+          :
+          "🎤 Record + Transcribe";
+
+
+        button
+          .classList
+          .remove(
+            "warn"
+          );
+
+
+        mediaRecorder =
+          null;
+
+        mediaChunks =
+          [];
+
+        recordingStream =
+          null;
+
+        recordingTarget =
+          null;
+
+      };
+
+
+    mediaRecorder.start();
+
+
+    button.textContent =
+      "⏹ Stop Recording";
+
+
+    button
+      .classList
+      .add(
+        "warn"
+      );
+
+
+    let statusId =
+      "generalRecordingStatus";
+
 
     if (
-      reassembleIndex <
-      0
+      target ===
+      "step"
     ) {
-      reassembleIndex =
-        0;
+
+      statusId =
+        "stepRecordingStatus";
+
     }
+
 
     if (
-      reassembleIndex >=
-      reverseTasks.length
+      target ===
+      "photo"
     ) {
 
-      reassembleIndex =
-        reverseTasks.length - 1;
+      statusId =
+        "photoRecordingStatus";
 
     }
 
-    const task =
-      reverseTasks[
-        reassembleIndex
+
+    document
+      .getElementById(
+        statusId
+      )
+      .textContent =
+      "Recording…";
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      "Microphone access was not available. Check the browser microphone permission."
+    );
+
+  }
+
+}
+
+
+
+function startLiveRecognition(
+  textareaId
+) {
+
+  stopLiveRecognition();
+
+
+  if (
+    !textareaId
+  ) {
+
+    return;
+
+  }
+
+
+  const SpeechRecognition =
+    getSpeechRecognitionClass();
+
+
+  if (
+    !SpeechRecognition
+  ) {
+
+    return;
+
+  }
+
+
+  const textarea =
+    document.getElementById(
+      textareaId
+    );
+
+
+  if (
+    !textarea
+  ) {
+
+    return;
+
+  }
+
+
+  liveRecognition =
+    new SpeechRecognition();
+
+
+  liveRecognition.lang =
+    "en-US";
+
+  liveRecognition.interimResults =
+    true;
+
+  liveRecognition.continuous =
+    true;
+
+
+  liveRecognitionStartingText =
+    textarea.value.trim();
+
+
+  liveRecognitionFinalText =
+    "";
+
+
+  liveRecognitionTextareaId =
+    textareaId;
+
+
+  liveRecognition.onresult =
+    function(event) {
+
+      let interimText =
+        "";
+
+
+      for (
+        let i =
+          event.resultIndex;
+
+        i <
+          event.results.length;
+
+        i++
+      ) {
+
+        const words =
+          event.results[
+            i
+          ][0]
+          .transcript;
+
+
+        if (
+          event.results[
+            i
+          ]
+          .isFinal
+        ) {
+
+          liveRecognitionFinalText +=
+            words +
+            " ";
+
+        }
+
+        else {
+
+          interimText +=
+            words;
+
+        }
+
+      }
+
+
+      const prefix =
+        liveRecognitionStartingText
+        ?
+        liveRecognitionStartingText +
+        " "
+        :
+        "";
+
+
+      textarea.value =
+        (
+          prefix +
+          liveRecognitionFinalText +
+          interimText
+        )
+        .trim();
+
+    };
+
+
+  liveRecognition.onerror =
+    function() {};
+
+
+  try {
+
+    liveRecognition.start();
+
+  }
+
+  catch {
+
+    liveRecognition =
+      null;
+
+  }
+
+}
+
+
+
+function stopLiveRecognition() {
+
+  if (
+    liveRecognition
+  ) {
+
+    try {
+
+      liveRecognition.stop();
+
+    }
+
+    catch {}
+
+  }
+
+
+  liveRecognition =
+    null;
+
+  liveRecognitionStartingText =
+    "";
+
+  liveRecognitionFinalText =
+    "";
+
+  liveRecognitionTextareaId =
+    null;
+
+}
+
+
+
+function stopAnyRecording() {
+
+  if (
+    mediaRecorder &&
+    mediaRecorder.state ===
+    "recording"
+  ) {
+
+    mediaRecorder.stop();
+
+  }
+
+
+  stopLiveRecognition();
+
+}
+
+
+
+function getCurrentPhoto() {
+
+  if (
+    !currentPhotoContext ||
+    !currentProject
+  ) {
+
+    return null;
+
+  }
+
+
+  const step =
+    findStep(
+      currentPhotoContext.stepId
+    );
+
+
+  if (!step) {
+
+    return null;
+
+  }
+
+
+  return step.photos
+    .find(
+      function(photo) {
+
+        return (
+          photo.id ===
+          currentPhotoContext.photoId
+        );
+
+      }
+    ) ||
+    null;
+
+}
+
+
+
+async function openPhotoDialog(
+  stepId,
+  photoId
+) {
+
+  stopAnyRecording();
+
+
+  const step =
+    findStep(
+      stepId
+    );
+
+
+  const photo =
+    step
+    ?
+    step.photos.find(
+      function(item) {
+
+        return (
+          item.id ===
+          photoId
+        );
+
+      }
+    )
+    :
+    null;
+
+
+  if (!photo) {
+
+    return;
+
+  }
+
+
+  currentPhotoContext = {
+
+    stepId:
+      stepId,
+
+    photoId:
+      photoId
+
+  };
+
+
+  currentPhotoAudioBlob =
+    null;
+
+
+  document
+    .getElementById(
+      "photoTranscript"
+    )
+    .value =
+    photo.transcript ||
+    "";
+
+
+  document
+    .getElementById(
+      "photoTextNote"
+    )
+    .value =
+    photo.textNote ||
+    "";
+
+
+  document
+    .getElementById(
+      "photoRecordingStatus"
+    )
+    .textContent =
+    "";
+
+
+  const imageAsset =
+    await getAsset(
+      photo.markupAssetId ||
+      photo.assetId
+    );
+
+
+  if (
+    imageAsset &&
+    imageAsset.blob
+  ) {
+
+    document
+      .getElementById(
+        "photoDialogImage"
+      )
+      .src =
+      createObjectUrl(
+        imageAsset.blob
+      );
+
+  }
+
+
+  await renderPhotoAudioPreview(
+    photo
+  );
+
+
+  document
+    .getElementById(
+      "photoDialog"
+    )
+    .showModal();
+
+}
+
+
+
+async function renderPhotoAudioPreview(
+  photo
+) {
+
+  const container =
+    document.getElementById(
+      "photoAudioPreview"
+    );
+
+
+  if (
+    photo.audioAssetId
+  ) {
+
+    const asset =
+      await getAsset(
+        photo.audioAssetId
+      );
+
+
+    if (
+      asset &&
+      asset.blob
+    ) {
+
+      container.innerHTML =
+        `
+
+        <label>
+          Saved Audio Note
+        </label>
+
+        <audio
+          controls
+          src="${createObjectUrl(asset.blob)}">
+        </audio>
+        `;
+
+      return;
+
+    }
+
+  }
+
+
+  container.innerHTML =
+    "";
+
+}
+
+
+
+function renderPendingPhotoAudio() {
+
+  if (
+    !currentPhotoAudioBlob
+  ) {
+
+    return;
+
+  }
+
+
+  document
+    .getElementById(
+      "photoAudioPreview"
+    )
+    .innerHTML =
+    `
+
+    <label>
+      New Audio Note
+    </label>
+
+    <audio
+      controls
+      src="${createObjectUrl(currentPhotoAudioBlob)}">
+    </audio>
+    `;
+
+}
+
+
+
+async function savePhotoDetails() {
+
+  const photo =
+    getCurrentPhoto();
+
+
+  if (!photo) {
+
+    return;
+
+  }
+
+
+  photo.transcript =
+    document
+      .getElementById(
+        "photoTranscript"
+      )
+      .value
+      .trim();
+
+
+  photo.textNote =
+    document
+      .getElementById(
+        "photoTextNote"
+      )
+      .value
+      .trim();
+
+
+  if (
+    currentPhotoAudioBlob
+  ) {
+
+    if (
+      photo.audioAssetId
+    ) {
+
+      await deleteAsset(
+        photo.audioAssetId
+      );
+
+    }
+
+
+    photo.audioAssetId =
+      await putAsset(
+        currentPhotoAudioBlob,
+        {
+          type:
+            "photo-audio"
+        }
+      );
+
+
+    currentPhotoAudioBlob =
+      null;
+
+  }
+
+
+  await saveCurrentProject();
+
+
+  closePhotoDialog();
+
+
+  await renderAll();
+
+}
+
+
+
+function closePhotoDialog() {
+
+  stopAnyRecording();
+
+
+  const dialog =
+    document.getElementById(
+      "photoDialog"
+    );
+
+
+  if (
+    dialog.open
+  ) {
+
+    dialog.close();
+
+  }
+
+
+  currentPhotoAudioBlob =
+    null;
+
+}
+
+
+
+async function deleteCurrentPhoto() {
+
+  const photo =
+    getCurrentPhoto();
+
+
+  if (!photo) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      "Delete this photo and its saved audio and markup?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  const step =
+    findStep(
+      currentPhotoContext.stepId
+    );
+
+
+  if (
+    photo.assetId
+  ) {
+
+    await deleteAsset(
+      photo.assetId
+    );
+
+  }
+
+
+  if (
+    photo.markupAssetId
+  ) {
+
+    await deleteAsset(
+      photo.markupAssetId
+    );
+
+  }
+
+
+  if (
+    photo.audioAssetId
+  ) {
+
+    await deleteAsset(
+      photo.audioAssetId
+    );
+
+  }
+
+
+  step.photos =
+    step.photos
+      .filter(
+        function(item) {
+
+          return (
+            item.id !==
+            photo.id
+          );
+
+        }
+      );
+
+
+  await saveCurrentProject();
+
+
+  closePhotoDialog();
+
+
+  await renderAll();
+
+}
+
+
+
+let markupTool =
+  "arrow";
+
+let markupCanvas =
+  null;
+
+let markupContext =
+  null;
+
+let markupHistory =
+  [];
+
+let markupPointerDown =
+  false;
+
+let markupStartX =
+  0;
+
+let markupStartY =
+  0;
+
+let markupSnapshot =
+  null;
+
+
+
+async function openMarkup() {
+
+  const photo =
+    getCurrentPhoto();
+
+
+  if (!photo) {
+
+    return;
+
+  }
+
+
+  const asset =
+    await getAsset(
+      photo.markupAssetId ||
+      photo.assetId
+    );
+
+
+  if (
+    !asset ||
+    !asset.blob
+  ) {
+
+    return;
+
+  }
+
+
+  markupCanvas =
+    document.getElementById(
+      "markupCanvas"
+    );
+
+
+  markupContext =
+    markupCanvas
+      .getContext(
+        "2d"
+      );
+
+
+  const image =
+    new Image();
+
+
+  const tempUrl =
+    URL.createObjectURL(
+      asset.blob
+    );
+
+
+  image.onload =
+    function() {
+
+      const maxDimension =
+        1500;
+
+
+      const scale =
+        Math.min(
+          1,
+          maxDimension /
+          image.naturalWidth,
+          maxDimension /
+          image.naturalHeight
+        );
+
+
+      markupCanvas.width =
+        Math.max(
+          1,
+          Math.round(
+            image.naturalWidth *
+            scale
+          )
+        );
+
+
+      markupCanvas.height =
+        Math.max(
+          1,
+          Math.round(
+            image.naturalHeight *
+            scale
+          )
+        );
+
+
+      markupContext.clearRect(
+        0,
+        0,
+        markupCanvas.width,
+        markupCanvas.height
+      );
+
+
+      markupContext.drawImage(
+        image,
+        0,
+        0,
+        markupCanvas.width,
+        markupCanvas.height
+      );
+
+
+      markupHistory = [
+        markupCanvas
+          .toDataURL(
+            "image/png"
+          )
       ];
 
-    const doneCount =
-      reverseTasks.filter(
-        function(item) {
-          return (
-            !!item.reassembled
-          );
-        }
-      ).length;
 
-    const percent =
-      Math.round(
-        (
-          doneCount /
-          reverseTasks.length
-        ) *
-        100
+      bindMarkupCanvas();
+
+
+      setMarkupTool(
+        "arrow"
       );
 
-    if (bar) {
 
-      bar.style.width =
-        percent + "%";
+      document
+        .getElementById(
+          "markupDialog"
+        )
+        .showModal();
+
+
+      URL.revokeObjectURL(
+        tempUrl
+      );
+
+    };
+
+
+  image.src =
+    tempUrl;
+
+}
+
+
+
+function closeMarkup() {
+
+  const dialog =
+    document.getElementById(
+      "markupDialog"
+    );
+
+
+  if (
+    dialog.open
+  ) {
+
+    dialog.close();
+
+  }
+
+}
+
+
+
+function setMarkupTool(
+  tool
+) {
+
+  markupTool =
+    tool;
+
+
+  document
+    .querySelectorAll(
+      ".markup-tools [data-tool]"
+    )
+    .forEach(
+      function(button) {
+
+        button
+          .classList
+          .toggle(
+            "active",
+            button.dataset.tool ===
+            tool
+          );
+
+      }
+    );
+
+}
+
+
+
+function getCanvasPoint(
+  event
+) {
+
+  const rect =
+    markupCanvas
+      .getBoundingClientRect();
+
+
+  return {
+
+    x:
+      (
+        event.clientX -
+        rect.left
+      )
+      *
+      (
+        markupCanvas.width /
+        rect.width
+      ),
+
+    y:
+      (
+        event.clientY -
+        rect.top
+      )
+      *
+      (
+        markupCanvas.height /
+        rect.height
+      )
+
+  };
+
+}
+
+
+
+function bindMarkupCanvas() {
+
+  markupCanvas.onpointerdown =
+    function(event) {
+
+      event.preventDefault();
+
+
+      const point =
+        getCanvasPoint(
+          event
+        );
+
+
+      markupStartX =
+        point.x;
+
+      markupStartY =
+        point.y;
+
+
+      if (
+        markupTool ===
+        "text"
+      ) {
+
+        const text =
+          prompt(
+            "Text label:"
+          );
+
+
+        if (text) {
+
+          pushMarkupHistory();
+
+
+          const fontSize =
+            Math.max(
+              24,
+              Math.round(
+                markupCanvas.width /
+                38
+              )
+            );
+
+
+          markupContext.font =
+            "bold " +
+            fontSize +
+            "px Arial";
+
+
+          markupContext.lineWidth =
+            Math.max(
+              3,
+              markupCanvas.width /
+              400
+            );
+
+
+          markupContext.strokeStyle =
+            "white";
+
+          markupContext.fillStyle =
+            "red";
+
+
+          markupContext.strokeText(
+            text,
+            markupStartX,
+            markupStartY
+          );
+
+
+          markupContext.fillText(
+            text,
+            markupStartX,
+            markupStartY
+          );
+
+
+          saveMarkupState();
+
+        }
+
+
+        return;
+
+      }
+
+
+      markupPointerDown =
+        true;
+
+
+      markupSnapshot =
+        markupContext
+          .getImageData(
+            0,
+            0,
+            markupCanvas.width,
+            markupCanvas.height
+          );
+
+
+      if (
+        markupTool ===
+        "draw"
+      ) {
+
+        pushMarkupHistory();
+
+
+        markupContext.beginPath();
+
+
+        markupContext.moveTo(
+          markupStartX,
+          markupStartY
+        );
+
+
+        markupContext.strokeStyle =
+          "red";
+
+
+        markupContext.lineWidth =
+          Math.max(
+            5,
+            markupCanvas.width /
+            180
+          );
+
+
+        markupContext.lineCap =
+          "round";
+
+      }
+
+
+      if (
+        markupCanvas.setPointerCapture
+      ) {
+
+        markupCanvas
+          .setPointerCapture(
+            event.pointerId
+          );
+
+      }
+
+    };
+
+
+  markupCanvas.onpointermove =
+    function(event) {
+
+      if (
+        !markupPointerDown
+      ) {
+
+        return;
+
+      }
+
+
+      const point =
+        getCanvasPoint(
+          event
+        );
+
+
+      if (
+        markupTool ===
+        "draw"
+      ) {
+
+        markupContext.lineTo(
+          point.x,
+          point.y
+        );
+
+
+        markupContext.stroke();
+
+
+        return;
+
+      }
+
+
+      markupContext.putImageData(
+        markupSnapshot,
+        0,
+        0
+      );
+
+
+      markupContext.strokeStyle =
+        "red";
+
+      markupContext.fillStyle =
+        "red";
+
+
+      markupContext.lineWidth =
+        Math.max(
+          5,
+          markupCanvas.width /
+          180
+        );
+
+
+      if (
+        markupTool ===
+        "circle"
+      ) {
+
+        drawMarkupEllipse(
+          markupStartX,
+          markupStartY,
+          point.x,
+          point.y
+        );
+
+      }
+
+
+      if (
+        markupTool ===
+        "arrow"
+      ) {
+
+        drawMarkupArrow(
+          markupStartX,
+          markupStartY,
+          point.x,
+          point.y
+        );
+
+      }
+
+    };
+
+
+  markupCanvas.onpointerup =
+    function(event) {
+
+      if (
+        !markupPointerDown
+      ) {
+
+        return;
+
+      }
+
+
+      markupPointerDown =
+        false;
+
+
+      if (
+        markupTool ===
+        "draw"
+      ) {
+
+        saveMarkupState();
+
+        return;
+
+      }
+
+
+      const point =
+        getCanvasPoint(
+          event
+        );
+
+
+      markupContext.putImageData(
+        markupSnapshot,
+        0,
+        0
+      );
+
+
+      pushMarkupHistory();
+
+
+      markupContext.strokeStyle =
+        "red";
+
+      markupContext.fillStyle =
+        "red";
+
+
+      markupContext.lineWidth =
+        Math.max(
+          5,
+          markupCanvas.width /
+          180
+        );
+
+
+      if (
+        markupTool ===
+        "circle"
+      ) {
+
+        drawMarkupEllipse(
+          markupStartX,
+          markupStartY,
+          point.x,
+          point.y
+        );
+
+      }
+
+
+      if (
+        markupTool ===
+        "arrow"
+      ) {
+
+        drawMarkupArrow(
+          markupStartX,
+          markupStartY,
+          point.x,
+          point.y
+        );
+
+      }
+
+
+      saveMarkupState();
+
+    };
+
+}
+
+
+
+function drawMarkupEllipse(
+  x1,
+  y1,
+  x2,
+  y2
+) {
+
+  const centerX =
+    (
+      x1 +
+      x2
+    ) /
+    2;
+
+
+  const centerY =
+    (
+      y1 +
+      y2
+    ) /
+    2;
+
+
+  const radiusX =
+    Math.max(
+      2,
+      Math.abs(
+        x2 -
+        x1
+      ) /
+      2
+    );
+
+
+  const radiusY =
+    Math.max(
+      2,
+      Math.abs(
+        y2 -
+        y1
+      ) /
+      2
+    );
+
+
+  markupContext.beginPath();
+
+
+  markupContext.ellipse(
+    centerX,
+    centerY,
+    radiusX,
+    radiusY,
+    0,
+    0,
+    Math.PI *
+    2
+  );
+
+
+  markupContext.stroke();
+
+}
+
+
+
+function drawMarkupArrow(
+  x1,
+  y1,
+  x2,
+  y2
+) {
+
+  const headLength =
+    Math.max(
+      16,
+      markupCanvas.width /
+      45
+    );
+
+
+  const angle =
+    Math.atan2(
+      y2 -
+      y1,
+      x2 -
+      x1
+    );
+
+
+  markupContext.beginPath();
+
+
+  markupContext.moveTo(
+    x1,
+    y1
+  );
+
+
+  markupContext.lineTo(
+    x2,
+    y2
+  );
+
+
+  markupContext.stroke();
+
+
+  markupContext.beginPath();
+
+
+  markupContext.moveTo(
+    x2,
+    y2
+  );
+
+
+  markupContext.lineTo(
+
+    x2 -
+    headLength *
+    Math.cos(
+      angle -
+      Math.PI /
+      6
+    ),
+
+    y2 -
+    headLength *
+    Math.sin(
+      angle -
+      Math.PI /
+      6
+    )
+
+  );
+
+
+  markupContext.lineTo(
+
+    x2 -
+    headLength *
+    Math.cos(
+      angle +
+      Math.PI /
+      6
+    ),
+
+    y2 -
+    headLength *
+    Math.sin(
+      angle +
+      Math.PI /
+      6
+    )
+
+  );
+
+
+  markupContext.closePath();
+
+
+  markupContext.fill();
+
+}
+
+
+
+function pushMarkupHistory() {
+
+  const state =
+    markupCanvas
+      .toDataURL(
+        "image/png"
+      );
+
+
+  if (
+    markupHistory[
+      markupHistory.length -
+      1
+    ] !==
+    state
+  ) {
+
+    markupHistory.push(
+      state
+    );
+
+  }
+
+}
+
+
+
+function saveMarkupState() {
+
+  const state =
+    markupCanvas
+      .toDataURL(
+        "image/png"
+      );
+
+
+  if (
+    markupHistory[
+      markupHistory.length -
+      1
+    ] !==
+    state
+  ) {
+
+    markupHistory.push(
+      state
+    );
+
+  }
+
+}
+
+
+
+function restoreMarkup(
+  dataUrl
+) {
+
+  const image =
+    new Image();
+
+
+  image.onload =
+    function() {
+
+      markupContext.clearRect(
+        0,
+        0,
+        markupCanvas.width,
+        markupCanvas.height
+      );
+
+
+      markupContext.drawImage(
+        image,
+        0,
+        0,
+        markupCanvas.width,
+        markupCanvas.height
+      );
+
+    };
+
+
+  image.src =
+    dataUrl;
+
+}
+
+
+
+function undoMarkup() {
+
+  if (
+    markupHistory.length <=
+    1
+  ) {
+
+    return;
+
+  }
+
+
+  markupHistory.pop();
+
+
+  restoreMarkup(
+    markupHistory[
+      markupHistory.length -
+      1
+    ]
+  );
+
+}
+
+
+
+function clearMarkup() {
+
+  if (
+    markupHistory.length ===
+    0
+  ) {
+
+    return;
+
+  }
+
+
+  restoreMarkup(
+    markupHistory[0]
+  );
+
+
+  markupHistory =
+    markupHistory.slice(
+      0,
+      1
+    );
+
+}
+
+
+
+async function saveMarkup() {
+
+  const photo =
+    getCurrentPhoto();
+
+
+  if (!photo) {
+
+    return;
+
+  }
+
+
+  const blob =
+    await new Promise(
+      function(resolve) {
+
+        markupCanvas.toBlob(
+          resolve,
+          "image/png",
+          .95
+        );
+
+      }
+    );
+
+
+  if (!blob) {
+
+    return;
+
+  }
+
+
+  if (
+    photo.markupAssetId
+  ) {
+
+    await deleteAsset(
+      photo.markupAssetId
+    );
+
+  }
+
+
+  photo.markupAssetId =
+    await putAsset(
+      blob,
+      {
+        type:
+          "markup-photo"
+      }
+    );
+
+
+  await saveCurrentProject();
+
+
+  closeMarkup();
+
+
+  const asset =
+    await getAsset(
+      photo.markupAssetId
+    );
+
+
+  if (
+    asset &&
+    asset.blob
+  ) {
+
+    document
+      .getElementById(
+        "photoDialogImage"
+      )
+      .src =
+      createObjectUrl(
+        asset.blob
+      );
+
+  }
+
+}
+
+
+
+async function renderReassemble() {
+
+  if (
+    !currentProject
+  ) {
+
+    return;
+
+  }
+
+
+  const reversedSteps =
+    currentProject
+      .steps
+      .slice()
+      .reverse();
+
+
+  const container =
+    document.getElementById(
+      "reassembleCard"
+    );
+
+
+  const doneCount =
+    reversedSteps
+      .filter(
+        function(step) {
+
+          return (
+            step.reassembled
+          );
+
+        }
+      )
+      .length;
+
+
+  const percent =
+    reversedSteps.length
+    ?
+    Math.round(
+      doneCount /
+      reversedSteps.length *
+      100
+    )
+    :
+    0;
+
+
+  document
+    .getElementById(
+      "reassemblyProgressBar"
+    )
+    .style
+    .width =
+    percent +
+    "%";
+
+
+  document
+    .getElementById(
+      "reassemblyProgressText"
+    )
+    .textContent =
+    percent +
+    "% reassembled (" +
+    doneCount +
+    " of " +
+    reversedSteps.length +
+    ")";
+
+
+  if (
+    reversedSteps.length ===
+    0
+  ) {
+
+    container.innerHTML =
+      '<div class="empty">' +
+      'There are no disassembly steps to reverse yet.' +
+      '</div>';
+
+    return;
+
+  }
+
+
+  let index =
+    reversedSteps
+      .findIndex(
+        function(step) {
+
+          return (
+            !step.reassembled
+          );
+
+        }
+      );
+
+
+  if (
+    index <
+    0
+  ) {
+
+    index =
+      reversedSteps.length -
+      1;
+
+  }
+
+
+  await renderReassembleStep(
+    index
+  );
+
+}
+
+
+
+async function renderReassembleStep(
+  index
+) {
+
+  const reversedSteps =
+    currentProject
+      .steps
+      .slice()
+      .reverse();
+
+
+  if (
+    reversedSteps.length ===
+    0
+  ) {
+
+    return;
+
+  }
+
+
+  index =
+    Math.max(
+      0,
+      Math.min(
+        index,
+        reversedSteps.length -
+        1
+      )
+    );
+
+
+  const step =
+    reversedSteps[
+      index
+    ];
+
+
+  const container =
+    document.getElementById(
+      "reassembleCard"
+    );
+
+
+  let photosHtml =
+    "";
+
+
+  for (
+    const photo
+    of step.photos || []
+  ) {
+
+    const imageAsset =
+      await getAsset(
+        photo.markupAssetId ||
+        photo.assetId
+      );
+
+
+    if (
+      !imageAsset ||
+      !imageAsset.blob
+    ) {
+
+      continue;
 
     }
 
-    if (text) {
 
-      text.textContent =
+    let audioHtml =
+      "";
+
+
+    if (
+      photo.audioAssetId
+    ) {
+
+      const audioAsset =
+        await getAsset(
+          photo.audioAssetId
+        );
+
+
+      if (
+        audioAsset &&
+        audioAsset.blob
+      ) {
+
+        audioHtml =
+          '<audio controls src="' +
+          createObjectUrl(
+            audioAsset.blob
+          ) +
+          '"></audio>';
+
+      }
+
+    }
+
+
+    photosHtml +=
+      `
+
+      <div class="photo-card">
+
+        <img
+          src="${createObjectUrl(imageAsset.blob)}"
+          alt="Reassembly reference photo">
+
+        ${audioHtml}
+
+
+        ${
+          photo.transcript
+          ?
+          `
+          <div class="transcript">
+            ${nl(photo.transcript)}
+          </div>
+          `
+          :
+          ""
+        }
+
+
+        ${
+          photo.textNote
+          ?
+          `
+          <div class="muted small">
+            ${nl(photo.textNote)}
+          </div>
+          `
+          :
+          ""
+        }
+
+      </div>
+      `;
+
+  }
+
+
+  let stepAudioHtml =
+    "";
+
+
+  if (
+    step.audioAssetId
+  ) {
+
+    const audioAsset =
+      await getAsset(
+        step.audioAssetId
+      );
+
+
+    if (
+      audioAsset &&
+      audioAsset.blob
+    ) {
+
+      stepAudioHtml =
+        `
+
+        <label>
+          Step Audio Note
+        </label>
+
+        <audio
+          controls
+          src="${createObjectUrl(audioAsset.blob)}">
+        </audio>
+        `;
+
+    }
+
+  }
+
+
+  container.innerHTML =
+    `
+
+    <div class="reassemble-card">
+
+      <div class="muted">
+        Reassembly step
+        ${index + 1}
+        of
+        ${reversedSteps.length}
+      </div>
+
+
+      <div class="reassemble-title">
+        ${escapeHtml(step.title)}
+      </div>
+
+
+      ${
+        step.notes
+        ?
+        `
+        <div class="notice">
+
+          <strong>
+            Saved note:
+          </strong>
+
+          <br>
+
+          ${nl(step.notes)}
+
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      ${
+        step.fasteners
+        ?
+        `
+        <span class="pill">
+          🔩
+          ${escapeHtml(step.fasteners)}
+        </span>
+        `
+        :
+        ""
+      }
+
+
+      ${
+        step.bag
+        ?
+        `
+        <span class="pill">
+          🏷️
+          ${escapeHtml(step.bag)}
+        </span>
+        `
+        :
+        ""
+      }
+
+
+      ${stepAudioHtml}
+
+
+      ${
+        photosHtml
+        ?
+        `
+        <div class="photo-grid">
+          ${photosHtml}
+        </div>
+        `
+        :
+        ""
+      }
+
+
+      <div
+        class="checkline"
+        style="margin:14px 0">
+
+        <input
+          id="reassembledCheck"
+          type="checkbox"
+          ${
+            step.reassembled
+            ?
+            "checked"
+            :
+            ""
+          }>
+
+        <label
+          for="reassembledCheck"
+          style="margin:0">
+
+          This step is reassembled
+
+        </label>
+
+      </div>
+
+
+      <div class="toolbar">
+
+        <button
+          class="secondary"
+          id="previousReassembleButton"
+          ${
+            index === 0
+            ?
+            "disabled"
+            :
+            ""
+          }>
+
+          ← Previous
+
+        </button>
+
+
+        <button
+          id="nextReassembleButton"
+          ${
+            index ===
+            reversedSteps.length -
+            1
+            ?
+            "disabled"
+            :
+            ""
+          }>
+
+          Next →
+
+        </button>
+
+      </div>
+
+    </div>
+    `;
+
+
+  document
+    .getElementById(
+      "reassembledCheck"
+    )
+    .onchange =
+    async function(event) {
+
+      step.reassembled =
+        event.target.checked;
+
+
+      await saveCurrentProject();
+
+
+      renderProgress();
+
+
+      const doneCount =
+        reversedSteps
+          .filter(
+            function(item) {
+
+              return (
+                item.reassembled
+              );
+
+            }
+          )
+          .length;
+
+
+      const percent =
+        Math.round(
+          doneCount /
+          reversedSteps.length *
+          100
+        );
+
+
+      document
+        .getElementById(
+          "reassemblyProgressBar"
+        )
+        .style
+        .width =
+        percent +
+        "%";
+
+
+      document
+        .getElementById(
+          "reassemblyProgressText"
+        )
+        .textContent =
         percent +
         "% reassembled (" +
         doneCount +
         " of " +
-        reverseTasks.length +
+        reversedSteps.length +
         ")";
 
-    }
 
-    let notesHTML =
-      task.notes
+      if (
+        event.target.checked &&
+        index <
+        reversedSteps.length -
+        1
+      ) {
 
-        ? '<div class="info-box"><strong>Saved Notes:</strong><br>' +
-          escapeHtml(
-            task.notes
-          ).replace(
-            /\n/g,
-            "<br>"
-          ) +
-          "</div>"
+        setTimeout(
+          function() {
 
-        : '<div class="info-box">No notes were saved for this step.</div>';
+            renderReassembleStep(
+              index +
+              1
+            );
 
-    let beginnerHTML =
-      "";
+          },
+          250
+        );
 
-    if (task.tools) {
-
-      beginnerHTML +=
-        '<div class="detail-block"><strong>🧰 Tools Needed:</strong><br>' +
-        escapeHtml(
-          task.tools
-        ).replace(
-          /\n/g,
-          "<br>"
-        ) +
-        "</div>";
-
-    }
-
-    if (
-      task.detailedSteps
-    ) {
-
-      beginnerHTML +=
-        '<div class="detail-block"><strong>👣 Step-by-Step:</strong><br>' +
-        escapeHtml(
-          task.detailedSteps
-        ).replace(
-          /\n/g,
-          "<br>"
-        ) +
-        "</div>";
-
-    }
-
-    if (
-      task.warning
-    ) {
-
-      beginnerHTML +=
-        '<div class="detail-block warning-detail"><strong>⚠️ Watch Out:</strong><br>' +
-        escapeHtml(
-          task.warning
-        ).replace(
-          /\n/g,
-          "<br>"
-        ) +
-        "</div>";
-
-    }
-
-    if (
-      task.photoGuide
-    ) {
-
-      beginnerHTML +=
-        '<div class="detail-block"><strong>📷 Photo Reminder:</strong><br>' +
-        escapeHtml(
-          task.photoGuide
-        ).replace(
-          /\n/g,
-          "<br>"
-        ) +
-        "</div>";
-
-    }
-
-    if (
-      task.reassemblyNotes
-    ) {
-
-      beginnerHTML +=
-        '<div class="detail-block"><strong>🔧 Reassembly Note:</strong><br>' +
-        escapeHtml(
-          task.reassemblyNotes
-        ).replace(
-          /\n/g,
-          "<br>"
-        ) +
-        "</div>";
-
-    }
-
-    let photosHTML =
-      "";
-
-    if (
-      task.photos &&
-      task.photos.length
-    ) {
-
-      photosHTML =
-        '<div><strong>Saved Photos:</strong></div>' +
-
-        '<div class="reassemble-photos">' +
-
-        task.photos
-          .map(
-            function(photo) {
-
-              return (
-                '<img src="' +
-                photo +
-                '" alt="Saved reassembly reference photo">'
-              );
-
-            }
-          )
-          .join("") +
-
-        "</div>";
-
-    } else {
-
-      photosHTML =
-        '<div class="info-box">No photos were saved for this step.</div>';
-
-    }
-
-    const isLast =
-      reassembleIndex ===
-      reverseTasks.length - 1;
-
-    const isFirst =
-      reassembleIndex ===
-      0;
-
-    card.innerHTML =
-      '<div class="reassemble-step-number">' +
-      "Reassembly Step " +
-      (
-        reassembleIndex + 1
-      ) +
-      " of " +
-      reverseTasks.length +
-      "</div>" +
-
-      '<div class="reassemble-title">' +
-      escapeHtml(
-        task.title
-      ) +
-      "</div>" +
-
-      notesHTML +
-
-      beginnerHTML +
-
-      photosHTML +
-
-      (
-        task.reassembled
-
-          ? '<div class="reassemble-complete">✓ This step is marked reassembled.</div>'
-
-          : ""
-      ) +
-
-      '<div class="reassemble-actions">' +
-
-      (
-        !isFirst
-
-          ? '<button type="button" onclick="previousReassembleStep()">← Previous Step</button>'
-
-          : ""
-      ) +
-
-      '<button type="button" onclick="toggleReassembledCurrent()">' +
-
-      (
-        task.reassembled
-          ? "↩ Mark Not Reassembled"
-          : "✓ Mark Reassembled"
-      ) +
-
-      "</button>" +
-
-      (
-        !isLast
-
-          ? '<button type="button" onclick="nextReassembleStep()">Next Step →</button>'
-
-          : ""
-      ) +
-
-      "</div>";
-
-  }
-
-
-  function toggleReassembledCurrent() {
-
-    const reverseTasks =
-      getReassembleTasks();
-
-    const current =
-      reverseTasks[
-        reassembleIndex
-      ];
-
-    if (!current) {
-      return;
-    }
-
-    const original =
-      projectTasks.find(
-        function(item) {
-          return (
-            item.id ===
-            current.id
-          );
-        }
-      );
-
-    if (!original) {
-      return;
-    }
-
-    original.reassembled =
-      !original.reassembled;
-
-    saveProjectTasks();
-    displayReassembleStep();
-  }
-
-
-  function nextReassembleStep() {
-
-    const reverseTasks =
-      getReassembleTasks();
-
-    if (
-      reassembleIndex <
-      reverseTasks.length - 1
-    ) {
-
-      reassembleIndex++;
-
-      displayReassembleStep();
-
-    }
-  }
-
-
-  function previousReassembleStep() {
-
-    if (
-      reassembleIndex >
-      0
-    ) {
-
-      reassembleIndex--;
-
-      displayReassembleStep();
-
-    }
-  }
-
-
-  function exitReassemble() {
-
-    document
-      .getElementById(
-        "reassembleSection"
-      )
-      .classList.add(
-        "hidden"
-      );
-
-    document
-      .getElementById(
-        "projectProgressSection"
-      )
-      .scrollIntoView({
-        behavior: "smooth"
-      });
-
-  }
-
-
-  /*
-   * HELPERS
-   */
-
-  function escapeHtml(
-    text
-  ) {
-
-    return String(
-      text || ""
-    )
-      .replace(
-        /&/g,
-        "&amp;"
-      )
-      .replace(
-        /</g,
-        "&lt;"
-      )
-      .replace(
-        />/g,
-        "&gt;"
-      )
-      .replace(
-        /"/g,
-        "&quot;"
-      )
-      .replace(
-        /'/g,
-        "&#039;"
-      );
-  }
-
-
-  /*
-   * STARTUP
-   */
-
-  document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-      loadProjectDetails();
-
-      displayProjectTasks();
-
-      displayProjectParts();
-
-      updateProjectProgress();
-
-      displayHistory();
-
-      if (vehicle) {
-        displayVehicle();
       }
 
-    }
-  );
+    };
+
+
+  document
+    .getElementById(
+      "previousReassembleButton"
+    )
+    .onclick =
+    function() {
+
+      renderReassembleStep(
+        index -
+        1
+      );
+
+    };
+
+
+  document
+    .getElementById(
+      "nextReassembleButton"
+    )
+    .onclick =
+    function() {
+
+      renderReassembleStep(
+        index +
+        1
+      );
+
+    };
+
+}
+
+
+
+async function resetReassembly() {
+
+  if (
+    currentProject.steps.length ===
+    0
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      "Reset all reassembly check marks for this project?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  currentProject
+    .steps
+    .forEach(
+      function(step) {
+
+        step.reassembled =
+          false;
+
+      }
+    );
+
+
+  await saveCurrentProject();
+
+
+  renderProgress();
+
+
+  await renderReassemble();
+
+}
+
+
+
+window.addEventListener(
+  "beforeunload",
+  releaseObjectUrls
+);
+
+
+
+(async function init() {
+
+  try {
+
+    await openDatabase();
+
+
+    showOnly(
+      "homeView"
+    );
+
+  }
+
+  catch(error) {
+
+    console.error(
+      error
+    );
+
+
+    document
+      .querySelector(
+        ".shell"
+      )
+      .innerHTML =
+      `
+
+      <div class="card warning">
+
+        <strong>
+          Rebuild Assistant could not open its local project database.
+        </strong>
+
+        <p>
+          Try opening the page in a normal browser window
+          instead of private/incognito mode.
+        </p>
+
+      </div>
+      `;
+
+  }
+
+})();
 
 </script>
 
