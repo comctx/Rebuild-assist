@@ -559,6 +559,35 @@
       flex-wrap: wrap;
       margin-top: 16px;
     }
+
+    .beginner-mode-box {
+      margin-top: 16px;
+      padding: 16px;
+      border: 2px solid #d9e7f7;
+      border-radius: 12px;
+      background: #f7fbff;
+    }
+
+    .beginner-mode-fields {
+      margin-top: 14px;
+    }
+
+    .beginner-mode-fields.hidden {
+      display: none;
+    }
+
+    .detail-block {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #f7f7f7;
+    }
+
+    .detail-block.warning-detail {
+      background: #fff7e6;
+      border-left: 4px solid #d48a00;
+    }
+
   </style>
 </head>
 
@@ -571,6 +600,21 @@
       <input id="editTaskTitleInput" type="text" placeholder="Enter a task" style="width:100%;margin-top:6px;">
       <label for="editTaskNotesInput" style="display:block;margin-top:14px;"><strong>Task Notes</strong></label>
       <textarea id="editTaskNotesInput" rows="5" placeholder="Optional notes" style="width:100%;margin-top:6px;"></textarea>
+
+      <label for="editTaskToolsInput" style="display:block;margin-top:14px;"><strong>Tools Needed</strong></label>
+      <textarea id="editTaskToolsInput" rows="3" placeholder="Tools needed" style="width:100%;margin-top:6px;"></textarea>
+
+      <label for="editTaskDetailedStepsInput" style="display:block;margin-top:14px;"><strong>Detailed Instructions</strong></label>
+      <textarea id="editTaskDetailedStepsInput" rows="7" placeholder="Numbered beginner-friendly steps" style="width:100%;margin-top:6px;"></textarea>
+
+      <label for="editTaskWarningInput" style="display:block;margin-top:14px;"><strong>Warnings</strong></label>
+      <textarea id="editTaskWarningInput" rows="3" placeholder="Things that are easy to break or install incorrectly" style="width:100%;margin-top:6px;"></textarea>
+
+      <label for="editTaskPhotoInput" style="display:block;margin-top:14px;"><strong>What to Photograph</strong></label>
+      <textarea id="editTaskPhotoInput" rows="3" placeholder="Photos to take before continuing" style="width:100%;margin-top:6px;"></textarea>
+
+      <label for="editTaskReassemblyInput" style="display:block;margin-top:14px;"><strong>Reassembly Notes</strong></label>
+      <textarea id="editTaskReassemblyInput" rows="4" placeholder="How this step goes back together" style="width:100%;margin-top:6px;"></textarea>
       <div class="edit-task-actions">
         <button type="button" onclick="saveEditedProjectTask()">Save Changes</button>
         <button type="button" onclick="closeEditTask()">Cancel</button>
@@ -730,6 +774,34 @@
 
     <label for="taskNotesInput">Task Notes (optional)</label>
     <textarea id="taskNotesInput" placeholder="Add notes about this task..."></textarea>
+
+    <div class="beginner-mode-box">
+      <label style="display:flex;gap:10px;align-items:center;cursor:pointer;">
+        <input type="checkbox" id="beginnerModeToggle" onchange="toggleBeginnerModeFields()">
+        <strong>Beginner Mode / Detailed Instructions</strong>
+      </label>
+      <p class="small">Turn this on for simple, step-by-step guidance for someone doing the job for the first time.</p>
+
+      <div id="beginnerModeFields" class="beginner-mode-fields hidden">
+        <label for="taskToolsInput">Tools Needed</label>
+        <textarea id="taskToolsInput" placeholder="Example: 10 mm socket, ratchet, pliers, drain pan"></textarea>
+
+        <label for="taskDetailedStepsInput">Detailed Step-by-Step Instructions</label>
+        <textarea id="taskDetailedStepsInput" placeholder="Example:
+1. Disconnect the negative battery cable.
+2. Take a photo before removing anything.
+3. Label each connector before unplugging it."></textarea>
+
+        <label for="taskWarningInput">Warnings / Things Easy to Break</label>
+        <textarea id="taskWarningInput" placeholder="Example: Do not pull on the wires. Release the plastic locking tab first."></textarea>
+
+        <label for="taskPhotoInput">What to Photograph</label>
+        <textarea id="taskPhotoInput" placeholder="Example: Take a clear photo of the wiring and bolt locations before removal."></textarea>
+
+        <label for="taskReassemblyInput">Reassembly Notes</label>
+        <textarea id="taskReassemblyInput" placeholder="Example: Reinstall the bracket before the belt. Route the wire behind the bracket."></textarea>
+      </div>
+    </div>
 
     <button onclick="addProjectTask()">
       ➕ Add Task
@@ -2362,6 +2434,22 @@
 
 
 
+
+  function toggleBeginnerModeFields() {
+    const toggle = document.getElementById("beginnerModeToggle");
+    const fields = document.getElementById("beginnerModeFields");
+    if (!toggle || !fields) return;
+    fields.classList.toggle("hidden", !toggle.checked);
+    localStorage.setItem("rebuildAssistBeginnerMode", toggle.checked ? "1" : "0");
+  }
+
+  function loadBeginnerModePreference() {
+    const toggle = document.getElementById("beginnerModeToggle");
+    if (!toggle) return;
+    toggle.checked = localStorage.getItem("rebuildAssistBeginnerMode") === "1";
+    toggleBeginnerModeFields();
+  }
+
   /*
    * PROJECT TASKS + PHOTOS
    */
@@ -2544,17 +2632,33 @@
 
     const notesInput = document.getElementById("taskNotesInput");
     const taskNotes = notesInput ? notesInput.value.trim() : "";
+    const beginnerMode = !!document.getElementById("beginnerModeToggle")?.checked;
+    const tools = document.getElementById("taskToolsInput")?.value.trim() || "";
+    const detailedSteps = document.getElementById("taskDetailedStepsInput")?.value.trim() || "";
+    const warning = document.getElementById("taskWarningInput")?.value.trim() || "";
+    const photoGuide = document.getElementById("taskPhotoInput")?.value.trim() || "";
+    const reassemblyNotes = document.getElementById("taskReassemblyInput")?.value.trim() || "";
 
     projectTasks.push({
       id: Date.now(),
       title: title,
       notes: taskNotes,
+      beginnerMode: beginnerMode,
+      tools: tools,
+      detailedSteps: detailedSteps,
+      warning: warning,
+      photoGuide: photoGuide,
+      reassemblyNotes: reassemblyNotes,
       completed: false,
       photos: []
     });
 
     input.value = "";
     if (notesInput) notesInput.value = "";
+    ["taskToolsInput","taskDetailedStepsInput","taskWarningInput","taskPhotoInput","taskReassemblyInput"].forEach(function(id){
+      const el = document.getElementById(id);
+      if (el) el.value = "";
+    });
     saveProjectTasks();
     displayProjectTasks();
     updateProjectProgress();
@@ -2594,6 +2698,11 @@
 
     titleInput.value = task.title || "";
     notesInput.value = task.notes || "";
+    document.getElementById("editTaskToolsInput").value = task.tools || "";
+    document.getElementById("editTaskDetailedStepsInput").value = task.detailedSteps || "";
+    document.getElementById("editTaskWarningInput").value = task.warning || "";
+    document.getElementById("editTaskPhotoInput").value = task.photoGuide || "";
+    document.getElementById("editTaskReassemblyInput").value = task.reassemblyNotes || "";
     modal.style.display = "block";
 
     setTimeout(function() {
@@ -2628,6 +2737,12 @@
 
     task.title = title;
     task.notes = notesInput.value.trim();
+    task.tools = document.getElementById("editTaskToolsInput").value.trim();
+    task.detailedSteps = document.getElementById("editTaskDetailedStepsInput").value.trim();
+    task.warning = document.getElementById("editTaskWarningInput").value.trim();
+    task.photoGuide = document.getElementById("editTaskPhotoInput").value.trim();
+    task.reassemblyNotes = document.getElementById("editTaskReassemblyInput").value.trim();
+    task.beginnerMode = !!(task.tools || task.detailedSteps || task.warning || task.photoGuide || task.reassemblyNotes);
 
     saveProjectTasks();
     displayProjectTasks();
@@ -2776,11 +2891,23 @@
         ? '<div class="info-box"><strong>Notes:</strong><br>' + escapeHtml(task.notes).replace(/\n/g, '<br>') + '</div>'
         : '';
 
+      let beginnerHTML = '';
+      if (task.beginnerMode || task.tools || task.detailedSteps || task.warning || task.photoGuide || task.reassemblyNotes) {
+        beginnerHTML += '<div class="detail-block"><strong>🧰 Tools Needed</strong><br>' +
+          (task.tools ? escapeHtml(task.tools).replace(/\n/g, '<br>') : 'No tools listed.') + '</div>';
+        beginnerHTML += '<div class="detail-block"><strong>👣 Detailed Instructions</strong><br>' +
+          (task.detailedSteps ? escapeHtml(task.detailedSteps).replace(/\n/g, '<br>') : 'No detailed instructions added yet.') + '</div>';
+        if (task.warning) beginnerHTML += '<div class="detail-block warning-detail"><strong>⚠️ Warning</strong><br>' + escapeHtml(task.warning).replace(/\n/g, '<br>') + '</div>';
+        if (task.photoGuide) beginnerHTML += '<div class="detail-block"><strong>📷 What to Photograph</strong><br>' + escapeHtml(task.photoGuide).replace(/\n/g, '<br>') + '</div>';
+        if (task.reassemblyNotes) beginnerHTML += '<div class="detail-block"><strong>🔧 Reassembly Notes</strong><br>' + escapeHtml(task.reassemblyNotes).replace(/\n/g, '<br>') + '</div>';
+      }
+
       div.innerHTML =
         '<div class="project-task-title">' +
         escapeHtml(task.title) +
         "</div>" +
         notesHTML +
+        beginnerHTML +
 
         '<button onclick="toggleProjectTask(' +
         task.id +
@@ -2882,6 +3009,13 @@
       ? '<div class="info-box"><strong>Saved Notes:</strong><br>' + escapeHtml(task.notes).replace(/\n/g, '<br>') + '</div>'
       : '<div class="info-box">No notes were saved for this step.</div>';
 
+    let beginnerHTML = '';
+    if (task.tools) beginnerHTML += '<div class="detail-block"><strong>🧰 Tools Needed:</strong><br>' + escapeHtml(task.tools).replace(/\n/g, '<br>') + '</div>';
+    if (task.detailedSteps) beginnerHTML += '<div class="detail-block"><strong>👣 Step-by-Step:</strong><br>' + escapeHtml(task.detailedSteps).replace(/\n/g, '<br>') + '</div>';
+    if (task.warning) beginnerHTML += '<div class="detail-block warning-detail"><strong>⚠️ Watch Out:</strong><br>' + escapeHtml(task.warning).replace(/\n/g, '<br>') + '</div>';
+    if (task.photoGuide) beginnerHTML += '<div class="detail-block"><strong>📷 Photo Reminder:</strong><br>' + escapeHtml(task.photoGuide).replace(/\n/g, '<br>') + '</div>';
+    if (task.reassemblyNotes) beginnerHTML += '<div class="detail-block"><strong>🔧 Reassembly Note:</strong><br>' + escapeHtml(task.reassemblyNotes).replace(/\n/g, '<br>') + '</div>';
+
     let photosHTML = '';
     if (task.photos && task.photos.length) {
       photosHTML = '<div><strong>Saved Photos:</strong></div><div class="reassemble-photos">' +
@@ -2900,6 +3034,7 @@
       '<div class="reassemble-step-number">Reassembly Step ' + (reassembleIndex + 1) + ' of ' + reverseTasks.length + '</div>' +
       '<div class="reassemble-title">' + escapeHtml(task.title) + '</div>' +
       notesHTML +
+      beginnerHTML +
       photosHTML +
       (task.reassembled ? '<div class="reassemble-complete">✓ This reassembly step is complete.</div>' : '') +
       '<div class="reassemble-actions">' +
@@ -2987,6 +3122,7 @@
 
       displayHistory();
       displayProjectTasks();
+      loadBeginnerModePreference();
 
     }
   );
