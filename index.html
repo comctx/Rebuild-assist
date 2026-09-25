@@ -7448,6 +7448,18 @@ async function renderReassemble() {
   }
 
 
+  if (
+    doneCount ===
+    reversedSteps.length
+  ) {
+
+    renderReassemblyComplete();
+
+    return;
+
+  }
+
+
   let index =
     reversedSteps
       .findIndex(
@@ -7917,6 +7929,26 @@ async function renderReassembleStep(
 
       if (
         event.target.checked &&
+        doneCount ===
+        reversedSteps.length
+      ) {
+
+        setTimeout(
+          function() {
+
+            renderReassemblyComplete();
+
+          },
+          300
+        );
+
+        return;
+
+      }
+
+
+      if (
+        event.target.checked &&
         index <
         reversedSteps.length -
         1
@@ -7967,6 +7999,91 @@ async function renderReassembleStep(
       );
 
     };
+
+}
+
+
+
+function renderReassemblyComplete() {
+
+  const container =
+    document.getElementById(
+      "reassembleCard"
+    );
+
+  if (!container) {
+
+    return;
+
+  }
+
+
+  document
+    .getElementById(
+      "reassemblyProgressBar"
+    )
+    .style
+    .width =
+    "100%";
+
+
+  document
+    .getElementById(
+      "reassemblyProgressText"
+    )
+    .textContent =
+    "100% reassembled";
+
+
+  container.innerHTML =
+    `
+    <div class="reassemble-card">
+
+      <div
+        style="text-align:center;
+               padding:22px 10px;">
+
+        <div
+          style="font-size:2.4rem;
+                 margin-bottom:8px;">
+          ✅
+        </div>
+
+        <h3
+          style="margin:0 0 8px;">
+          Reassembly Complete
+        </h3>
+
+        <p class="muted">
+          All saved disassembly steps have been reassembled.
+        </p>
+
+        <button
+          type="button"
+          class="good"
+          onclick="closeReassembly()">
+          Close Reassembly
+        </button>
+
+      </div>
+
+    </div>
+    `;
+
+}
+
+
+
+function closeReassembly() {
+
+  openTab(
+    "disassembly"
+  );
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 
 }
 
