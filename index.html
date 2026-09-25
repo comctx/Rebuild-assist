@@ -2879,8 +2879,7 @@
     if (text) text.textContent = percent + "% reassembled (" + doneCount + " of " + reverseTasks.length + ")";
 
     let notesHTML = task.notes
-      ? '<div class="info-box"><strong>Saved Notes:</strong><br>' + escapeHtml(task.notes).replace(/\
-/g, '<br>') + '</div>'
+      ? '<div class="info-box"><strong>Saved Notes:</strong><br>' + escapeHtml(task.notes).replace(/\n/g, '<br>') + '</div>'
       : '<div class="info-box">No notes were saved for this step.</div>';
 
     let photosHTML = '';
