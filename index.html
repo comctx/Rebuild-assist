@@ -746,8 +746,10 @@
       </button>
 
       <button
+        id="reassembleTabButton"
+        type="button"
         data-tab="reassemble"
-        onclick="openTab('reassemble')">
+        onclick="openReassembleTab()">
         ↩️ Reassemble
       </button>
 
@@ -1163,6 +1165,7 @@
 
             <button
               id="beginnerModeButton"
+              type="button"
               class="secondary"
               onclick="toggleBeginnerMode()">
               Beginner Mode: OFF
@@ -2690,7 +2693,116 @@ async function deleteProject(
 
 
 
+async function openReassembleTab() {
+
+  if (!currentProject) {
+
+    alert(
+      "Open or start a project first."
+    );
+
+    return;
+
+  }
+
+  currentTab =
+    "reassemble";
+
+  document
+    .querySelectorAll(
+      ".tabpage"
+    )
+    .forEach(
+      function(page) {
+
+        page.classList.add(
+          "hidden"
+        );
+
+      }
+    );
+
+  const page =
+    document.getElementById(
+      "tab-reassemble"
+    );
+
+  if (!page) {
+
+    alert(
+      "Reassemble could not open. Please refresh the page."
+    );
+
+    return;
+
+  }
+
+  page.classList.remove(
+    "hidden"
+  );
+
+  document
+    .querySelectorAll(
+      "#tabbar button"
+    )
+    .forEach(
+      function(button) {
+
+        button.classList.toggle(
+          "active",
+          button.dataset.tab ===
+          "reassemble"
+        );
+
+      }
+    );
+
+  try {
+
+    await renderReassemble();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Reassemble error:",
+      error
+    );
+
+    const container =
+      document.getElementById(
+        "reassembleCard"
+      );
+
+    if (container) {
+
+      container.innerHTML =
+        '<div class="warning">' +
+        '<strong>Reassemble opened, but the saved project data could not be displayed.</strong>' +
+        '<p>Try closing this project and opening it again.</p>' +
+        '</div>';
+
+    }
+
+  }
+
+}
+
+
+
 function openTab(tab) {
+
+  if (
+    tab ===
+    "reassemble"
+  ) {
+
+    openReassembleTab();
+
+    return;
+
+  }
 
   currentTab =
     tab;
@@ -7864,6 +7976,10 @@ async function toggleBeginnerMode() {
 
   if (!currentProject) {
 
+    alert(
+      "Open or start a project first."
+    );
+
     return;
 
   }
@@ -7871,9 +7987,56 @@ async function toggleBeginnerMode() {
   currentProject.beginnerMode =
     !currentProject.beginnerMode;
 
-  await saveCurrentProject();
+  const button =
+    document.getElementById(
+      "beginnerModeButton"
+    );
 
-  await renderReassemble();
+  if (button) {
+
+    button.textContent =
+      currentProject.beginnerMode
+      ?
+      "Beginner Mode: ON"
+      :
+      "Beginner Mode: OFF";
+
+    button.classList.toggle(
+      "good",
+      currentProject.beginnerMode
+    );
+
+  }
+
+  try {
+
+    await saveCurrentProject();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Could not save Beginner Mode setting:",
+      error
+    );
+
+  }
+
+  try {
+
+    await renderReassemble();
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Could not refresh Reassemble:",
+      error
+    );
+
+  }
 
 }
 
