@@ -337,6 +337,59 @@
       font-weight: bold;
     }
 
+    .reassemble-card {
+      border: 2px solid #1f4d3a;
+      border-radius: 12px;
+      padding: 18px;
+      background: #f7fbf9;
+      margin-top: 14px;
+    }
+
+    .reassemble-step-number {
+      font-weight: bold;
+      color: #1f4d3a;
+      margin-bottom: 8px;
+    }
+
+    .reassemble-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .reassemble-photos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .reassemble-photos img {
+      width: 100%;
+      max-width: 300px;
+      max-height: 260px;
+      object-fit: contain;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      background: white;
+    }
+
+    .reassemble-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .reassemble-complete {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 9px;
+      background: #eaf6ef;
+      font-weight: bold;
+      color: #1f4d3a;
+    }
+
     footer {
       text-align: center;
       padding: 25px;
@@ -738,6 +791,32 @@
 
     <div class="progress-text" id="projectProgressText">0% complete</div>
 
+    <button type="button" onclick="startReassemble()" style="margin-top:16px;">
+      🔧 Start Reassemble
+    </button>
+
+  </div>
+
+
+  <!-- REASSEMBLE -->
+
+  <div class="section hidden" id="reassembleSection">
+    <h2>🔧 Reassemble</h2>
+    <p>
+      Rebuild Assistant is walking you back through your project in reverse order.
+      Use your saved notes and photos as a guide.
+    </p>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="reassembleProgressBar"></div>
+    </div>
+    <div class="progress-text" id="reassembleProgressText">0% reassembled</div>
+
+    <div id="reassembleStepCard" class="reassemble-card"></div>
+
+    <button class="secondary" type="button" onclick="exitReassemble()" style="margin-top:14px;">
+      ← Back to Project
+    </button>
   </div>
 
 
@@ -1629,6 +1708,7 @@
       "projectPartsSection",
       "projectNotesSection",
       "projectProgressSection",
+      "reassembleSection",
       "repairDatabase",
       "categorySection",
       "guidedRepair",
@@ -2732,6 +2812,157 @@
 
       container.appendChild(div);
     });
+  }
+
+  /*
+   * REASSEMBLE MODE
+   */
+
+  let reassembleIndex = 0;
+
+  function getReassembleTasks() {
+    return projectTasks.slice().reverse();
+  }
+
+  function startReassemble() {
+    if (projectTasks.length === 0) {
+      alert("Add at least one project task before starting Reassemble.");
+      return;
+    }
+
+    const reverseTasks = getReassembleTasks();
+    const firstIncomplete = reverseTasks.findIndex(function(task) {
+      return !task.reassembled;
+    });
+
+    reassembleIndex = firstIncomplete >= 0 ? firstIncomplete : 0;
+
+    [
+      "vehicleSetup",
+      "vehicleDisplay",
+      "projectTasksSection",
+      "projectPartsSection",
+      "projectNotesSection",
+      "projectProgressSection",
+      "repairDatabase",
+      "categorySection",
+      "guidedRepair",
+      "notesSection",
+      "historySection",
+      "otherProjectsSection"
+    ].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("hidden");
+    });
+
+    document.getElementById("reassembleSection").classList.remove("hidden");
+    displayReassembleStep();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function displayReassembleStep() {
+    const reverseTasks = getReassembleTasks();
+    const card = document.getElementById("reassembleStepCard");
+    const bar = document.getElementById("reassembleProgressBar");
+    const text = document.getElementById("reassembleProgressText");
+
+    if (!card || reverseTasks.length === 0) return;
+
+    if (reassembleIndex < 0) reassembleIndex = 0;
+    if (reassembleIndex >= reverseTasks.length) reassembleIndex = reverseTasks.length - 1;
+
+    const task = reverseTasks[reassembleIndex];
+    const doneCount = reverseTasks.filter(function(item) { return !!item.reassembled; }).length;
+    const percent = Math.round((doneCount / reverseTasks.length) * 100);
+
+    if (bar) bar.style.width = percent + "%";
+    if (text) text.textContent = percent + "% reassembled (" + doneCount + " of " + reverseTasks.length + ")";
+
+    let notesHTML = task.notes
+      ? '<div class="info-box"><strong>Saved Notes:</strong><br>' + escapeHtml(task.notes).replace(/\
+/g, '<br>') + '</div>'
+      : '<div class="info-box">No notes were saved for this step.</div>';
+
+    let photosHTML = '';
+    if (task.photos && task.photos.length) {
+      photosHTML = '<div><strong>Saved Photos:</strong></div><div class="reassemble-photos">' +
+        task.photos.map(function(photo) {
+          return '<img src="' + photo + '" alt="Saved reassembly reference photo">';
+        }).join('') +
+        '</div>';
+    } else {
+      photosHTML = '<div class="info-box">No photos were saved for this step.</div>';
+    }
+
+    const isLast = reassembleIndex === reverseTasks.length - 1;
+    const isFirst = reassembleIndex === 0;
+
+    card.innerHTML =
+      '<div class="reassemble-step-number">Reassembly Step ' + (reassembleIndex + 1) + ' of ' + reverseTasks.length + '</div>' +
+      '<div class="reassemble-title">' + escapeHtml(task.title) + '</div>' +
+      notesHTML +
+      photosHTML +
+      (task.reassembled ? '<div class="reassemble-complete">✓ This reassembly step is complete.</div>' : '') +
+      '<div class="reassemble-actions">' +
+        '<button type="button" onclick="previousReassembleStep()"' + (isFirst ? ' disabled' : '') + '>← Previous</button>' +
+        '<button type="button" onclick="toggleReassembleStep(' + task.id + ')">' +
+          (task.reassembled ? '↩ Mark Not Done' : '✓ Mark Reassembled') +
+        '</button>' +
+        '<button type="button" onclick="nextReassembleStep()"' + (isLast ? ' disabled' : '') + '>Next →</button>' +
+      '</div>' +
+      (percent === 100 ? '<div class="reassemble-complete">🎉 Reassembly complete! Every saved step has been marked reassembled.</div>' : '');
+  }
+
+  function toggleReassembleStep(taskId) {
+    const task = projectTasks.find(function(item) { return item.id === taskId; });
+    if (!task) return;
+
+    task.reassembled = !task.reassembled;
+    saveProjectTasks();
+
+    const reverseTasks = getReassembleTasks();
+    if (task.reassembled && reassembleIndex < reverseTasks.length - 1) {
+      reassembleIndex += 1;
+    }
+
+    displayReassembleStep();
+  }
+
+  function previousReassembleStep() {
+    if (reassembleIndex > 0) {
+      reassembleIndex -= 1;
+      displayReassembleStep();
+    }
+  }
+
+  function nextReassembleStep() {
+    const reverseTasks = getReassembleTasks();
+    if (reassembleIndex < reverseTasks.length - 1) {
+      reassembleIndex += 1;
+      displayReassembleStep();
+    }
+  }
+
+  function exitReassemble() {
+    document.getElementById("reassembleSection").classList.add("hidden");
+
+    if (vehicle) {
+      document.getElementById("vehicleSetup").classList.remove("hidden");
+      document.getElementById("repairDatabase").classList.remove("hidden");
+      document.getElementById("historySection").classList.remove("hidden");
+      displayVehicle();
+    } else {
+      document.getElementById("otherProjectsSection").classList.remove("hidden");
+    }
+
+    document.getElementById("projectTasksSection").classList.remove("hidden");
+    document.getElementById("projectPartsSection").classList.remove("hidden");
+    document.getElementById("projectNotesSection").classList.remove("hidden");
+    document.getElementById("projectProgressSection").classList.remove("hidden");
+
+    displayProjectTasks();
+    updateProjectProgress();
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function escapeHtml(value) {
