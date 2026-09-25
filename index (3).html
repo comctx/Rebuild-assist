@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b4b9b">
+  <title>Rebuild Assistant</title>
+  <style>
+    :root{
+      --blue:#0b4b9b;
+      --blue2:#0d63cc;
+      --light:#eef5ff;
+      --ink:#172033;
+      --muted:#667085;
+      --line:#d7deea;
+      --good:#147a3f;
+      --warn:#9a6700;
+      --danger:#b42318;
+      --card:#ffffff;
+      --bg:#f5f7fb;
+      --shadow:0 6px 24px rgba(18,38,63,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      line-height:1.45;
+    }
+    button,input,textarea,select{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+    header{
+      background:linear-gradient(135deg,var(--blue),var(--blue2));
+      color:white;
+      padding:calc(18px + env(safe-area-inset-top)) 18px 18px;
+      box-shadow:0 2px 12px rgba(0,0,0,.15);
+    }
+    .header-inner,.shell{max-width:1080px;margin:0 auto}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand-mark{
+      width:48px;height:48px;border-radius:14px;
+      display:grid;place-items:center;background:rgba(255,255,255,.15);
+      font-size:28px;border:1px solid rgba(255,255,255,.25)
+    }
+    h1{font-size:clamp(1.6rem,4vw,2.25rem);margin:0}
+    header p{margin:4px 0 0;color:#dceaff}
+    .shell{padding:18px 14px 42px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:18px;
+      margin:14px 0;
+      box-shadow:var(--shadow);
+    }
+    .hero{text-align:center;padding:24px 18px}
+    .hero h2{margin:0 0 8px;font-size:1.7rem}
+    .hero p{margin:0 auto 18px;max-width:700px;color:var(--muted)}
+    .home-actions,.toolbar,.row,.mini-actions,.tabbar{
+      display:flex;gap:10px;flex-wrap:wrap;align-items:center
+    }
+    .home-actions{justify-content:center}
+    button,.button-label{
+      border:0;
+      border-radius:12px;
+      padding:11px 14px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:700;
+      min-height:44px;
+    }
+    button:hover{filter:brightness(1.04)}
+    button.secondary,.button-label.secondary{background:#e9eef8;color:#1f3d68}
+    button.good{background:var(--good)}
+    button.warn{background:var(--warn)}
+    button.danger{background:var(--danger)}
+    button.ghost{background:transparent;color:var(--blue);border:1px solid var(--line)}
+    button:disabled{opacity:.45;cursor:not-allowed}
+    label{display:block;font-weight:700;margin:12px 0 6px}
+    input[type="text"],textarea,select{
+      width:100%;border:1px solid #bdc7d6;border-radius:12px;
+      padding:12px;background:#fff;color:var(--ink)
+    }
+    textarea{min-height:110px;resize:vertical}
+    input[type="file"]{max-width:100%}
+    .muted{color:var(--muted)}
+    .small{font-size:.9rem}
+    .notice{
+      padding:12px 14px;border-radius:12px;background:#f3f7ff;border:1px solid #cfe0ff;
+      color:#214873;margin:10px 0
+    }
+    .warning{
+      padding:12px 14px;border-radius:12px;background:#fff8e8;border:1px solid #f0d691;
+      color:#7b5600;margin:10px 0
+    }
+    .success{
+      padding:12px 14px;border-radius:12px;background:#ecf8f0;border:1px solid #b7e0c3;
+      color:#126435;margin:10px 0
+    }
+    .project-title{
+      display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap
+    }
+    .project-title h2{margin:0}
+    .tabbar{position:sticky;top:0;z-index:20;background:rgba(245,247,251,.95);padding:8px 0;backdrop-filter:blur(8px)}
+    .tabbar button{background:#e7edf7;color:#24466f}
+    .tabbar button.active{background:var(--blue);color:#fff}
+    .section-title{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+    .section-title h3{margin:0}
+    .step,.task,.part,.project-row,.photo-card{
+      border:1px solid var(--line);border-radius:14px;padding:14px;margin:12px 0;background:#fff
+    }
+    .step-top,.task-top,.part-top,.project-row{
+      display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap
+    }
+    .step-num{
+      display:inline-flex;min-width:32px;height:32px;border-radius:50%;
+      align-items:center;justify-content:center;background:var(--light);color:var(--blue);font-weight:800
+    }
+    .pill{
+      display:inline-block;border-radius:999px;padding:4px 9px;background:#eef2f7;color:#42526b;
+      font-size:.82rem;font-weight:700;margin:2px 4px 2px 0
+    }
+    .photo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px}
+    .photo-card img{width:100%;height:180px;object-fit:cover;border-radius:10px;background:#eee}
+    .photo-card audio{width:100%;margin-top:8px}
+    .transcript{
+      background:#f7f8fa;border-left:4px solid var(--blue);padding:9px 10px;border-radius:8px;margin-top:8px;
+      white-space:pre-wrap
+    }
+    .progress-wrap{height:18px;background:#e5e9f0;border-radius:999px;overflow:hidden}
+    .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--blue),#2f80ed);transition:.2s}
+    .metric-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+    .metric{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px}
+    .metric strong{display:block;font-size:1.4rem}
+    footer{text-align:center;color:#617086;padding:28px 12px 40px}
+    dialog{
+      width:min(96vw,980px);max-height:92vh;border:0;border-radius:18px;padding:0;
+      box-shadow:0 24px 80px rgba(0,0,0,.28)
+    }
+    dialog::backdrop{background:rgba(0,0,0,.55)}
+    .dialog-head{
+      position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);
+      padding:12px 14px;display:flex;justify-content:space-between;gap:10px;align-items:center;z-index:5
+    }
+    .dialog-body{padding:14px;overflow:auto}
+    .dialog-head h3{margin:0}
+    #markupCanvas{
+      width:100%;height:auto;touch-action:none;background:#111;border-radius:10px;display:block
+    }
+    .markup-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+    .markup-tools button{background:#e9eef8;color:#24466f}
+    .markup-tools button.active{background:var(--blue);color:white}
+    .reassemble-card{border:2px solid #b8c9e6;background:#fff;border-radius:16px;padding:16px}
+    .big-step{font-size:1.35rem;font-weight:800}
+    .empty{text-align:center;color:var(--muted);padding:18px}
+    .checkline{display:flex;align-items:center;gap:8px}
+    .checkline input{width:20px;height:20px}
+    .sr-only{position:absolute;left:-9999px}
+    @media(max-width:650px){
+      .shell{padding-left:10px;padding-right:10px}
+      .card{padding:14px}
+      .home-actions button{width:100%}
+      .toolbar button,.mini-actions button{flex:1 1 145px}
+      .tabbar{overflow:auto;flex-wrap:nowrap}
+      .tabbar button{white-space:nowrap;flex:0 0 auto}
+      .photo-card img{height:210px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">🧰</div>
+      <div>
+        <h1>Rebuild Assistant</h1>
+        <p>Take it apart. Remember it. Put it back together.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <section id="homeView">
+    <div class="card hero">
+      <h2>Your project memory system</h2>
+      <p>Create one project, document each disassembly step with photos, audio and markup, then let Rebuild Assistant walk you back through it in reverse.</p>
+      <div class="home-actions">
+        <button onclick="showNewProject()">➕ Start New Project</button>
+        <button class="secondary" onclick="showProjectPicker()">📂 Continue Project</button>
+      </div>
+    </div>
+    <div class="card">
+      <strong>Everything is organized by project name.</strong>
+      <p class="muted">No vehicle category or rebuild category is required. Use a name that makes sense to you.</p>
+    </div>
+  </section>
+
+  <section id="newProjectView" class="hidden">
+    <div class="card">
+      <h2>Start New Project</h2>
+      <label for="newProjectName">Project Name</label>
+      <input id="newProjectName" type="text" placeholder="Example: 1957 Thunderbird Front Brakes">
+      <div class="toolbar" style="margin-top:14px">
+        <button onclick="createProject()">Start Project</button>
+        <button class="secondary" onclick="goHome()">Cancel</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="pickerView" class="hidden">
+    <div class="card">
+      <div class="section-title">
+        <h2>Continue Project</h2>
+        <button class="secondary" onclick="goHome()">← Home</button>
+      </div>
+      <div id="projectPickerList"></div>
+    </div>
+  </section>
+
+  <section id="projectView" class="hidden">
+    <div class="card project-title">
+      <div>
+        <div class="muted small">CURRENT PROJECT</div>
+        <h2 id="currentProjectName">Project</h2>
+      </div>
+      <div class="toolbar">
+        <button class="secondary" onclick="showProjectPicker()">Switch Project</button>
+        <button class="secondary" onclick="goHome()">Home</button>
+      </div>
+    </div>
+
+    <div class="tabbar" id="tabbar">
+      <button data-tab="disassembly" onclick="openTab('disassembly')">🔧 Disassembly</button>
+      <button data-tab="tasks" onclick="openTab('tasks')">✅ Tasks</button>
+      <button data-tab="parts" onclick="openTab('parts')">🔩 Parts</button>
+      <button data-tab="notes" onclick="openTab('notes')">📝 Notes</button>
+      <button data-tab="progress" onclick="openTab('progress')">📈 Progress</button>
+      <button data-tab="reassemble" onclick="openTab('reassemble')">↩️ Reassemble</button>
+    </div>
+
+    <section id="tab-disassembly" class="tabpage">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h3>Disassembly Steps</h3>
+            <div class="muted">Record the order you take things apart. Reassemble will reverse it.</div>
+          </div>
+          <button onclick="toggleStepForm(true)">➕ Add Step</button>
+        </div>
+
+        <div id="stepForm" class="hidden">
+          <hr>
+          <label for="stepTitle">What did you remove or do?</label>
+          <input id="stepTitle" type="text" placeholder="Example: Removed left headlight bracket">
+
+          <label for="stepNotes">Written Note</label>
+          <textarea id="stepNotes" placeholder="Anything you want to remember about this step..."></textarea>
+
+          <div class="toolbar">
+            <button id="dictateStepBtn" class="secondary" onclick="dictateInto('stepNotes', this)">🎙️ Dictate Note</button>
+            <button id="recordStepBtn" class="secondary" onclick="toggleAudioRecording('step', this)">🎤 Record Audio</button>
+          </div>
+          <div id="stepRecordingStatus" class="muted small"></div>
+
+          <label for="stepFasteners">Fasteners / Bolts / Clips</label>
+          <input id="stepFasteners" type="text" placeholder="Example: 2 short bolts, 1 long bolt">
+
+          <label for="stepBag">Bag / Container Number</label>
+          <input id="stepBag" type="text" placeholder="Example: Bag 4">
+
+          <label for="stepPhotoInput">Photos</label>
+          <input id="stepPhotoInput" type="file" accept="image/*" capture="environment" multiple>
+          <div class="notice small">After the step is saved, each photo can have its own audio note, transcription and markup.</div>
+
+          <div class="toolbar" style="margin-top:12px">
+            <button onclick="saveNewStep()">Save Disassembly Step</button>
+            <button class="secondary" onclick="toggleStepForm(false)">Cancel</button>
+          </div>
+        </div>
+
+        <div id="stepsList"></div>
+      </div>
+    </section>
+
+    <section id="tab-tasks" class="tabpage hidden">
+      <div class="card">
+        <div class="section-title"><h3>Project Tasks</h3></div>
+        <label for="taskTitle">New Task</label>
+        <input id="taskTitle" type="text" placeholder="Example: Clean mounting surface">
+        <label for="taskNotes">Task Notes</label>
+        <textarea id="taskNotes" placeholder="Optional notes..."></textarea>
+        <button onclick="addTask()">➕ Add Task</button>
+        <div id="tasksList"></div>
+      </div>
+    </section>
+
+    <section id="tab-parts" class="tabpage hidden">
+      <div class="card">
+        <div class="section-title"><h3>Project Parts</h3></div>
+        <label for="partName">Part</label>
+        <input id="partName" type="text" placeholder="Example: Water pump gasket">
+        <label for="partStatus">Status</label>
+        <select id="partStatus">
+          <option value="need">Need</option>
+          <option value="have">Have</option>
+          <option value="installed">Installed</option>
+        </select>
+        <button onclick="addPart()" style="margin-top:12px">➕ Add Part</button>
+        <div id="partsList"></div>
+      </div>
+    </section>
+
+    <section id="tab-notes" class="tabpage hidden">
+      <div class="card">
+        <h3>Project Notes</h3>
+        <textarea id="projectNotes" placeholder="General notes about this project..."></textarea>
+        <div class="toolbar">
+          <button onclick="saveProjectNotes()">Save Project Notes</button>
+          <button class="secondary" onclick="dictateInto('projectNotes', this)">🎙️ Dictate Note</button>
+        </div>
+        <div id="notesSaved" class="success hidden">Project notes saved.</div>
+      </div>
+    </section>
+
+    <section id="tab-progress" class="tabpage hidden">
+      <div class="card">
+        <h3>Project Progress</h3>
+        <div class="metric-grid">
+          <div class="metric"><span class="muted">Disassembly steps</span><strong id="metricSteps">0</strong></div>
+          <div class="metric"><span class="muted">Tasks complete</span><strong id="metricTasks">0/0</strong></div>
+          <div class="metric"><span class="muted">Parts installed</span><strong id="metricParts">0/0</strong></div>
+          <div class="metric"><span class="muted">Reassembled</span><strong id="metricReassembled">0/0</strong></div>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar" id="overallProgressBar"></div></div>
+        <div id="overallProgressText" class="muted" style="margin-top:8px">0% complete</div>
+      </div>
+    </section>
+
+    <section id="tab-reassemble" class="tabpage hidden">
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h3>Reassemble</h3>
+            <div class="muted">Your disassembly steps are shown in reverse order.</div>
+          </div>
+          <button class="secondary" onclick="resetReassembly()">Reset Reassembly</button>
+        </div>
+        <div class="progress-wrap" style="margin-top:14px"><div class="progress-bar" id="reassemblyProgressBar"></div></div>
+        <div id="reassemblyProgressText" class="muted" style="margin:8px 0 14px">0% reassembled</div>
+        <div id="reassembleCard"></div>
+      </div>
+    </section>
+  </section>
+</main>
+
+<footer>
+  Rebuild Assistant &copy; 2026<br>
+  <strong>A DONCO-BAYCITY™ App</strong>
+</footer>
+
+<dialog id="photoDialog">
+  <div class="dialog-head">
+    <h3>Photo Notes & Markup</h3>
+    <button class="secondary" onclick="closePhotoDialog()">Close</button>
+  </div>
+  <div class="dialog-body">
+    <img id="photoDialogImage" alt="Project photo" style="width:100%;max-height:55vh;object-fit:contain;background:#111;border-radius:12px">
+    <div class="toolbar" style="margin-top:10px">
+      <button onclick="openMarkup()">✏️ Mark Up Photo</button>
+      <button id="photoRecordBtn" class="secondary" onclick="toggleAudioRecording('photo', this)">🎤 Record Audio Note</button>
+      <button id="photoDictateBtn" class="secondary" onclick="dictateInto('photoTranscript', this)">🎙️ Dictate Transcript</button>
+    </div>
+    <div id="photoRecordingStatus" class="muted small"></div>
+
+    <label for="photoTranscript">Photo Note / Transcript</label>
+    <textarea id="photoTranscript" placeholder="Example: This long bolt goes in the lower hole."></textarea>
+
+    <label for="photoTextNote">Additional Text Note</label>
+    <textarea id="photoTextNote" placeholder="Optional note..."></textarea>
+
+    <div id="photoAudioPreview"></div>
+
+    <div class="toolbar">
+      <button onclick="savePhotoDetails()">Save Photo Notes</button>
+      <button class="danger" onclick="deleteCurrentPhoto()">Delete Photo</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="markupDialog">
+  <div class="dialog-head">
+    <h3>Mark Up Photo</h3>
+    <button class="secondary" onclick="closeMarkup()">Close</button>
+  </div>
+  <div class="dialog-body">
+    <div class="markup-tools">
+      <button data-tool="arrow" onclick="setMarkupTool('arrow')">➜ Arrow</button>
+      <button data-tool="circle" onclick="setMarkupTool('circle')">◯ Circle</button>
+      <button data-tool="draw" onclick="setMarkupTool('draw')">✍ Draw</button>
+      <button data-tool="text" onclick="setMarkupTool('text')">T Text</button>
+      <button onclick="undoMarkup()">↶ Undo</button>
+      <button onclick="clearMarkup()">Clear</button>
+      <button class="good" onclick="saveMarkup()">Save Markup</button>
+    </div>
+    <canvas id="markupCanvas"></canvas>
+    <div class="muted small" style="margin-top:8px">Use a finger, mouse or stylus. Text labels are placed where you tap.</div>
+  </div>
+</dialog>
+
+<script>
+"use strict";
+
+/* -----------------------------
+   DATABASE
+----------------------------- */
+const DB_NAME = "RebuildAssistantDB";
+const DB_VERSION = 1;
+const PROJECT_STORE = "projects";
+const ASSET_STORE = "assets";
+let db = null;
+
+function id(prefix="id"){
+  if (crypto && crypto.randomUUID) return prefix + "_" + crypto.randomUUID();
+  return prefix + "_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+}
+
+function openDatabase(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onupgradeneeded = e => {
+      const d = e.target.result;
+      if(!d.objectStoreNames.contains(PROJECT_STORE)){
+        d.createObjectStore(PROJECT_STORE,{keyPath:"id"});
+      }
+      if(!d.objectStoreNames.contains(ASSET_STORE)){
+        d.createObjectStore(ASSET_STORE,{keyPath:"id"});
+      }
+    };
+    req.onsuccess = e => { db = e.target.result; resolve(db); };
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function txPromise(storeName, mode, fn){
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(storeName, mode);
+    const store = tx.objectStore(storeName);
+    let result;
+    try{ result = fn(store); }catch(err){ reject(err); return; }
+    tx.oncomplete = ()=>resolve(result);
+    tx.onerror = ()=>reject(tx.error);
+    tx.onabort = ()=>reject(tx.error);
+  });
+}
+
+function putProject(project){
+  project.updatedAt = new Date().toISOString();
+  return txPromise(PROJECT_STORE,"readwrite",s=>s.put(project));
+}
+function getProject(pid){
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(PROJECT_STORE,"readonly");
+    const req=tx.objectStore(PROJECT_STORE).get(pid);
+    req.onsuccess=()=>resolve(req.result||null);
+    req.onerror=()=>reject(req.error);
+  });
+}
+function getAllProjects(){
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(PROJECT_STORE,"readonly");
+    const req=tx.objectStore(PROJECT_STORE).getAll();
+    req.onsuccess=()=>resolve(req.result||[]);
+    req.onerror=()=>reject(req.error);
+  });
+}
+function deleteProjectRecord(pid){
+  return txPromise(PROJECT_STORE,"readwrite",s=>s.delete(pid));
+}
+function putAsset(blob, meta={}){
+  const asset = {id:id("asset"), blob, meta, createdAt:new Date().toISOString()};
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(ASSET_STORE,"readwrite");
+    const req=tx.objectStore(ASSET_STORE).put(asset);
+    req.onsuccess=()=>resolve(asset.id);
+    req.onerror=()=>reject(req.error);
+  });
+}
+function getAsset(assetId){
+  if(!assetId) return Promise.resolve(null);
+  return new Promise((resolve,reject)=>{
+    const tx=db.transaction(ASSET_STORE,"readonly");
+    const req=tx.objectStore(ASSET_STORE).get(assetId);
+    req.onsuccess=()=>resolve(req.result||null);
+    req.onerror=()=>reject(req.error);
+  });
+}
+function deleteAsset(assetId){
+  if(!assetId) return Promise.resolve();
+  return txPromise(ASSET_STORE,"readwrite",s=>s.delete(assetId));
+}
+
+/* -----------------------------
+   APP STATE
+----------------------------- */
+let currentProject = null;
+let currentTab = "disassembly";
+let pendingStepAudioBlob = null;
+let mediaRecorder = null;
+let mediaChunks = [];
+let recordingTarget = null;
+let recordingStream = null;
+let currentPhotoContext = null; // {stepId, photoId}
+let currentPhotoAudioBlob = null;
+let activeObjectUrls = [];
+
+function emptyProject(name){
+  return {
+    id:id("project"),
+    name:name.trim(),
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString(),
+    notes:"",
+    steps:[],
+    tasks:[],
+    parts:[]
+  };
+}
+
+function esc(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+function nl(v){ return esc(v).replace(/\n/g,"<br>"); }
+function formatDate(iso){
+  try{return new Date(iso).toLocaleString();}catch{return "";}
+}
+function releaseObjectUrls(){
+  activeObjectUrls.forEach(u=>URL.revokeObjectURL(u));
+  activeObjectUrls=[];
+}
+function objectUrl(blob){
+  const u=URL.createObjectURL(blob);
+  activeObjectUrls.push(u);
+  return u;
+}
+
+function showOnly(viewId){
+  ["homeView","newProjectView","pickerView","projectView"].forEach(x=>{
+    document.getElementById(x).classList.toggle("hidden",x!==viewId);
+  });
+}
+function goHome(){
+  stopRecordingIfNeeded();
+  showOnly("homeView");
+}
+function showNewProject(){
+  showOnly("newProjectView");
+  setTimeout(()=>document.getElementById("newProjectName").focus(),0);
+}
+async function showProjectPicker(){
+  stopRecordingIfNeeded();
+  showOnly("pickerView");
+  await renderProjectPicker();
+}
+async function renderProjectPicker(){
+  const list=document.getElementById("projectPickerList");
+  const projects=(await getAllProjects()).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));
+  if(!projects.length){
+    list.innerHTML='<div class="empty">No saved projects yet.</div>';
+    return;
+  }
+  list.innerHTML="";
+  projects.forEach(p=>{
+    const row=document.createElement("div");
+    row.className="project-row";
+    row.innerHTML=`
+      <div>
+        <strong>${esc(p.name)}</strong>
+        <div class="muted small">Last updated: ${esc(formatDate(p.updatedAt))}</div>
+        <div class="muted small">${p.steps?.length||0} disassembly steps</div>
+      </div>
+      <div class="mini-actions">
+        <button data-open="${p.id}">Open</button>
+        <button class="danger" data-delete="${p.id}">Delete</button>
+      </div>`;
+    list.appendChild(row);
+  });
+  list.querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>openProject(b.dataset.open));
+  list.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteProject(b.dataset.delete));
+}
+async function createProject(){
+  const input=document.getElementById("newProjectName");
+  const name=input.value.trim();
+  if(!name){ alert("Please enter a project name."); input.focus(); return; }
+  const p=emptyProject(name);
+  await putProject(p);
+  input.value="";
+  await openProject(p.id);
+}
+async function openProject(pid){
+  const p=await getProject(pid);
+  if(!p){ alert("That project could not be found."); return; }
+  currentProject=p;
+  normalizeProject();
+  document.getElementById("currentProjectName").textContent=p.name;
+  document.getElementById("projectNotes").value=p.notes||"";
+  showOnly("projectView");
+  openTab("disassembly");
+  await renderAll();
+}
+function normalizeProject(){
+  currentProject.steps ||= [];
+  currentProject.tasks ||= [];
+  currentProject.parts ||= [];
+  currentProject.notes ||= "";
+  currentProject.steps.forEach(s=>{
+    s.photos ||= [];
+    s.reassembled = !!s.reassembled;
+  });
+}
+async function deleteProject(pid){
+  const p=await getProject(pid);
+  if(!p) return;
+  if(!confirm(`Delete "${p.name}" and its saved project data?`)) return;
+  for(const s of p.steps||[]){
+    if(s.audioAssetId) await deleteAsset(s.audioAssetId);
+    for(const ph of s.photos||[]){
+      if(ph.assetId) await deleteAsset(ph.assetId);
+      if(ph.markupAssetId) await deleteAsset(ph.markupAssetId);
+      if(ph.audioAssetId) await deleteAsset(ph.audioAssetId);
+    }
+  }
+  await deleteProjectRecord(pid);
+  if(currentProject?.id===pid) currentProject=null;
+  await renderProjectPicker();
+}
+async function saveCurrentProject(){
+  if(currentProject) await putProject(currentProject);
+}
+
+/* -----------------------------
+   TABS + RENDER
+----------------------------- */
+function openTab(tab){
+  currentTab=tab;
+  document.querySelectorAll(".tabpage").forEach(el=>el.classList.add("hidden"));
+  document.getElementById("tab-"+tab).classList.remove("hidden");
+  document.querySelectorAll("#tabbar button").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
+  if(tab==="reassemble") renderReassemble();
+  if(tab==="progress") renderProgress();
+}
+async function renderAll(){
+  releaseObjectUrls();
+  await renderSteps();
+  renderTasks();
+  renderParts();
+  renderProgress();
+  if(currentTab==="reassemble") await renderReassemble();
+}
+
+/* -----------------------------
+   DISASSEMBLY STEPS
+----------------------------- */
+function toggleStepForm(show){
+  document.getElementById("stepForm").classList.toggle("hidden",!show);
+  if(show) setTimeout(()=>document.getElementById("stepTitle").focus(),0);
+}
+async function saveNewStep(){
+  const title=document.getElementById("stepTitle").value.trim();
+  if(!title){ alert("Please enter what you removed or did."); return; }
+
+  let audioAssetId=null;
+  if(pendingStepAudioBlob){
+    audioAssetId=await putAsset(pendingStepAudioBlob,{type:"step-audio"});
+  }
+
+  const step={
+    id:id("step"),
+    title,
+    notes:document.getElementById("stepNotes").value.trim(),
+    fasteners:document.getElementById("stepFasteners").value.trim(),
+    bag:document.getElementById("stepBag").value.trim(),
+    audioAssetId,
+    photos:[],
+    reassembled:false,
+    createdAt:new Date().toISOString()
+  };
+
+  const files=[...document.getElementById("stepPhotoInput").files];
+  for(const file of files){
+    const assetId=await putAsset(file,{type:"photo",name:file.name});
+    step.photos.push({
+      id:id("photo"),
+      assetId,
+      markupAssetId:null,
+      audioAssetId:null,
+      transcript:"",
+      textNote:""
+    });
+  }
+
+  currentProject.steps.push(step);
+  await saveCurrentProject();
+
+  ["stepTitle","stepNotes","stepFasteners","stepBag"].forEach(x=>document.getElementById(x).value="");
+  document.getElementById("stepPhotoInput").value="";
+  pendingStepAudioBlob=null;
+  document.getElementById("stepRecordingStatus").textContent="";
+  toggleStepForm(false);
+  await renderAll();
+}
+function findStep(stepId){ return currentProject.steps.find(s=>s.id===stepId); }
+async function deleteStep(stepId){
+  const s=findStep(stepId);
+  if(!s) return;
+  if(!confirm(`Delete this disassembly step: "${s.title}"?`)) return;
+  if(s.audioAssetId) await deleteAsset(s.audioAssetId);
+  for(const ph of s.photos||[]){
+    if(ph.assetId) await deleteAsset(ph.assetId);
+    if(ph.markupAssetId) await deleteAsset(ph.markupAssetId);
+    if(ph.audioAssetId) await deleteAsset(ph.audioAssetId);
+  }
+  currentProject.steps=currentProject.steps.filter(x=>x.id!==stepId);
+  await saveCurrentProject();
+  await renderAll();
+}
+async function editStep(stepId){
+  const s=findStep(stepId);
+  if(!s) return;
+  const title=prompt("Step title:",s.title);
+  if(title===null) return;
+  const trimmed=title.trim();
+  if(!trimmed){ alert("Step title cannot be blank."); return; }
+  const notes=prompt("Written note:",s.notes||"");
+  if(notes===null) return;
+  const fasteners=prompt("Fasteners / bolts / clips:",s.fasteners||"");
+  if(fasteners===null) return;
+  const bag=prompt("Bag / container number:",s.bag||"");
+  if(bag===null) return;
+  s.title=trimmed;s.notes=notes.trim();s.fasteners=fasteners.trim();s.bag=bag.trim();
+  await saveCurrentProject(); await renderAll();
+}
+async function addPhotosToStep(stepId,input){
+  const s=findStep(stepId); if(!s) return;
+  for(const file of [...input.files]){
+    const assetId=await putAsset(file,{type:"photo",name:file.name});
+    s.photos.push({id:id("photo"),assetId,markupAssetId:null,audioAssetId:null,transcript:"",textNote:""});
+  }
+  input.value="";
+  await saveCurrentProject();
+  await renderAll();
+}
+async function renderSteps(){
+  const list=document.getElementById("stepsList");
+  if(!currentProject.steps.length){
+    list.innerHTML='<div class="empty">No disassembly steps yet. Tap <strong>Add Step</strong> when you start taking something apart.</div>';
+    return;
+  }
+  list.innerHTML="";
+  for(let i=0;i<currentProject.steps.length;i++){
+    const s=currentProject.steps[i];
+    const div=document.createElement("div");
+    div.className="step";
+    let audioHtml="";
+    if(s.audioAssetId){
+      const a=await getAsset(s.audioAssetId);
+      if(a?.blob) audioHtml=`<audio controls src="${objectUrl(a.blob)}"></audio>`;
+    }
+    div.innerHTML=`
+      <div class="step-top">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span class="step-num">${i+1}</span>
+          <div>
+            <strong>${esc(s.title)}</strong>
+            <div class="muted small">${esc(formatDate(s.createdAt))}</div>
+          </div>
+        </div>
+        <div class="mini-actions">
+          <button class="secondary" data-edit="${s.id}">Edit</button>
+          <button class="danger" data-del="${s.id}">Delete</button>
+        </div>
+      </div>
+      ${s.notes?`<div class="notice"><strong>Note:</strong><br>${nl(s.notes)}</div>`:""}
+      ${s.fasteners?`<span class="pill">🔩 ${esc(s.fasteners)}</span>`:""}
+      ${s.bag?`<span class="pill">🏷️ ${esc(s.bag)}</span>`:""}
+      ${audioHtml}
+      <div class="photo-grid" data-photo-grid="${s.id}"></div>
+      <div class="toolbar" style="margin-top:10px">
+        <label class="button-label secondary">
+          📷 Add Photo
+          <input class="sr-only" type="file" accept="image/*" capture="environment" multiple data-addphotos="${s.id}">
+        </label>
+      </div>`;
+    list.appendChild(div);
+    div.querySelector("[data-edit]").onclick=()=>editStep(s.id);
+    div.querySelector("[data-del]").onclick=()=>deleteStep(s.id);
+    div.querySelector("[data-addphotos]").onchange=e=>addPhotosToStep(s.id,e.target);
+    await renderPhotoGrid(s,div.querySelector(`[data-photo-grid="${s.id}"]`));
+  }
+}
+async function renderPhotoGrid(step,grid){
+  if(!step.photos.length){
+    grid.innerHTML='<div class="muted small">No photos for this step yet.</div>';
+    return;
+  }
+  grid.innerHTML="";
+  for(const ph of step.photos){
+    const asset=await getAsset(ph.markupAssetId||ph.assetId);
+    if(!asset?.blob) continue;
+    const card=document.createElement("div");
+    card.className="photo-card";
+    let audio="";
+    if(ph.audioAssetId){
+      const a=await getAsset(ph.audioAssetId);
+      if(a?.blob) audio=`<audio controls src="${objectUrl(a.blob)}"></audio>`;
+    }
+    card.innerHTML=`
+      <img src="${objectUrl(asset.blob)}" alt="Saved project photo">
+      ${audio}
+      ${ph.transcript?`<div class="transcript"><strong>Audio note:</strong><br>${nl(ph.transcript)}</div>`:""}
+      ${ph.textNote?`<div class="muted small" style="margin-top:7px">${nl(ph.textNote)}</div>`:""}
+      <button class="secondary" style="width:100%;margin-top:8px">Open Photo</button>`;
+    card.querySelector("button").onclick=()=>openPhotoDialog(step.id,ph.id);
+    grid.appendChild(card);
+  }
+}
+
+/* -----------------------------
+   TASKS
+----------------------------- */
+async function addTask(){
+  const title=document.getElementById("taskTitle").value.trim();
+  if(!title){ alert("Please enter a task."); return; }
+  currentProject.tasks.push({
+    id:id("task"),title,
+    notes:document.getElementById("taskNotes").value.trim(),
+    completed:false
+  });
+  document.getElementById("taskTitle").value="";
+  document.getElementById("taskNotes").value="";
+  await saveCurrentProject(); renderTasks(); renderProgress();
+}
+function renderTasks(){
+  const list=document.getElementById("tasksList");
+  const items=currentProject.tasks||[];
+  if(!items.length){ list.innerHTML='<div class="empty">No project tasks yet.</div>'; return; }
+  list.innerHTML="";
+  items.forEach(t=>{
+    const d=document.createElement("div");d.className="task";
+    d.innerHTML=`
+      <div class="task-top">
+        <div>
+          <div class="checkline">
+            <input type="checkbox" ${t.completed?"checked":""}>
+            <strong style="${t.completed?"text-decoration:line-through":""}">${esc(t.title)}</strong>
+          </div>
+          ${t.notes?`<div class="muted small" style="margin-top:6px">${nl(t.notes)}</div>`:""}
+        </div>
+        <div class="mini-actions">
+          <button class="secondary" data-edit>Edit</button>
+          <button class="danger" data-del>Delete</button>
+        </div>
+      </div>`;
+    d.querySelector('input[type="checkbox"]').onchange=async e=>{t.completed=e.target.checked;await saveCurrentProject();renderTasks();renderProgress()};
+    d.querySelector("[data-edit]").onclick=()=>editTask(t.id);
+    d.querySelector("[data-del]").onclick=()=>deleteTask(t.id);
+    list.appendChild(d);
+  });
+}
+async function editTask(taskId){
+  const t=currentProject.tasks.find(x=>x.id===taskId);if(!t)return;
+  const title=prompt("Task title:",t.title);if(title===null)return;
+  if(!title.trim()){alert("Task title cannot be blank.");return}
+  const notes=prompt("Task notes:",t.notes||"");if(notes===null)return;
+  t.title=title.trim();t.notes=notes.trim();await saveCurrentProject();renderTasks();
+}
+async function deleteTask(taskId){
+  const t=currentProject.tasks.find(x=>x.id===taskId);if(!t)return;
+  if(!confirm(`Delete task "${t.title}"?`))return;
+  currentProject.tasks=currentProject.tasks.filter(x=>x.id!==taskId);
+  await saveCurrentProject();renderTasks();renderProgress();
+}
+
+/* -----------------------------
+   PARTS
+----------------------------- */
+async function addPart(){
+  const name=document.getElementById("partName").value.trim();
+  if(!name){ alert("Please enter a part."); return; }
+  currentProject.parts.push({id:id("part"),name,status:document.getElementById("partStatus").value});
+  document.getElementById("partName").value="";
+  await saveCurrentProject();renderParts();renderProgress();
+}
+function renderParts(){
+  const list=document.getElementById("partsList");
+  const parts=currentProject.parts||[];
+  if(!parts.length){list.innerHTML='<div class="empty">No project parts yet.</div>';return}
+  list.innerHTML="";
+  parts.forEach(p=>{
+    const d=document.createElement("div");d.className="part";
+    d.innerHTML=`
+      <div class="part-top">
+        <div><strong>${esc(p.name)}</strong><br><span class="pill">${p.status==="installed"?"✓ Installed":p.status==="have"?"Have":"Need"}</span></div>
+        <div class="mini-actions">
+          <select data-status>
+            <option value="need" ${p.status==="need"?"selected":""}>Need</option>
+            <option value="have" ${p.status==="have"?"selected":""}>Have</option>
+            <option value="installed" ${p.status==="installed"?"selected":""}>Installed</option>
+          </select>
+          <button class="secondary" data-edit>Edit</button>
+          <button class="danger" data-del>Delete</button>
+        </div>
+      </div>`;
+    d.querySelector("[data-status]").onchange=async e=>{p.status=e.target.value;await saveCurrentProject();renderParts();renderProgress()};
+    d.querySelector("[data-edit]").onclick=()=>editPart(p.id);
+    d.querySelector("[data-del]").onclick=()=>deletePart(p.id);
+    list.appendChild(d);
+  });
+}
+async function editPart(pid){
+  const p=currentProject.parts.find(x=>x.id===pid);if(!p)return;
+  const name=prompt("Part name:",p.name);if(name===null)return;
+  if(!name.trim()){alert("Part name cannot be blank.");return}
+  p.name=name.trim();await saveCurrentProject();renderParts();
+}
+async function deletePart(pid){
+  const p=currentProject.parts.find(x=>x.id===pid);if(!p)return;
+  if(!confirm(`Delete part "${p.name}"?`))return;
+  currentProject.parts=currentProject.parts.filter(x=>x.id!==pid);
+  await saveCurrentProject();renderParts();renderProgress();
+}
+
+/* -----------------------------
+   NOTES + PROGRESS
+----------------------------- */
+async function saveProjectNotes(){
+  currentProject.notes=document.getElementById("projectNotes").value;
+  await saveCurrentProject();
+  const m=document.getElementById("notesSaved");
+  m.classList.remove("hidden");
+  setTimeout(()=>m.classList.add("hidden"),1600);
+}
+function renderProgress(){
+  if(!currentProject)return;
+  const steps=currentProject.steps.length;
+  const tasks=currentProject.tasks.length;
+  const tasksDone=currentProject.tasks.filter(t=>t.completed).length;
+  const parts=currentProject.parts.length;
+  const installed=currentProject.parts.filter(p=>p.status==="installed").length;
+  const reassembled=currentProject.steps.filter(s=>s.reassembled).length;
+  document.getElementById("metricSteps").textContent=steps;
+  document.getElementById("metricTasks").textContent=`${tasksDone}/${tasks}`;
+  document.getElementById("metricParts").textContent=`${installed}/${parts}`;
+  document.getElementById("metricReassembled").textContent=`${reassembled}/${steps}`;
+  const total=tasks+parts+steps;
+  const done=tasksDone+installed+reassembled;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById("overallProgressBar").style.width=pct+"%";
+  document.getElementById("overallProgressText").textContent=pct+"% complete";
+}
+
+/* -----------------------------
+   AUDIO + DICTATION
+----------------------------- */
+async function toggleAudioRecording(target,button){
+  if(mediaRecorder && mediaRecorder.state==="recording"){
+    if(recordingTarget!==target){
+      alert("Another audio recording is already in progress.");
+      return;
+    }
+    mediaRecorder.stop();
+    return;
+  }
+  if(!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder){
+    alert("Audio recording is not supported in this browser.");
+    return;
+  }
+  try{
+    recordingTarget=target;
+    recordingStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaChunks=[];
+    mediaRecorder=new MediaRecorder(recordingStream);
+    mediaRecorder.ondataavailable=e=>{if(e.data.size)mediaChunks.push(e.data)};
+    mediaRecorder.onstop=async()=>{
+      const blob=new Blob(mediaChunks,{type:mediaRecorder.mimeType||"audio/webm"});
+      if(recordingTarget==="step"){
+        pendingStepAudioBlob=blob;
+        document.getElementById("stepRecordingStatus").textContent="Audio note recorded and ready to save with this step.";
+      }else if(recordingTarget==="photo"){
+        currentPhotoAudioBlob=blob;
+        document.getElementById("photoRecordingStatus").textContent="Audio note recorded. Tap Save Photo Notes.";
+        renderPendingPhotoAudio();
+      }
+      recordingStream?.getTracks().forEach(t=>t.stop());
+      button.textContent="🎤 Record Audio";
+      button.classList.remove("warn");
+      mediaRecorder=null;recordingStream=null;recordingTarget=null;mediaChunks=[];
+    };
+    mediaRecorder.start();
+    button.textContent="⏹ Stop Recording";
+    button.classList.add("warn");
+    const statusId=target==="step"?"stepRecordingStatus":"photoRecordingStatus";
+    document.getElementById(statusId).textContent="Recording…";
+  }catch(err){
+    alert("Microphone access was not available. Check the browser's microphone permission.");
+  }
+}
+function stopRecordingIfNeeded(){
+  if(mediaRecorder && mediaRecorder.state==="recording"){
+    mediaRecorder.stop();
+  }
+}
+function dictateInto(textareaId,button){
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    alert("Speech-to-text dictation is not supported in this browser. You can still record an audio note.");
+    return;
+  }
+  const r=new SpeechRecognition();
+  r.lang="en-US";
+  r.interimResults=true;
+  r.continuous=false;
+  const ta=document.getElementById(textareaId);
+  const starting=ta.value.trim();
+  let finalText="";
+  const original=button.textContent;
+  button.textContent="🎙️ Listening…";
+  r.onresult=e=>{
+    let interim="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal) finalText+=t;
+      else interim+=t;
+    }
+    ta.value=(starting+(starting?" ":"")+finalText+interim).trim();
+  };
+  r.onerror=()=>{button.textContent=original};
+  r.onend=()=>{button.textContent=original};
+  try{r.start()}catch{button.textContent=original}
+}
+
+/* -----------------------------
+   PHOTO DIALOG
+----------------------------- */
+async function openPhotoDialog(stepId,photoId){
+  stopRecordingIfNeeded();
+  const step=findStep(stepId);
+  const ph=step?.photos.find(x=>x.id===photoId);
+  if(!ph)return;
+  currentPhotoContext={stepId,photoId};
+  currentPhotoAudioBlob=null;
+  document.getElementById("photoTranscript").value=ph.transcript||"";
+  document.getElementById("photoTextNote").value=ph.textNote||"";
+  document.getElementById("photoRecordingStatus").textContent="";
+  const asset=await getAsset(ph.markupAssetId||ph.assetId);
+  if(asset?.blob) document.getElementById("photoDialogImage").src=objectUrl(asset.blob);
+  await renderPhotoAudioPreview(ph);
+  document.getElementById("photoDialog").showModal();
+}
+function currentPhoto(){
+  if(!currentPhotoContext)return null;
+  const s=findStep(currentPhotoContext.stepId);
+  return s?.photos.find(x=>x.id===currentPhotoContext.photoId)||null;
+}
+async function renderPhotoAudioPreview(ph){
+  const box=document.getElementById("photoAudioPreview");
+  if(ph.audioAssetId){
+    const a=await getAsset(ph.audioAssetId);
+    if(a?.blob){box.innerHTML=`<label>Saved Audio Note</label><audio controls style="width:100%" src="${objectUrl(a.blob)}"></audio>`;return}
+  }
+  box.innerHTML="";
+}
+function renderPendingPhotoAudio(){
+  if(!currentPhotoAudioBlob)return;
+  document.getElementById("photoAudioPreview").innerHTML=`<label>New Audio Note</label><audio controls style="width:100%" src="${objectUrl(currentPhotoAudioBlob)}"></audio>`;
+}
+async function savePhotoDetails(){
+  const ph=currentPhoto();if(!ph)return;
+  ph.transcript=document.getElementById("photoTranscript").value.trim();
+  ph.textNote=document.getElementById("photoTextNote").value.trim();
+  if(currentPhotoAudioBlob){
+    if(ph.audioAssetId) await deleteAsset(ph.audioAssetId);
+    ph.audioAssetId=await putAsset(currentPhotoAudioBlob,{type:"photo-audio"});
+    currentPhotoAudioBlob=null;
+  }
+  await saveCurrentProject();
+  closePhotoDialog();
+  await renderAll();
+}
+function closePhotoDialog(){
+  stopRecordingIfNeeded();
+  const d=document.getElementById("photoDialog");
+  if(d.open)d.close();
+  currentPhotoAudioBlob=null;
+}
+async function deleteCurrentPhoto(){
+  const ph=currentPhoto();if(!ph)return;
+  if(!confirm("Delete this photo and its saved audio/markup?"))return;
+  const s=findStep(currentPhotoContext.stepId);
+  if(ph.assetId)await deleteAsset(ph.assetId);
+  if(ph.markupAssetId)await deleteAsset(ph.markupAssetId);
+  if(ph.audioAssetId)await deleteAsset(ph.audioAssetId);
+  s.photos=s.photos.filter(x=>x.id!==ph.id);
+  await saveCurrentProject();
+  closePhotoDialog();
+  await renderAll();
+}
+
+/* -----------------------------
+   PHOTO MARKUP
+----------------------------- */
+let markupTool="arrow";
+let markupCanvas=null, markupCtx=null, markupBaseImage=null;
+let markupHistory=[];
+let pointerDown=false;
+let startX=0,startY=0;
+let drawSnapshot=null;
+
+async function openMarkup(){
+  const ph=currentPhoto();if(!ph)return;
+  const asset=await getAsset(ph.markupAssetId||ph.assetId);
+  if(!asset?.blob)return;
+  markupCanvas=document.getElementById("markupCanvas");
+  markupCtx=markupCanvas.getContext("2d");
+  const img=new Image();
+  img.onload=()=>{
+    const max=1400;
+    const scale=Math.min(1,max/img.naturalWidth,max/img.naturalHeight);
+    markupCanvas.width=Math.max(1,Math.round(img.naturalWidth*scale));
+    markupCanvas.height=Math.max(1,Math.round(img.naturalHeight*scale));
+    markupCtx.drawImage(img,0,0,markupCanvas.width,markupCanvas.height);
+    markupBaseImage=img;
+    markupHistory=[markupCanvas.toDataURL("image/png")];
+    bindMarkupCanvas();
+    setMarkupTool("arrow");
+    document.getElementById("markupDialog").showModal();
+    URL.revokeObjectURL(img.src);
+  };
+  img.src=URL.createObjectURL(asset.blob);
+}
+function closeMarkup(){
+  const d=document.getElementById("markupDialog");if(d.open)d.close();
+}
+function setMarkupTool(tool){
+  markupTool=tool;
+  document.querySelectorAll(".markup-tools [data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===tool));
+}
+function canvasPoint(e){
+  const r=markupCanvas.getBoundingClientRect();
+  return {
+    x:(e.clientX-r.left)*(markupCanvas.width/r.width),
+    y:(e.clientY-r.top)*(markupCanvas.height/r.height)
+  };
+}
+function bindMarkupCanvas(){
+  markupCanvas.onpointerdown=e=>{
+    e.preventDefault();
+    const p=canvasPoint(e);
+    startX=p.x;startY=p.y;
+    if(markupTool==="text"){
+      const text=prompt("Text label:");
+      if(text){
+        pushMarkupHistory();
+        markupCtx.font=`bold ${Math.max(24,Math.round(markupCanvas.width/38))}px Arial`;
+        markupCtx.lineWidth=Math.max(3,markupCanvas.width/400);
+        markupCtx.strokeStyle="white";
+        markupCtx.fillStyle="red";
+        markupCtx.strokeText(text,startX,startY);
+        markupCtx.fillText(text,startX,startY);
+        saveMarkupState();
+      }
+      return;
+    }
+    pointerDown=true;
+    drawSnapshot=markupCtx.getImageData(0,0,markupCanvas.width,markupCanvas.height);
+    if(markupTool==="draw"){
+      pushMarkupHistory();
+      markupCtx.beginPath();markupCtx.moveTo(startX,startY);
+      markupCtx.strokeStyle="red";markupCtx.lineWidth=Math.max(5,markupCanvas.width/180);markupCtx.lineCap="round";
+    }
+    markupCanvas.setPointerCapture?.(e.pointerId);
+  };
+  markupCanvas.onpointermove=e=>{
+    if(!pointerDown)return;
+    const p=canvasPoint(e);
+    if(markupTool==="draw"){
+      markupCtx.lineTo(p.x,p.y);markupCtx.stroke();
+      return;
+    }
+    markupCtx.putImageData(drawSnapshot,0,0);
+    markupCtx.strokeStyle="red";
+    markupCtx.fillStyle="red";
+    markupCtx.lineWidth=Math.max(5,markupCanvas.width/180);
+    if(markupTool==="circle"){
+      const cx=(startX+p.x)/2,cy=(startY+p.y)/2,rx=Math.abs(p.x-startX)/2,ry=Math.abs(p.y-startY)/2;
+      markupCtx.beginPath();markupCtx.ellipse(cx,cy,Math.max(2,rx),Math.max(2,ry),0,0,Math.PI*2);markupCtx.stroke();
+    }else if(markupTool==="arrow"){
+      drawArrow(startX,startY,p.x,p.y);
+    }
+  };
+  markupCanvas.onpointerup=e=>{
+    if(!pointerDown)return;
+    pointerDown=false;
+    if(markupTool==="draw"){
+      saveMarkupState();
+      return;
+    }
+    const p=canvasPoint(e);
+    markupCtx.putImageData(drawSnapshot,0,0);
+    pushMarkupHistory();
+    markupCtx.strokeStyle="red";markupCtx.fillStyle="red";markupCtx.lineWidth=Math.max(5,markupCanvas.width/180);
+    if(markupTool==="circle"){
+      const cx=(startX+p.x)/2,cy=(startY+p.y)/2,rx=Math.abs(p.x-startX)/2,ry=Math.abs(p.y-startY)/2;
+      markupCtx.beginPath();markupCtx.ellipse(cx,cy,Math.max(2,rx),Math.max(2,ry),0,0,Math.PI*2);markupCtx.stroke();
+    }else if(markupTool==="arrow"){
+      drawArrow(startX,startY,p.x,p.y);
+    }
+    saveMarkupState();
+  };
+}
+function drawArrow(x1,y1,x2,y2){
+  const head=Math.max(16,markupCanvas.width/45);
+  const angle=Math.atan2(y2-y1,x2-x1);
+  markupCtx.beginPath();markupCtx.moveTo(x1,y1);markupCtx.lineTo(x2,y2);markupCtx.stroke();
+  markupCtx.beginPath();
+  markupCtx.moveTo(x2,y2);
+  markupCtx.lineTo(x2-head*Math.cos(angle-Math.PI/6),y2-head*Math.sin(angle-Math.PI/6));
+  markupCtx.lineTo(x2-head*Math.cos(angle+Math.PI/6),y2-head*Math.sin(angle+Math.PI/6));
+  markupCtx.closePath();markupCtx.fill();
+}
+function pushMarkupHistory(){
+  const state=markupCanvas.toDataURL("image/png");
+  if(markupHistory[markupHistory.length-1]!==state)markupHistory.push(state);
+}
+function saveMarkupState(){
+  const state=markupCanvas.toDataURL("image/png");
+  if(markupHistory[markupHistory.length-1]!==state)markupHistory.push(state);
+}
+function restoreMarkup(dataUrl){
+  const img=new Image();img.onload=()=>markupCtx.drawImage(img,0,0,markupCanvas.width,markupCanvas.height);img.src=dataUrl;
+}
+function undoMarkup(){
+  if(markupHistory.length<=1)return;
+  markupHistory.pop();restoreMarkup(markupHistory[markupHistory.length-1]);
+}
+function clearMarkup(){
+  if(markupHistory.length)restoreMarkup(markupHistory[0]);
+  markupHistory=markupHistory.slice(0,1);
+}
+async function saveMarkup(){
+  const ph=currentPhoto();if(!ph)return;
+  const blob=await new Promise(resolve=>markupCanvas.toBlob(resolve,"image/png",.95));
+  if(!blob)return;
+  if(ph.markupAssetId)await deleteAsset(ph.markupAssetId);
+  ph.markupAssetId=await putAsset(blob,{type:"markup-photo"});
+  await saveCurrentProject();
+  closeMarkup();
+  const a=await getAsset(ph.markupAssetId);
+  if(a?.blob)document.getElementById("photoDialogImage").src=objectUrl(a.blob);
+}
+
+/* -----------------------------
+   REASSEMBLE
+----------------------------- */
+async function renderReassemble(){
+  if(!currentProject)return;
+  const steps=[...currentProject.steps].reverse();
+  const box=document.getElementById("reassembleCard");
+  const done=steps.filter(s=>s.reassembled).length;
+  const pct=steps.length?Math.round(done/steps.length*100):0;
+  document.getElementById("reassemblyProgressBar").style.width=pct+"%";
+  document.getElementById("reassemblyProgressText").textContent=`${pct}% reassembled (${done} of ${steps.length})`;
+  if(!steps.length){
+    box.innerHTML='<div class="empty">There are no disassembly steps to reverse yet.</div>';return;
+  }
+  let idx=steps.findIndex(s=>!s.reassembled);
+  if(idx<0)idx=steps.length-1;
+  await renderReassembleStep(idx);
+}
+async function renderReassembleStep(idx){
+  const steps=[...currentProject.steps].reverse();
+  if(!steps.length)return;
+  idx=Math.max(0,Math.min(idx,steps.length-1));
+  const s=steps[idx];
+  const box=document.getElementById("reassembleCard");
+  const isLast=idx===steps.length-1;
+  let photos="";
+  for(const ph of s.photos||[]){
+    const asset=await getAsset(ph.markupAssetId||ph.assetId);
+    if(!asset?.blob)continue;
+    let audio="";
+    if(ph.audioAssetId){
+      const a=await getAsset(ph.audioAssetId);
+      if(a?.blob)audio=`<audio controls src="${objectUrl(a.blob)}"></audio>`;
+    }
+    photos+=`<div class="photo-card">
+      <img src="${objectUrl(asset.blob)}" alt="Reassembly reference photo">
+      ${audio}
+      ${ph.transcript?`<div class="transcript">${nl(ph.transcript)}</div>`:""}
+      ${ph.textNote?`<div class="muted small">${nl(ph.textNote)}</div>`:""}
+    </div>`;
+  }
+  let stepAudio="";
+  if(s.audioAssetId){
+    const a=await getAsset(s.audioAssetId);
+    if(a?.blob)stepAudio=`<label>Step Audio Note</label><audio controls style="width:100%" src="${objectUrl(a.blob)}"></audio>`;
+  }
+  box.innerHTML=`
+    <div class="muted">Reassembly step ${idx+1} of ${steps.length}</div>
+    <div class="big-step">${esc(s.title)}</div>
+    ${s.notes?`<div class="notice"><strong>Saved note:</strong><br>${nl(s.notes)}</div>`:""}
+    ${s.fasteners?`<span class="pill">🔩 ${esc(s.fasteners)}</span>`:""}
+    ${s.bag?`<span class="pill">🏷️ ${esc(s.bag)}</span>`:""}
+    ${stepAudio}
+    ${photos?`<div class="photo-grid">${photos}</div>`:""}
+    <div class="checkline" style="margin:14px 0">
+      <input id="reassembledCheck" type="checkbox" ${s.reassembled?"checked":""}>
+      <label for="reassembledCheck" style="margin:0">This step is reassembled</label>
+    </div>
+    <div class="toolbar">
+      <button class="secondary" id="prevReBtn" ${idx===0?"disabled":""}>← Previous</button>
+      <button id="nextReBtn" class="${isLast?"good":""}">${isLast?"✓ Finish Reassembly":"Next →"}</button>
+    </div>`;
+
+  const updateReassemblyProgress=()=>{
+    const done=steps.filter(x=>x.reassembled).length;
+    const pct=Math.round(done/steps.length*100);
+    document.getElementById("reassemblyProgressBar").style.width=pct+"%";
+    document.getElementById("reassemblyProgressText").textContent=`${pct}% reassembled (${done} of ${steps.length})`;
+  };
+
+  document.getElementById("reassembledCheck").onchange=async e=>{
+    s.reassembled=e.target.checked;
+    await saveCurrentProject();
+    renderProgress();
+    updateReassemblyProgress();
+    if(e.target.checked && !isLast)setTimeout(()=>renderReassembleStep(idx+1),250);
+  };
+
+  document.getElementById("prevReBtn").onclick=()=>renderReassembleStep(idx-1);
+  document.getElementById("nextReBtn").onclick=async()=>{
+    s.reassembled=true;
+    await saveCurrentProject();
+    renderProgress();
+    updateReassemblyProgress();
+
+    if(isLast){
+      box.innerHTML=`<div class="success" style="text-align:center;padding:28px">
+        <h2 style="margin-top:0">🎉 Reassembly Complete!</h2>
+        <p>All saved disassembly steps have been completed in reverse order.</p>
+        <button onclick="openTab('progress')">View Project Progress</button>
+      </div>`;
+    }else{
+      await renderReassembleStep(idx+1);
+    }
+  };
+}
+async function resetReassembly(){
+  if(!currentProject.steps.length)return;
+  if(!confirm("Reset all reassembly check marks for this project?"))return;
+  currentProject.steps.forEach(s=>s.reassembled=false);
+  await saveCurrentProject();renderProgress();renderReassemble();
+}
+
+/* -----------------------------
+   STARTUP
+----------------------------- */
+window.addEventListener("beforeunload",()=>releaseObjectUrls());
+
+(async function init(){
+  try{
+    await openDatabase();
+    showOnly("homeView");
+  }catch(err){
+    console.error(err);
+    document.querySelector(".shell").innerHTML=`
+      <div class="card warning">
+        <strong>Rebuild Assistant could not open its local project database.</strong>
+        <p>Try opening this page in a normal browser window rather than a private/incognito window.</p>
+      </div>`;
+  }
+})();
+</script>
+</body>
+</html>
