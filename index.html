@@ -2312,6 +2312,23 @@ async function renderProjectPicker() {
   projects.forEach(
     function(project) {
 
+      const isCompleted =
+        Array.isArray(
+          project.steps
+        ) &&
+        project.steps.length >
+        0 &&
+        project.steps.every(
+          function(step) {
+
+            return (
+              !!step.reassembled
+            );
+
+          }
+        );
+
+
       const row =
         document.createElement(
           "div"
@@ -2328,6 +2345,14 @@ async function renderProjectPicker() {
           <strong>
             ${escapeHtml(project.name)}
           </strong>
+
+          ${
+            isCompleted
+            ?
+            '<span class="pill">✅ Completed</span>'
+            :
+            ""
+          }
 
           <div class="muted small">
             Last updated:
