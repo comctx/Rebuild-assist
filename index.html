@@ -585,7 +585,6 @@
       background: #fff7e6;
       border-left: 4px solid #d48a00;
     }
-
   </style>
 </head>
 
@@ -606,10 +605,7 @@
         style="width:100%;margin-top:6px;"
       >
 
-      <label
-        for="editTaskNotesInput"
-        style="display:block;margin-top:14px;"
-      >
+      <label for="editTaskNotesInput" style="display:block;margin-top:14px;">
         <strong>Task Notes</strong>
       </label>
 
@@ -621,35 +617,20 @@
       ></textarea>
 
       <div class="edit-task-actions">
-        <button
-          type="button"
-          onclick="saveEditedProjectTask()"
-        >
+        <button type="button" onclick="saveEditedProjectTask()">
           Save Changes
         </button>
 
-        <button
-          type="button"
-          onclick="closeEditTask()"
-        >
+        <button type="button" onclick="closeEditTask()">
           Cancel
         </button>
       </div>
     </div>
   </div>
 
-  <div
-    id="editPartModal"
-    class="edit-part-modal"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="editPartHeading"
-  >
+  <div id="editPartModal" class="edit-part-modal" role="dialog" aria-modal="true" aria-labelledby="editPartHeading">
     <div class="edit-part-dialog">
-
-      <h2 id="editPartHeading">
-        Edit Part
-      </h2>
+      <h2 id="editPartHeading">Edit Part</h2>
 
       <label for="editPartNameInput">
         <strong>Part Name</strong>
@@ -663,66 +644,37 @@
       >
 
       <div class="edit-part-actions">
-
-        <button
-          type="button"
-          onclick="saveEditedProjectPart()"
-        >
+        <button type="button" onclick="saveEditedProjectPart()">
           Save Changes
         </button>
 
-        <button
-          type="button"
-          onclick="closeEditPart()"
-        >
+        <button type="button" onclick="closeEditPart()">
           Cancel
         </button>
-
       </div>
     </div>
   </div>
 
 
 <header>
-
   <div class="brand-wrap">
-
-    <img
-      class="brand-icon"
-      src="rebuild-assistant-icon.png"
-      alt="Rebuild Assistant icon"
-    >
+    <img class="brand-icon" src="rebuild-assistant-icon.png" alt="Rebuild Assistant icon">
 
     <div class="brand-copy">
-
-      <h1>
-        Rebuild Assistant
-      </h1>
-
-      <p>
-        Your step-by-step restoration and reassembly assistant
-      </p>
-
+      <h1>Rebuild Assistant</h1>
+      <p>Your step-by-step restoration and reassembly assistant</p>
     </div>
-
   </div>
-
 </header>
 
 
 <div class="container">
 
-
   <!-- MAIN PROJECT TYPE -->
 
-  <div
-    class="section"
-    id="projectTypeSection"
-  >
+  <div class="section" id="projectTypeSection">
 
-    <h2>
-      🛠️ Choose Your Project
-    </h2>
+    <h2>🛠️ Choose Your Project</h2>
 
     <p>
       Choose the type of project you want to work on.
@@ -730,194 +682,114 @@
 
     <div class="grid">
 
-      <div
-        class="main-choice"
-        onclick="showVehicleProjects()"
-      >
+      <div class="main-choice" onclick="showVehicleProjects()">
+        <div class="category-icon">🚗</div>
 
-        <div class="category-icon">
-          🚗
-        </div>
-
-        <h3>
-          Vehicles
-        </h3>
+        <h3>Vehicles</h3>
 
         <p>
           Cars, trucks, motorcycles and other vehicle restoration
           and repair projects.
         </p>
-
       </div>
 
 
-      <div
-        class="main-choice"
-        onclick="showOtherProjects()"
-      >
+      <div class="main-choice" onclick="showOtherProjects()">
+        <div class="category-icon">🔨</div>
 
-        <div class="category-icon">
-          🔨
-        </div>
-
-        <h3>
-          Everything Else
-        </h3>
+        <h3>Everything Else</h3>
 
         <p>
           Home projects, equipment, repairs and other projects
           you want to document and complete.
         </p>
-
       </div>
 
     </div>
-
   </div>
-
 
 
   <!-- VEHICLE -->
 
-  <div
-    class="section hidden"
-    id="vehicleSetup"
-  >
+  <div class="section hidden" id="vehicleSetup">
 
-    <h2>
-      🚗 Start Vehicle Project
-    </h2>
+    <h2>🚗 Start Vehicle Project</h2>
 
     <p>
-      Start a vehicle project and keep your tasks,
-      parts, photos, notes and progress together.
+      Start a vehicle project and keep your tasks, parts, photos, notes and progress together.
     </p>
 
-    <label>
-      Project Name
-    </label>
+    <label>Project Name</label>
+    <input type="text" id="projectName" placeholder="Example: 1968 Firebird Restoration">
 
-    <input
-      type="text"
-      id="projectName"
-      placeholder="Example: 1968 Firebird Restoration"
-    >
-
-
-    <label>
-      Year
-    </label>
-
+    <label>Year</label>
     <input
       type="number"
       id="vehicleYear"
       placeholder="Example: 1968"
     >
 
-
-    <label>
-      Make
-    </label>
-
+    <label>Make</label>
     <input
       type="text"
       id="vehicleMake"
       placeholder="Example: Pontiac"
     >
 
-
-    <label>
-      Model
-    </label>
-
+    <label>Model</label>
     <input
       type="text"
       id="vehicleModel"
       placeholder="Example: Firebird"
     >
 
-
-    <label>
-      Engine
-    </label>
-
+    <label>Engine</label>
     <input
       type="text"
       id="vehicleEngine"
       placeholder="Example: 350 V8"
     >
 
-
-    <label>
-      Transmission
-    </label>
-
+    <label>Transmission</label>
     <input
       type="text"
       id="vehicleTransmission"
       placeholder="Example: TH350 Automatic"
     >
 
-
-    <button
-      onclick="saveVehicle()"
-    >
+    <button onclick="saveVehicle()">
       Save Vehicle
     </button>
 
   </div>
 
 
-
   <!-- CURRENT VEHICLE -->
 
-  <div
-    id="vehicleDisplay"
-    class="vehicle-banner hidden"
-  >
-
-    <strong>
-      Current Project:
-    </strong>
-
-    <span
-      id="vehicleDisplayText"
-    ></span>
+  <div id="vehicleDisplay" class="vehicle-banner hidden">
+    <strong>Current Project:</strong>
+    <span id="vehicleDisplayText"></span>
 
     <br><br>
 
-    <button
-      onclick="editVehicle()"
-    >
+    <button onclick="editVehicle()">
       Edit Vehicle
     </button>
-
   </div>
-
 
 
   <!-- PROJECT TASKS -->
 
-  <div
-    class="section hidden"
-    id="projectTasksSection"
-  >
+  <div class="section hidden" id="projectTasksSection">
 
-    <h2>
-      📋 My Project Tasks
-    </h2>
+    <h2>📋 My Project Tasks</h2>
 
     <p>
-      Add the jobs you want to work on.
-      You can attach photos to each task
+      Add the jobs you want to work on. You can attach photos to each task
       so you can document your project as you go.
     </p>
 
-    <label
-      for="taskInput"
-    >
-      New Task
-    </label>
+    <label for="taskInput">New Task</label>
 
     <input
       type="text"
@@ -926,53 +798,33 @@
       onkeydown="if(event.key === 'Enter') addProjectTask()"
     >
 
-    <label
-      for="taskNotesInput"
-    >
-      Task Notes (optional)
-    </label>
+    <label for="taskNotesInput">Task Notes (optional)</label>
 
     <textarea
       id="taskNotesInput"
       placeholder="Add notes about this task..."
     ></textarea>
 
-    <button
-      onclick="addProjectTask()"
-    >
+    <button onclick="addProjectTask()">
       ➕ Add Task
     </button>
 
-    <div
-      id="projectTaskList"
-      style="margin-top:18px;"
-    ></div>
+    <div id="projectTaskList" style="margin-top:18px;"></div>
 
   </div>
 
 
-
   <!-- PROJECT PARTS -->
 
-  <div
-    class="section hidden"
-    id="projectPartsSection"
-  >
+  <div class="section hidden" id="projectPartsSection">
 
-    <h2>
-      🔩 My Project Parts
-    </h2>
+    <h2>🔩 My Project Parts</h2>
 
     <p>
-      Keep track of the parts you need,
-      have, or have installed for this project.
+      Keep track of the parts you need, have, or have installed for this project.
     </p>
 
-    <label
-      for="partInput"
-    >
-      New Part
-    </label>
+    <label for="partInput">New Part</label>
 
     <input
       type="text"
@@ -981,76 +833,46 @@
       onkeydown="if(event.key === 'Enter') addProjectPart()"
     >
 
-    <button
-      onclick="addProjectPart()"
-    >
-      ➕ Add Part
-    </button>
+    <button onclick="addProjectPart()">➕ Add Part</button>
 
-    <div
-      id="projectPartList"
-      style="margin-top:18px;"
-    ></div>
+    <div id="projectPartList" style="margin-top:18px;"></div>
 
   </div>
 
 
-
   <!-- PROJECT NOTES -->
 
-  <div
-    class="section hidden"
-    id="projectNotesSection"
-  >
+  <div class="section hidden" id="projectNotesSection">
 
-    <h2>
-      📝 My Project Notes
-    </h2>
+    <h2>📝 My Project Notes</h2>
 
     <textarea
       id="projectNotes"
       placeholder="Write notes about this project..."
     ></textarea>
 
-    <button
-      onclick="saveProjectNotes()"
-    >
+    <button onclick="saveProjectNotes()">
       Save Project Notes
     </button>
 
-    <div
-      id="projectNotesMessage"
-      class="info-box hidden"
-    >
+    <div id="projectNotesMessage" class="info-box hidden">
       Project notes saved.
     </div>
 
   </div>
 
 
-
   <!-- PROJECT PROGRESS -->
 
-  <div
-    class="section hidden"
-    id="projectProgressSection"
-  >
+  <div class="section hidden" id="projectProgressSection">
 
-    <h2>
-      📈 My Project Progress
-    </h2>
+    <h2>📈 My Project Progress</h2>
 
     <div class="progress-container">
-      <div
-        class="progress-bar"
-        id="projectProgressBar"
-      ></div>
+      <div class="progress-bar" id="projectProgressBar"></div>
     </div>
 
-    <div
-      class="progress-text"
-      id="projectProgressText"
-    >
+    <div class="progress-text" id="projectProgressText">
       0% complete
     </div>
 
@@ -1065,42 +887,26 @@
   </div>
 
 
-
   <!-- REASSEMBLE -->
 
-  <div
-    class="section hidden"
-    id="reassembleSection"
-  >
+  <div class="section hidden" id="reassembleSection">
 
-    <h2>
-      🔧 Reassemble
-    </h2>
+    <h2>🔧 Reassemble</h2>
 
     <p>
-      Rebuild Assistant is walking you back
-      through your project in reverse order.
+      Rebuild Assistant is walking you back through your project in reverse order.
       Use your saved notes and photos as a guide.
     </p>
 
     <div class="progress-container">
-      <div
-        class="progress-bar"
-        id="reassembleProgressBar"
-      ></div>
+      <div class="progress-bar" id="reassembleProgressBar"></div>
     </div>
 
-    <div
-      class="progress-text"
-      id="reassembleProgressText"
-    >
+    <div class="progress-text" id="reassembleProgressText">
       0% reassembled
     </div>
 
-    <div
-      id="reassembleStepCard"
-      class="reassemble-card"
-    ></div>
+    <div id="reassembleStepCard" class="reassemble-card"></div>
 
     <button
       class="secondary"
@@ -1112,7 +918,824 @@
     </button>
 
   </div>
-      {
+
+
+  <!-- EVERYTHING ELSE -->
+
+  <div class="section hidden" id="otherProjectsSection">
+
+    <h2>🔨 Start New Project</h2>
+
+    <p>
+      Use Rebuild Assistant for anything you take apart, repair, restore or reassemble.
+      Add photos to document the project as you go.
+    </p>
+
+    <label for="otherProjectName">
+      Project Name
+    </label>
+
+    <input
+      type="text"
+      id="otherProjectName"
+      placeholder="Example: Basement Repair"
+    >
+
+    <button onclick="startOtherProject()">
+      Start New Project
+    </button>
+
+    <div class="info-box">
+      <strong>Project Tasks</strong>
+
+      <p>
+        Add each job you need to complete below. You can mark tasks
+        complete and attach photos to any task.
+      </p>
+    </div>
+
+    <button
+      class="secondary"
+      onclick="backToProjectType()"
+    >
+      ← Back to Project Types
+    </button>
+
+  </div>
+
+
+  <!-- MAIN REPAIR DATABASE -->
+
+  <div class="section hidden" id="repairDatabase">
+
+    <h2>🔧 Vehicle Repair Guides</h2>
+
+    <p>
+      Choose a system to see available guided repairs
+      for your vehicle.
+    </p>
+
+    <div class="grid">
+
+      <div class="category-card" onclick="openCategory('cooling')">
+        <div class="category-icon">🌡️</div>
+        <h3>Cooling System</h3>
+
+        <p>
+          Radiator, water pump, thermostat, hoses,
+          coolant and related repairs.
+        </p>
+      </div>
+
+      <div class="category-card" onclick="openCategory('engine')">
+        <div class="category-icon">⚙️</div>
+        <h3>Engine</h3>
+
+        <p>
+          Engine components, belts, ignition,
+          lubrication and other repairs.
+        </p>
+      </div>
+
+      <div class="category-card" onclick="openCategory('brakes')">
+        <div class="category-icon">🛑</div>
+        <h3>Brakes</h3>
+
+        <p>
+          Brake service, drums, discs, hydraulics
+          and related components.
+        </p>
+      </div>
+
+      <div class="category-card" onclick="openCategory('electrical')">
+        <div class="category-icon">⚡</div>
+        <h3>Electrical</h3>
+
+        <p>
+          Wiring, battery, alternator, starter,
+          lighting and electrical troubleshooting.
+        </p>
+      </div>
+
+      <div class="category-card" onclick="openCategory('fuel')">
+        <div class="category-icon">⛽</div>
+        <h3>Fuel System</h3>
+
+        <p>
+          Fuel pump, carburetor, lines, filters
+          and fuel system repairs.
+        </p>
+      </div>
+
+      <div class="category-card" onclick="openCategory('suspension')">
+        <div class="category-icon">🔩</div>
+        <h3>Suspension</h3>
+
+        <p>
+          Springs, shocks, control arms,
+          bushings and suspension components.
+        </p>
+      </div>
+
+      <div class="category-card" onclick="openCategory('steering')">
+        <div class="category-icon">🛞</div>
+        <h3>Steering</h3>
+
+        <p>
+          Steering components, linkage and
+          steering system repairs.
+        </p>
+      </div>
+
+      <div class="category-card" onclick="openCategory('body')">
+        <div class="category-icon">🚘</div>
+        <h3>Body & Interior</h3>
+
+        <p>
+          Body panels, trim, interior components
+          and restoration work.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- CATEGORY -->
+
+  <div class="section hidden" id="categorySection">
+
+    <h2 id="categoryTitle"></h2>
+
+    <div id="repairList"></div>
+
+    <button class="secondary" onclick="backToDatabase()">
+      ← Back to Repair Categories
+    </button>
+
+  </div>
+
+
+  <!-- GUIDED REPAIR -->
+
+  <div class="section hidden" id="guidedRepair">
+
+    <h2 id="repairTitle"></h2>
+
+    <div id="repairVehicleInfo" class="info-box"></div>
+
+    <div class="beginner-mode-box">
+      <label style="display:flex;gap:10px;align-items:center;cursor:pointer;">
+        <input
+          type="checkbox"
+          id="guidedBeginnerModeToggle"
+          onchange="toggleGuidedBeginnerMode()"
+          style="width:auto;margin:0;"
+        >
+        <strong>Beginner Mode — Extra Detailed Instructions</strong>
+      </label>
+
+      <p style="margin-bottom:0;">
+        Turn this on for simpler, more detailed step-by-step directions.
+      </p>
+    </div>
+
+    <div class="warning-box">
+      <strong>⚠️ Important Safety Notice</strong>
+
+      <p>
+        These instructions are a demonstration guide.
+        Always verify procedures, specifications and
+        torque values against the correct factory service
+        information for your exact vehicle and engine.
+      </p>
+    </div>
+
+    <h3>Progress</h3>
+
+    <div class="progress-container">
+      <div
+        class="progress-bar"
+        id="progressBar"
+      ></div>
+    </div>
+
+    <div
+      class="progress-text"
+      id="progressText"
+    ></div>
+
+    <hr>
+
+    <div id="stepContent"></div>
+
+    <div class="check-row">
+      <input
+        type="checkbox"
+        id="stepComplete"
+        onchange="markStepComplete()"
+      >
+
+      <label for="stepComplete">
+        I have completed this step
+      </label>
+    </div>
+
+    <br>
+
+    <button onclick="previousStep()">
+      ← Previous
+    </button>
+
+    <button onclick="nextStep()">
+      Next →
+    </button>
+
+    <button
+      class="secondary"
+      onclick="exitRepair()"
+    >
+      Exit Repair
+    </button>
+
+  </div>
+
+
+  <!-- NOTES -->
+
+  <div class="section hidden" id="notesSection">
+
+    <h2>📝 Repair Notes</h2>
+
+    <textarea
+      id="repairNotes"
+      placeholder="Write notes about this repair..."
+    ></textarea>
+
+    <button onclick="saveRepairNotes()">
+      Save Notes
+    </button>
+
+    <div
+      id="notesMessage"
+      class="info-box hidden"
+    >
+      Notes saved.
+    </div>
+
+  </div>
+
+
+  <!-- HISTORY -->
+
+  <div class="section hidden" id="historySection">
+
+    <h2>📋 Repair History</h2>
+
+    <div id="repairHistory">
+      <p>
+        No repairs have been started yet.
+      </p>
+    </div>
+
+  </div>
+
+</div>
+
+
+<footer>
+  Rebuild Assistant &copy; 2026<br>
+  <strong>A DONCO-BAYCITY™ App</strong>
+</footer>
+
+
+<script>
+
+  /*
+   * VEHICLE DATA
+   */
+
+  let vehicle =
+    JSON.parse(
+      localStorage.getItem(
+        "rebuildAssistVehicle"
+      )
+    ) || null;
+
+
+  function saveVehicle() {
+
+    saveProjectDetails();
+
+    const year =
+      document.getElementById(
+        "vehicleYear"
+      ).value.trim();
+
+    const make =
+      document.getElementById(
+        "vehicleMake"
+      ).value.trim();
+
+    const model =
+      document.getElementById(
+        "vehicleModel"
+      ).value.trim();
+
+    const engine =
+      document.getElementById(
+        "vehicleEngine"
+      ).value.trim();
+
+    const transmission =
+      document.getElementById(
+        "vehicleTransmission"
+      ).value.trim();
+
+    if (
+      !year ||
+      !make ||
+      !model
+    ) {
+      alert(
+        "Please enter the year, make and model."
+      );
+
+      return;
+    }
+
+    vehicle = {
+      year: year,
+      make: make,
+      model: model,
+      engine: engine,
+      transmission: transmission
+    };
+
+    localStorage.setItem(
+      "rebuildAssistVehicle",
+      JSON.stringify(
+        vehicle
+      )
+    );
+
+    displayVehicle();
+
+    alert(
+      "Vehicle saved successfully!"
+    );
+  }
+
+
+  function displayVehicle() {
+
+    if (!vehicle) {
+      return;
+    }
+
+    document
+      .getElementById(
+        "vehicleDisplay"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+    let text =
+      vehicle.year +
+      " " +
+      vehicle.make +
+      " " +
+      vehicle.model;
+
+    if (vehicle.engine) {
+      text +=
+        " • " +
+        vehicle.engine;
+    }
+
+    document.getElementById(
+      "vehicleDisplayText"
+    ).textContent =
+      text;
+
+    document.getElementById(
+      "vehicleYear"
+    ).value =
+      vehicle.year || "";
+
+    document.getElementById(
+      "vehicleMake"
+    ).value =
+      vehicle.make || "";
+
+    document.getElementById(
+      "vehicleModel"
+    ).value =
+      vehicle.model || "";
+
+    document.getElementById(
+      "vehicleEngine"
+    ).value =
+      vehicle.engine || "";
+
+    document.getElementById(
+      "vehicleTransmission"
+    ).value =
+      vehicle.transmission || "";
+  }
+
+
+  function editVehicle() {
+
+    document
+      .getElementById(
+        "vehicleSetup"
+      )
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+
+  }
+
+
+  /*
+   * REPAIR DATABASE
+   */
+
+  const repairDatabase = {
+
+    cooling: {
+
+      title:
+        "🌡️ Cooling System",
+
+      repairs: [
+
+        {
+          id:
+            "water-pump",
+
+          title:
+            "Water Pump Replacement",
+
+          description:
+            "Remove and replace the engine water pump.",
+
+          time:
+            "Varies by vehicle",
+
+          difficulty:
+            "Intermediate"
+        },
+
+        {
+          id:
+            "thermostat",
+
+          title:
+            "Thermostat Replacement",
+
+          description:
+            "Remove and replace the engine thermostat.",
+
+          time:
+            "Varies by vehicle",
+
+          difficulty:
+            "Beginner"
+        },
+
+        {
+          id:
+            "radiator",
+
+          title:
+            "Radiator Replacement",
+
+          description:
+            "Remove and replace the radiator.",
+
+          time:
+            "Varies by vehicle",
+
+          difficulty:
+            "Intermediate"
+        }
+
+      ]
+    },
+
+
+    engine: {
+
+      title:
+        "⚙️ Engine",
+
+      repairs: [
+
+        {
+          id:
+            "belts",
+
+          title:
+            "Accessory Belt Inspection",
+
+          description:
+            "Inspect belts for wear, cracking and improper tension.",
+
+          time:
+            "30–60 minutes",
+
+          difficulty:
+            "Beginner"
+        }
+
+      ]
+    },
+
+
+    brakes: {
+
+      title:
+        "🛑 Brakes",
+
+      repairs: [
+
+        {
+          id:
+            "brake-inspection",
+
+          title:
+            "Brake System Inspection",
+
+          description:
+            "Inspect major brake system components.",
+
+          time:
+            "1 hour",
+
+          difficulty:
+            "Beginner"
+        }
+
+      ]
+    },
+
+
+    electrical: {
+
+      title:
+        "⚡ Electrical",
+
+      repairs: [
+
+        {
+          id:
+            "battery",
+
+          title:
+            "Battery Inspection",
+
+          description:
+            "Inspect battery condition and connections.",
+
+          time:
+            "15–30 minutes",
+
+          difficulty:
+            "Beginner"
+        }
+
+      ]
+    },
+
+
+    fuel: {
+
+      title:
+        "⛽ Fuel System",
+
+      repairs: [
+
+        {
+          id:
+            "fuel-filter",
+
+          title:
+            "Fuel Filter Replacement",
+
+          description:
+            "Inspect and replace the fuel filter.",
+
+          time:
+            "Varies by vehicle",
+
+          difficulty:
+            "Beginner"
+        }
+
+      ]
+    },
+
+
+    suspension: {
+
+      title:
+        "🔩 Suspension",
+
+      repairs: [
+
+        {
+          id:
+            "shock-inspection",
+
+          title:
+            "Shock Absorber Inspection",
+
+          description:
+            "Inspect shocks for leaks and damage.",
+
+          time:
+            "30 minutes",
+
+          difficulty:
+            "Beginner"
+        }
+
+      ]
+    },
+
+
+    steering: {
+
+      title:
+        "🛞 Steering",
+
+      repairs: [
+
+        {
+          id:
+            "steering-inspection",
+
+          title:
+            "Steering System Inspection",
+
+          description:
+            "Inspect steering linkage and related components.",
+
+          time:
+            "1 hour",
+
+          difficulty:
+            "Beginner"
+        }
+
+      ]
+    },
+
+
+    body: {
+
+      title:
+        "🚘 Body & Interior",
+
+      repairs: [
+
+        {
+          id:
+            "body-inspection",
+
+          title:
+            "Body Condition Inspection",
+
+          description:
+            "Inspect body panels, rust and structural areas.",
+
+          time:
+            "1–2 hours",
+
+          difficulty:
+            "Beginner"
+        }
+
+      ]
+    }
+
+  };
+
+
+  /*
+   * WATER PUMP REPAIR
+   */
+
+  const waterPumpSteps = [
+
+    {
+      title:
+        "Prepare the vehicle",
+
+      text:
+        "Park the vehicle on a level surface. Allow the engine to cool completely before beginning work. Set the parking brake and make sure the vehicle cannot move.",
+
+      warning:
+        "Never open a pressurized cooling system while the engine is hot.",
+
+      tools: [
+        "Basic hand tools",
+        "Safety glasses",
+        "Work gloves",
+        "Drain pan"
+      ]
+    },
+
+    {
+      title:
+        "Disconnect the battery",
+
+      text:
+        "Disconnect the negative battery cable before beginning work. This helps prevent accidental electrical shorts while working around the engine.",
+
+      warning:
+        "Keep the disconnected cable positioned so it cannot accidentally contact the battery terminal.",
+
+      tools: [
+        "Wrench or socket appropriate for the battery terminal"
+      ]
+    },
+
+    {
+      title:
+        "Drain the cooling system",
+
+      text:
+        "Place an appropriate drain pan under the cooling system. Open the radiator drain point if equipped and allow the coolant to drain. Dispose of used coolant properly.",
+
+      warning:
+        "Engine coolant is toxic. Keep it away from children and pets and never leave an open container unattended.",
+
+      tools: [
+        "Drain pan",
+        "Gloves",
+        "Shop towels"
+      ]
+    },
+
+    {
+      title:
+        "Remove components blocking access",
+
+      text:
+        "Depending on the exact engine configuration, remove belts, hoses, pulleys or other components that prevent access to the water pump. Take photographs before removing parts so their original routing can be referenced during reassembly.",
+
+      warning:
+        "Do not force components that appear stuck. Identify all fasteners and brackets before applying excessive force.",
+
+      tools: [
+        "Socket set",
+        "Wrenches",
+        "Screwdrivers",
+        "Camera or phone for reference photos"
+      ]
+    },
+
+    {
+      title:
+        "Disconnect the water pump hoses",
+
+      text:
+        "Identify and disconnect the hoses attached to the water pump. Work carefully around old rubber hoses and clamps because aged components may be brittle.",
+
+      warning:
+        "Residual coolant may remain inside the hoses and pump housing.",
+
+      tools: [
+        "Pliers",
+        "Screwdriver",
+        "Drain pan",
+        "Shop towels"
+      ]
+    },
+
+    {
+      title:
+        "Remove the water pump",
+
+      text:
+        "Locate all water-pump mounting fasteners and remove them carefully. Keep track of the location and length of each fastener. Once all fasteners are removed, separate the pump from the engine.",
+
+      warning:
+        "Do not pry against sealing surfaces in a way that could damage the engine or mounting surface.",
+
+      tools: [
+        "Socket set",
+        "Ratchet",
+        "Extensions",
+        "Torque wrench for reassembly"
+      ]
+    },
+
+    {
       title:
         "Clean the mounting surfaces",
 
@@ -1256,9 +1879,7 @@
    */
 
   let currentRepair = null;
-
   let currentStep = 0;
-
   let completedSteps = [];
 
 
@@ -1343,8 +1964,12 @@
     });
 
     document
-      .getElementById("projectTypeSection")
-      .classList.remove("hidden");
+      .getElementById(
+        "projectTypeSection"
+      )
+      .classList.remove(
+        "hidden"
+      );
 
     window.scrollTo({
       top: 0,
@@ -1363,23 +1988,33 @@
     }
 
     document
-      .getElementById("repairDatabase")
-      .classList.add("hidden");
+      .getElementById(
+        "repairDatabase"
+      )
+      .classList.add(
+        "hidden"
+      );
 
     document
-      .getElementById("categorySection")
-      .classList.remove("hidden");
+      .getElementById(
+        "categorySection"
+      )
+      .classList.remove(
+        "hidden"
+      );
 
     document.getElementById(
       "categoryTitle"
-    ).textContent = data.title;
+    ).textContent =
+      data.title;
 
     const list =
       document.getElementById(
         "repairList"
       );
 
-    list.innerHTML = "";
+    list.innerHTML =
+      "";
 
     data.repairs.forEach(
       function(repair) {
@@ -1393,52 +2028,51 @@
           "repair-card";
 
         div.innerHTML = `
-          <h3>
-            ${repair.title}
-          </h3>
+          <h3>${repair.title}</h3>
+
+          <p>${repair.description}</p>
 
           <p>
-            ${repair.description}
-          </p>
-
-          <p>
-            <strong>
-              Difficulty:
-            </strong>
+            <strong>Difficulty:</strong>
             ${repair.difficulty}
           </p>
 
           <p>
-            <strong>
-              Typical time:
-            </strong>
+            <strong>Typical time:</strong>
             ${repair.time}
           </p>
 
-          <button
-            onclick="startRepair('${repair.id}')"
-          >
+          <button onclick="startRepair('${repair.id}')">
             Start Guided Repair
           </button>
         `;
 
-        list.appendChild(div);
+        list.appendChild(
+          div
+        );
 
       }
     );
-
   }
 
 
   function backToDatabase() {
 
     document
-      .getElementById("categorySection")
-      .classList.add("hidden");
+      .getElementById(
+        "categorySection"
+      )
+      .classList.add(
+        "hidden"
+      );
 
     document
-      .getElementById("repairDatabase")
-      .classList.remove("hidden");
+      .getElementById(
+        "repairDatabase"
+      )
+      .classList.remove(
+        "hidden"
+      );
 
   }
 
@@ -1456,14 +2090,15 @@
       );
 
       document
-        .getElementById("vehicleSetup")
+        .getElementById(
+          "vehicleSetup"
+        )
         .scrollIntoView({
           behavior: "smooth"
         });
 
       return;
     }
-
 
     if (
       repairId ===
@@ -1492,9 +2127,7 @@
       return;
     }
 
-
     currentStep = 0;
-
 
     const saved =
       JSON.parse(
@@ -1502,7 +2135,6 @@
           "rebuildAssistProgress"
         )
       );
-
 
     if (
       saved &&
@@ -1525,10 +2157,10 @@
 
     } else {
 
-      completedSteps = [];
+      completedSteps =
+        [];
 
     }
-
 
     document
       .getElementById(
@@ -1538,7 +2170,6 @@
         "hidden"
       );
 
-
     document
       .getElementById(
         "repairDatabase"
@@ -1546,7 +2177,6 @@
       .classList.add(
         "hidden"
       );
-
 
     document
       .getElementById(
@@ -1556,7 +2186,6 @@
         "hidden"
       );
 
-
     document
       .getElementById(
         "notesSection"
@@ -1565,53 +2194,40 @@
         "hidden"
       );
 
-
     document.getElementById(
       "repairTitle"
     ).textContent =
       "🔧 " +
       currentRepair.title;
 
-
     document.getElementById(
       "repairVehicleInfo"
     ).innerHTML =
-
       "<strong>Vehicle:</strong> " +
-
       vehicle.year +
       " " +
       vehicle.make +
       " " +
       vehicle.model +
-
       "<br>" +
-
       "<strong>Engine:</strong> " +
-
       (
         vehicle.engine ||
         "Not specified"
       ) +
-
       "<br>" +
-
       "<strong>Transmission:</strong> " +
-
       (
         vehicle.transmission ||
         "Not specified"
       );
 
-
     loadRepairNotes();
-
 
     const guidedBeginnerToggle =
       document.getElementById(
         "guidedBeginnerModeToggle"
       );
-
 
     if (
       guidedBeginnerToggle
@@ -1624,9 +2240,7 @@
 
     }
 
-
     displayStep();
-
 
     document
       .getElementById(
@@ -1639,564 +2253,188 @@
   }
 
 
-
   /*
    * BEGINNER MODE DETAILS
    */
 
   const guidedBeginnerDetails = {
 
-
     "Prepare the vehicle": `
-
       <ol>
-
-        <li>
-          Park on a flat,
-          solid surface.
-        </li>
-
-        <li>
-          Put the transmission
-          in Park or in gear.
-        </li>
-
-        <li>
-          Set the parking brake.
-        </li>
-
-        <li>
-          Let the engine become
-          completely cold.
-        </li>
-
-        <li>
-          Open the hood and make
-          sure you have good lighting.
-        </li>
-
-        <li>
-          Take a photo of the engine
-          compartment before removing
-          anything.
-        </li>
-
+        <li>Park on a flat, solid surface.</li>
+        <li>Put the transmission in Park or in gear.</li>
+        <li>Set the parking brake.</li>
+        <li>Let the engine become completely cold.</li>
+        <li>Open the hood and make sure you have good lighting.</li>
+        <li>Take a photo of the engine compartment before removing anything.</li>
       </ol>
 
       <div class="info-box">
-
-        <strong>
-          📷 Photo reminder:
-        </strong>
-
-        Take one wide photo of the
-        engine area before you touch
-        anything.
-
+        <strong>📷 Photo reminder:</strong>
+        Take one wide photo of the engine area before you touch anything.
       </div>
     `,
-
 
     "Disconnect the battery": `
-
       <ol>
-
-        <li>
-          Locate the battery.
-        </li>
-
-        <li>
-          Find the terminal marked
-          negative or “−”.
-        </li>
-
-        <li>
-          Use the correct wrench
-          or socket to loosen the
-          negative terminal.
-        </li>
-
-        <li>
-          Lift the cable off the
-          battery post.
-        </li>
-
-        <li>
-          Move it aside so it cannot
-          spring back onto the terminal.
-        </li>
-
+        <li>Locate the battery.</li>
+        <li>Find the terminal marked negative or “−”.</li>
+        <li>Use the correct wrench or socket to loosen the negative terminal.</li>
+        <li>Lift the cable off the battery post.</li>
+        <li>Move it aside so it cannot spring back onto the terminal.</li>
       </ol>
 
       <div class="warning-box">
-
-        <strong>
-          ⚠️ Easy mistake:
-        </strong>
-
-        Do not let your wrench bridge
-        between the battery terminal
-        and metal bodywork.
-
+        <strong>⚠️ Easy mistake:</strong>
+        Do not let your wrench bridge between the battery terminal and metal bodywork.
       </div>
     `,
-
 
     "Drain the cooling system": `
-
       <ol>
-
-        <li>
-          Make sure the engine is
-          completely cold.
-        </li>
-
-        <li>
-          Place a drain pan under
-          the radiator drain area.
-        </li>
-
-        <li>
-          Slowly remove the radiator
-          cap only when the system
-          is cold.
-        </li>
-
-        <li>
-          Open the radiator drain
-          if your vehicle has one.
-        </li>
-
-        <li>
-          Allow the coolant to drain
-          into the pan.
-        </li>
-
-        <li>
-          Keep coolant away from
-          children and animals.
-        </li>
-
+        <li>Make sure the engine is completely cold.</li>
+        <li>Place a drain pan under the radiator drain area.</li>
+        <li>Slowly remove the radiator cap only when the system is cold.</li>
+        <li>Open the radiator drain if your vehicle has one.</li>
+        <li>Allow the coolant to drain into the pan.</li>
+        <li>Keep coolant away from children and animals.</li>
       </ol>
 
       <div class="info-box">
-
-        <strong>
-          Tip:
-        </strong>
-
-        Have shop towels ready.
-        Some coolant usually spills
-        when hoses are removed later.
-
+        <strong>Tip:</strong>
+        Have shop towels ready. Some coolant usually spills when hoses are removed later.
       </div>
     `,
-
 
     "Remove components blocking access": `
-
       <ol>
-
-        <li>
-          Look carefully at everything
-          between you and the water pump.
-        </li>
-
-        <li>
-          Take several photos before
-          removing anything.
-        </li>
-
-        <li>
-          Photograph belt routing,
-          brackets, hoses and wiring.
-        </li>
-
-        <li>
-          Remove only the components
-          needed to reach the pump.
-        </li>
-
-        <li>
-          Put bolts from each component
-          in a separate labeled bag
-          or container.
-        </li>
-
+        <li>Look carefully at everything between you and the water pump.</li>
+        <li>Take several photos before removing anything.</li>
+        <li>Photograph belt routing, brackets, hoses and wiring.</li>
+        <li>Remove only the components needed to reach the pump.</li>
+        <li>Put bolts from each component in a separate labeled bag or container.</li>
       </ol>
 
       <div class="info-box">
-
-        <strong>
-          📷 Photo reminder:
-        </strong>
-
-        Get a close photo of belt
-        routing and bracket positions.
-
+        <strong>📷 Photo reminder:</strong>
+        Get a close photo of belt routing and bracket positions.
       </div>
     `,
-
 
     "Disconnect the water pump hoses": `
-
       <ol>
-
-        <li>
-          Take a photo showing exactly
-          where each hose connects.
-        </li>
-
-        <li>
-          Move the hose clamps away
-          from the pump connection.
-        </li>
-
-        <li>
-          Gently twist the hose
-          to break it loose.
-        </li>
-
-        <li>
-          Do not pull hard on an
-          old or brittle hose.
-        </li>
-
-        <li>
-          Keep the drain pan underneath
-          because more coolant may
-          come out.
-        </li>
-
+        <li>Take a photo showing exactly where each hose connects.</li>
+        <li>Move the hose clamps away from the pump connection.</li>
+        <li>Gently twist the hose to break it loose.</li>
+        <li>Do not pull hard on an old or brittle hose.</li>
+        <li>Keep the drain pan underneath because more coolant may come out.</li>
       </ol>
     `,
 
-
     "Remove the water pump": `
-
       <ol>
-
-        <li>
-          Take a clear photo of all
-          water-pump bolts before removal.
-        </li>
-
-        <li>
-          Loosen the mounting bolts.
-        </li>
-
-        <li>
-          Keep track of where every
-          bolt came from.
-        </li>
-
-        <li>
-          Some bolts may be different
-          lengths, so label their locations.
-        </li>
-
-        <li>
-          Once every bolt is removed,
-          gently separate the pump
-          from the engine.
-        </li>
-
-        <li>
-          Do not pry against a machined
-          sealing surface.
-        </li>
-
+        <li>Take a clear photo of all water-pump bolts before removal.</li>
+        <li>Loosen the mounting bolts.</li>
+        <li>Keep track of where every bolt came from.</li>
+        <li>Some bolts may be different lengths, so label their locations.</li>
+        <li>Once every bolt is removed, gently separate the pump from the engine.</li>
+        <li>Do not pry against a machined sealing surface.</li>
       </ol>
 
       <div class="info-box">
-
-        <strong>
-          Bag and label:
-        </strong>
-
-        Put the pump bolts in a labeled
-        bag. If lengths differ, note
-        each bolt location.
-
+        <strong>Bag and label:</strong>
+        Put the pump bolts in a labeled bag. If lengths differ, note each bolt location.
       </div>
     `,
 
-
     "Clean the mounting surfaces": `
-
       <ol>
-
-        <li>
-          Cover openings where debris
-          could fall inside the engine.
-        </li>
-
-        <li>
-          Carefully remove the old
-          gasket material.
-        </li>
-
-        <li>
-          Use a plastic scraper
-          whenever possible.
-        </li>
-
-        <li>
-          Do not gouge or scratch
-          the sealing surface.
-        </li>
-
-        <li>
-          Wipe the area clean before
-          installing the new pump.
-        </li>
-
+        <li>Cover openings where debris could fall inside the engine.</li>
+        <li>Carefully remove the old gasket material.</li>
+        <li>Use a plastic scraper whenever possible.</li>
+        <li>Do not gouge or scratch the sealing surface.</li>
+        <li>Wipe the area clean before installing the new pump.</li>
       </ol>
     `,
-
 
     "Prepare the replacement pump": `
-
       <ol>
-
-        <li>
-          Place the old and new pumps
-          next to each other.
-        </li>
-
-        <li>
-          Compare the mounting holes.
-        </li>
-
-        <li>
-          Compare hose connections.
-        </li>
-
-        <li>
-          Compare pulley and accessory
-          mounting points.
-        </li>
-
-        <li>
-          Confirm the gasket matches.
-        </li>
-
-        <li>
-          Do not install the new pump
-          if something does not match.
-        </li>
-
+        <li>Place the old and new pumps next to each other.</li>
+        <li>Compare the mounting holes.</li>
+        <li>Compare hose connections.</li>
+        <li>Compare pulley and accessory mounting points.</li>
+        <li>Confirm the gasket matches.</li>
+        <li>Do not install the new pump if something does not match.</li>
       </ol>
     `,
 
-
     "Install the new water pump": `
-
       <ol>
-
-        <li>
-          Position the new gasket correctly.
-        </li>
-
-        <li>
-          Place the new pump against
-          the engine without disturbing
-          the gasket.
-        </li>
-
-        <li>
-          Start all bolts by hand before
-          tightening any of them.
-        </li>
-
-        <li>
-          Make sure the pump sits evenly
-          against the mounting surface.
-        </li>
-
-        <li>
-          Tighten the bolts gradually.
-        </li>
-
-        <li>
-          Use the correct factory torque
-          specification for your exact engine.
-        </li>
-
+        <li>Position the new gasket correctly.</li>
+        <li>Place the new pump against the engine without disturbing the gasket.</li>
+        <li>Start all bolts by hand before tightening any of them.</li>
+        <li>Make sure the pump sits evenly against the mounting surface.</li>
+        <li>Tighten the bolts gradually.</li>
+        <li>Use the correct factory torque specification for your exact engine.</li>
       </ol>
 
       <div class="warning-box">
-
-        <strong>
-          ⚠️ Do not guess torque:
-        </strong>
-
-        Use the factory specification
-        for the exact engine.
-
+        <strong>⚠️ Do not guess torque:</strong>
+        Use the factory specification for the exact engine.
       </div>
     `,
 
-
     "Reconnect hoses and components": `
-
       <ol>
-
-        <li>
-          Use your earlier photos
-          as a reference.
-        </li>
-
-        <li>
-          Reconnect the water-pump hoses.
-        </li>
-
-        <li>
-          Return the hose clamps
-          to their proper positions.
-        </li>
-
-        <li>
-          Reinstall brackets, pulleys
-          and other removed parts.
-        </li>
-
-        <li>
-          Route belts exactly as they
-          were originally installed.
-        </li>
-
-        <li>
-          Make sure no wires or hoses
-          are trapped or pinched.
-        </li>
-
+        <li>Use your earlier photos as a reference.</li>
+        <li>Reconnect the water-pump hoses.</li>
+        <li>Return the hose clamps to their proper positions.</li>
+        <li>Reinstall brackets, pulleys and other removed parts.</li>
+        <li>Route belts exactly as they were originally installed.</li>
+        <li>Make sure no wires or hoses are trapped or pinched.</li>
       </ol>
     `,
-
 
     "Reconnect the battery": `
-
       <ol>
-
-        <li>
-          Check the engine compartment
-          for forgotten tools.
-        </li>
-
-        <li>
-          Make sure all loose parts
-          have been removed.
-        </li>
-
-        <li>
-          Place the negative battery cable
-          back onto the negative terminal.
-        </li>
-
-        <li>
-          Tighten the connection securely
-          without overtightening it.
-        </li>
-
+        <li>Check the engine compartment for forgotten tools.</li>
+        <li>Make sure all loose parts have been removed.</li>
+        <li>Place the negative battery cable back onto the negative terminal.</li>
+        <li>Tighten the connection securely without overtightening it.</li>
       </ol>
     `,
-
 
     "Refill the cooling system": `
-
       <ol>
-
-        <li>
-          Confirm all drain points
-          are closed.
-        </li>
-
-        <li>
-          Use the correct coolant
-          specified for the vehicle.
-        </li>
-
-        <li>
-          Fill the system slowly.
-        </li>
-
-        <li>
-          Follow the correct air-bleeding
-          procedure for the exact engine.
-        </li>
-
-        <li>
-          Watch for leaks while filling.
-        </li>
-
+        <li>Confirm all drain points are closed.</li>
+        <li>Use the correct coolant specified for the vehicle.</li>
+        <li>Fill the system slowly.</li>
+        <li>Follow the correct air-bleeding procedure for the exact engine.</li>
+        <li>Watch for leaks while filling.</li>
       </ol>
     `,
-
 
     "Check for leaks": `
-
       <ol>
-
-        <li>
-          Look underneath the vehicle
-          before starting the engine.
-        </li>
-
-        <li>
-          Check around the water pump
-          and hose connections.
-        </li>
-
-        <li>
-          Start the engine only after
-          the cooling system is properly
-          filled.
-        </li>
-
-        <li>
-          Keep hands and clothing away
-          from moving belts and pulleys.
-        </li>
-
-        <li>
-          Watch carefully for coolant leaks.
-        </li>
-
+        <li>Look underneath the vehicle before starting the engine.</li>
+        <li>Check around the water pump and hose connections.</li>
+        <li>Start the engine only after the cooling system is properly filled.</li>
+        <li>Keep hands and clothing away from moving belts and pulleys.</li>
+        <li>Watch carefully for coolant leaks.</li>
       </ol>
     `,
 
-
     "Final inspection": `
-
       <ol>
-
-        <li>
-          Verify all hoses are secure.
-        </li>
-
-        <li>
-          Verify the belt is routed correctly.
-        </li>
-
-        <li>
-          Watch the engine temperature.
-        </li>
-
-        <li>
-          Check again for leaks.
-        </li>
-
-        <li>
-          After the engine cools completely,
-          recheck the coolant level.
-        </li>
-
+        <li>Verify all hoses are secure.</li>
+        <li>Verify the belt is routed correctly.</li>
+        <li>Watch the engine temperature.</li>
+        <li>Check again for leaks.</li>
+        <li>After the engine cools completely, recheck the coolant level.</li>
       </ol>
     `
 
   };
-
 
 
   function toggleGuidedBeginnerMode() {
@@ -2210,15 +2448,15 @@
 
       localStorage.setItem(
         "rebuildAssistGuidedBeginnerMode",
-        toggle.checked ? "1" : "0"
+        toggle.checked
+          ? "1"
+          : "0"
       );
 
     }
 
     displayStep();
-
   }
-
 
 
   /*
@@ -2231,171 +2469,123 @@
       return;
     }
 
-
     const total =
       currentRepair.steps.length;
-
 
     const step =
       currentRepair.steps[
         currentStep
       ];
 
-
     const beginnerMode =
       document.getElementById(
         "guidedBeginnerModeToggle"
       )?.checked || false;
 
-
     const beginnerHTML =
-
       beginnerMode
 
         ? `
-
           <div
             class="beginner-mode-box"
             style="margin-top:18px;"
           >
-
             <strong>
-              👣 Beginner Mode —
-              Detailed Instructions
+              👣 Beginner Mode — Detailed Instructions
             </strong>
 
             ${
               guidedBeginnerDetails[
                 step.title
               ] ||
-
               "<p>Follow the normal instructions carefully. Take reference photos before removing parts, label fasteners, and stop if anything does not match your vehicle.</p>"
             }
-
           </div>
-
         `
 
         : "";
-
 
     document.getElementById(
       "stepContent"
     ).innerHTML = `
 
       <div>
-
-        <span
-          class="step-number"
-        >
+        <span class="step-number">
           ${currentStep + 1}
         </span>
 
-        <span
-          class="step-title"
-        >
+        <span class="step-title">
           ${step.title}
         </span>
-
       </div>
 
-
-      <div
-        class="step-text"
-      >
+      <div class="step-text">
         ${step.text}
       </div>
 
-
       ${beginnerHTML}
-
 
       ${
         step.warning
 
           ? `
-
-            <div
-              class="warning-box"
-            >
-
-              <strong>
-                ⚠️ Warning
-              </strong>
-
-              <p>
-                ${step.warning}
-              </p>
-
+            <div class="warning-box">
+              <strong>⚠️ Warning</strong>
+              <p>${step.warning}</p>
             </div>
-
           `
 
           : ""
       }
 
-
-      <div
-        class="tools-box"
-      >
-
-        <strong>
-          🛠️ Tools / Supplies
-        </strong>
+      <div class="tools-box">
+        <strong>🛠️ Tools / Supplies</strong>
 
         <ul>
-
           ${
             step.tools
               .map(
                 function(tool) {
-
                   return (
                     "<li>" +
                     tool +
                     "</li>"
                   );
-
                 }
               )
               .join("")
           }
-
         </ul>
-
       </div>
-
     `;
-
 
     const percent =
       (
-        (currentStep + 1) /
+        (
+          currentStep + 1
+        ) /
         total
       ) * 100;
-
 
     document.getElementById(
       "progressBar"
     ).style.width =
       percent + "%";
 
-
     document.getElementById(
       "progressText"
     ).textContent =
-
       "Step " +
-      (currentStep + 1) +
-
+      (
+        currentStep + 1
+      ) +
       " of " +
       total +
-
       " • " +
-      Math.round(percent) +
-
+      Math.round(
+        percent
+      ) +
       "%";
-
 
     document.getElementById(
       "stepComplete"
@@ -2404,11 +2594,8 @@
         currentStep
       );
 
-
     saveProgress();
-
   }
-
 
 
   /*
@@ -2421,7 +2608,6 @@
       document.getElementById(
         "stepComplete"
       );
-
 
     if (
       checkbox.checked
@@ -2443,25 +2629,18 @@
 
       completedSteps =
         completedSteps.filter(
-
           function(step) {
-
             return (
               step !==
               currentStep
             );
-
           }
-
         );
 
     }
 
-
     saveProgress();
-
   }
-
 
 
   /*
@@ -2481,13 +2660,11 @@
           "You have not marked this step complete. Continue anyway?"
         );
 
-
       if (!proceed) {
         return;
       }
 
     }
-
 
     if (
       currentStep <
@@ -2501,11 +2678,8 @@
       return;
     }
 
-
     finishRepair();
-
   }
-
 
 
   /*
@@ -2523,9 +2697,7 @@
       displayStep();
 
     }
-
   }
-
 
 
   /*
@@ -2538,10 +2710,8 @@
       !currentRepair ||
       !vehicle
     ) {
-
       return;
     }
-
 
     const progress = {
 
@@ -2566,14 +2736,13 @@
 
     };
 
-
     localStorage.setItem(
       "rebuildAssistProgress",
-      JSON.stringify(progress)
+      JSON.stringify(
+        progress
+      )
     );
-
   }
-
 
 
   /*
@@ -2588,7 +2757,6 @@
           "rebuildAssistHistory"
         )
       ) || [];
-
 
     history.push({
 
@@ -2611,25 +2779,23 @@
 
     });
 
-
     localStorage.setItem(
       "rebuildAssistHistory",
-      JSON.stringify(history)
+      JSON.stringify(
+        history
+      )
     );
-
 
     localStorage.removeItem(
       "rebuildAssistProgress"
     );
 
-
     alert(
       "🎉 Repair completed! Rebuild Assistant has added it to your repair history."
     );
 
-
-    currentRepair = null;
-
+    currentRepair =
+      null;
 
     document
       .getElementById(
@@ -2639,7 +2805,6 @@
         "hidden"
       );
 
-
     document
       .getElementById(
         "notesSection"
@@ -2647,7 +2812,6 @@
       .classList.add(
         "hidden"
       );
-
 
     document
       .getElementById(
@@ -2657,11 +2821,8 @@
         "hidden"
       );
 
-
     displayHistory();
-
   }
-
 
 
   /*
@@ -2672,8 +2833,8 @@
 
     saveProgress();
 
-    currentRepair = null;
-
+    currentRepair =
+      null;
 
     document
       .getElementById(
@@ -2683,7 +2844,6 @@
         "hidden"
       );
 
-
     document
       .getElementById(
         "notesSection"
@@ -2692,7 +2852,6 @@
         "hidden"
       );
 
-
     document
       .getElementById(
         "repairDatabase"
@@ -2700,9 +2859,7 @@
       .classList.remove(
         "hidden"
       );
-
   }
-
 
 
   /*
@@ -2715,12 +2872,10 @@
       return;
     }
 
-
     const notes =
       document.getElementById(
         "repairNotes"
       ).value;
-
 
     localStorage.setItem(
       "repairNotes_" +
@@ -2728,20 +2883,16 @@
       notes
     );
 
-
     const message =
       document.getElementById(
         "notesMessage"
       );
 
-
     message.classList.remove(
       "hidden"
     );
 
-
     setTimeout(
-
       function() {
 
         message.classList.add(
@@ -2749,13 +2900,9 @@
         );
 
       },
-
       2000
-
     );
-
   }
-
 
 
   function loadRepairNotes() {
@@ -2764,21 +2911,17 @@
       return;
     }
 
-
     const notes =
       localStorage.getItem(
         "repairNotes_" +
         currentRepair.id
       );
 
-
     document.getElementById(
       "repairNotes"
     ).value =
       notes || "";
-
   }
-
 
 
   /*
@@ -2794,12 +2937,10 @@
         )
       ) || [];
 
-
     const container =
       document.getElementById(
         "repairHistory"
       );
-
 
     if (
       history.length === 0
@@ -2811,15 +2952,13 @@
       return;
     }
 
-
-    container.innerHTML = "";
-
+    container.innerHTML =
+      "";
 
     history
       .slice()
       .reverse()
       .forEach(
-
         function(item) {
 
           const div =
@@ -2827,38 +2966,26 @@
               "div"
             );
 
-
           div.className =
             "history-item";
 
-
           div.innerHTML =
-
             "<strong>" +
             item.repairTitle +
             "</strong><br>" +
-
             item.vehicle +
             "<br>" +
-
             "<span class='status-complete'>" +
-
             "Completed: " +
             item.date +
-
             "</span>";
-
 
           container.appendChild(
             div
           );
-
         }
-
       );
-
   }
-
 
 
   /*
@@ -2866,7 +2993,6 @@
    */
 
   let projectTasks =
-
     JSON.parse(
       localStorage.getItem(
         "rebuildAssistProjectTasks"
@@ -2875,7 +3001,6 @@
 
 
   let projectParts =
-
     JSON.parse(
       localStorage.getItem(
         "rebuildAssistProjectParts"
@@ -2890,59 +3015,67 @@
         "rebuildAssistProjectName"
       ) || "";
 
-
     const nameInput =
       document.getElementById(
         "projectName"
       );
 
-
     if (nameInput) {
-      nameInput.value = name;
+      nameInput.value =
+        name;
     }
-
 
     const otherNameInput =
       document.getElementById(
         "otherProjectName"
       );
 
-
-    if (otherNameInput) {
-      otherNameInput.value = name;
+    if (
+      otherNameInput
+    ) {
+      otherNameInput.value =
+        name;
     }
-
 
     const notes =
       localStorage.getItem(
         "rebuildAssistProjectNotes"
       ) || "";
 
-
     const notesInput =
       document.getElementById(
         "projectNotes"
       );
 
-
-    if (notesInput) {
-      notesInput.value = notes;
+    if (
+      notesInput
+    ) {
+      notesInput.value =
+        notes;
     }
-
   }
-          function saveProjectDetails() {
-    const input = document.getElementById("projectName");
+
+
+  function saveProjectDetails() {
+
+    const input =
+      document.getElementById(
+        "projectName"
+      );
 
     if (input) {
+
       localStorage.setItem(
         "rebuildAssistProjectName",
         input.value.trim()
       );
+
     }
   }
 
 
   function startOtherProject() {
+
     const input =
       document.getElementById(
         "otherProjectName"
@@ -2956,6 +3089,7 @@
       input.value.trim();
 
     if (!name) {
+
       alert(
         "Please enter a project name first."
       );
@@ -2983,6 +3117,7 @@
 
 
   function saveProjectNotes() {
+
     const input =
       document.getElementById(
         "projectNotes"
@@ -3003,15 +3138,18 @@
       );
 
     if (message) {
+
       message.classList.remove(
         "hidden"
       );
 
       setTimeout(
         function() {
+
           message.classList.add(
             "hidden"
           );
+
         },
         2000
       );
@@ -3020,6 +3158,7 @@
 
 
   function saveProjectParts() {
+
     localStorage.setItem(
       "rebuildAssistProjectParts",
       JSON.stringify(
@@ -3030,6 +3169,7 @@
 
 
   function addProjectPart() {
+
     const input =
       document.getElementById(
         "partInput"
@@ -3039,6 +3179,7 @@
       input.value.trim();
 
     if (!name) {
+
       alert(
         "Please enter a part first."
       );
@@ -3052,7 +3193,8 @@
       installed: false
     });
 
-    input.value = "";
+    input.value =
+      "";
 
     saveProjectParts();
     displayProjectParts();
@@ -3063,6 +3205,7 @@
   function toggleProjectPart(
     partId
   ) {
+
     const part =
       projectParts.find(
         function(item) {
@@ -3089,6 +3232,7 @@
   function deleteProjectPart(
     partId
   ) {
+
     if (
       !confirm(
         "Delete this part?"
@@ -3120,6 +3264,7 @@
   function editProjectPart(
     partId
   ) {
+
     const part =
       projectParts.find(
         function(item) {
@@ -3162,8 +3307,10 @@
 
     setTimeout(
       function() {
+
         input.focus();
         input.select();
+
       },
       0
     );
@@ -3171,6 +3318,7 @@
 
 
   function saveEditedProjectPart() {
+
     if (
       editingProjectPartId ===
       null
@@ -3197,6 +3345,7 @@
       !part ||
       !input
     ) {
+
       closeEditPart();
 
       return;
@@ -3206,6 +3355,7 @@
       input.value.trim();
 
     if (!name) {
+
       alert(
         "The part name cannot be blank."
       );
@@ -3215,7 +3365,8 @@
       return;
     }
 
-    part.name = name;
+    part.name =
+      name;
 
     saveProjectParts();
     displayProjectParts();
@@ -3224,14 +3375,17 @@
 
 
   function closeEditPart() {
+
     const modal =
       document.getElementById(
         "editPartModal"
       );
 
     if (modal) {
+
       modal.style.display =
         "none";
+
     }
 
     editingProjectPartId =
@@ -3240,6 +3394,7 @@
 
 
   function displayProjectParts() {
+
     const container =
       document.getElementById(
         "projectPartList"
@@ -3253,16 +3408,19 @@
       projectParts.length ===
       0
     ) {
+
       container.innerHTML =
         '<p class="task-empty">No project parts yet.</p>';
 
       return;
     }
 
-    container.innerHTML = "";
+    container.innerHTML =
+      "";
 
     projectParts.forEach(
       function(part) {
+
         const row =
           document.createElement(
             "div"
@@ -3282,55 +3440,48 @@
             part.name
           ) +
           "</span>" +
-
           "<span>" +
-
           '<button onclick="toggleProjectPart(' +
           part.id +
           ')">' +
-
           (
             part.installed
               ? "↩ Not Installed"
               : "✓ Installed"
           ) +
-
           "</button>" +
-
           '<button type="button" onclick="editProjectPart(' +
           part.id +
           ')">' +
-
           "✏️ Edit Part" +
-
           "</button>" +
-
           '<button class="danger" onclick="deleteProjectPart(' +
           part.id +
           ')">' +
-
           "Delete" +
-
           "</button>" +
-
           "</span>";
 
         container.appendChild(
           row
         );
+
       }
     );
   }
 
 
   function updateProjectProgress() {
+
     const taskCount =
       projectTasks.length;
 
     const completedTasks =
       projectTasks.filter(
         function(task) {
-          return task.completed;
+          return (
+            task.completed
+          );
         }
       ).length;
 
@@ -3340,7 +3491,9 @@
     const installedParts =
       projectParts.filter(
         function(part) {
-          return part.installed;
+          return (
+            part.installed
+          );
         }
       ).length;
 
@@ -3355,7 +3508,10 @@
     const percent =
       total
         ? Math.round(
-            (done / total) *
+            (
+              done /
+              total
+            ) *
             100
           )
         : 0;
@@ -3376,6 +3532,7 @@
     }
 
     if (text) {
+
       text.textContent =
         percent +
         "% complete — " +
@@ -3387,11 +3544,13 @@
         "/" +
         partCount +
         " parts complete";
+
     }
   }
 
 
   function saveProjectTasks() {
+
     localStorage.setItem(
       "rebuildAssistProjectTasks",
       JSON.stringify(
@@ -3402,6 +3561,7 @@
 
 
   function addProjectTask() {
+
     const input =
       document.getElementById(
         "taskInput"
@@ -3411,6 +3571,7 @@
       input.value.trim();
 
     if (!title) {
+
       alert(
         "Please enter a task first."
       );
@@ -3429,17 +3590,30 @@
         : "";
 
     projectTasks.push({
-      id: Date.now(),
-      title: title,
-      notes: taskNotes,
-      completed: false,
-      photos: []
+
+      id:
+        Date.now(),
+
+      title:
+        title,
+
+      notes:
+        taskNotes,
+
+      completed:
+        false,
+
+      photos:
+        []
+
     });
 
-    input.value = "";
+    input.value =
+      "";
 
     if (notesInput) {
-      notesInput.value = "";
+      notesInput.value =
+        "";
     }
 
     saveProjectTasks();
@@ -3451,6 +3625,7 @@
   function toggleProjectTask(
     taskId
   ) {
+
     const task =
       projectTasks.find(
         function(item) {
@@ -3481,6 +3656,7 @@
   function editProjectTask(
     taskId
   ) {
+
     const task =
       projectTasks.find(
         function(item) {
@@ -3524,8 +3700,10 @@
 
     setTimeout(
       function() {
+
         titleInput.focus();
         titleInput.select();
+
       },
       50
     );
@@ -3533,6 +3711,7 @@
 
 
   function saveEditedProjectTask() {
+
     if (
       editingProjectTaskId ===
       null
@@ -3551,6 +3730,7 @@
       );
 
     if (!task) {
+
       closeEditTask();
 
       return;
@@ -3570,6 +3750,7 @@
       titleInput.value.trim();
 
     if (!title) {
+
       alert(
         "The task name cannot be blank."
       );
@@ -3592,14 +3773,17 @@
 
 
   function closeEditTask() {
+
     const modal =
       document.getElementById(
         "editTaskModal"
       );
 
     if (modal) {
+
       modal.style.display =
         "none";
+
     }
 
     editingProjectTaskId =
@@ -3610,12 +3794,15 @@
   document.addEventListener(
     "keydown",
     function(event) {
+
       if (
         event.key ===
         "Escape"
       ) {
+
         closeEditTask();
         closeEditPart();
+
       }
     }
   );
@@ -3624,6 +3811,7 @@
   function deleteProjectTask(
     taskId
   ) {
+
     const task =
       projectTasks.find(
         function(item) {
@@ -3666,6 +3854,7 @@
     taskId,
     inputElement
   ) {
+
     const file =
       inputElement.files[0];
 
@@ -3678,6 +3867,7 @@
         "image/"
       )
     ) {
+
       alert(
         "Please choose an image file."
       );
@@ -3693,6 +3883,7 @@
 
     reader.onload =
       function(event) {
+
         const task =
           projectTasks.find(
             function(item) {
@@ -3716,6 +3907,7 @@
 
         saveProjectTasks();
         displayProjectTasks();
+
       };
 
     reader.readAsDataURL(
@@ -3731,6 +3923,7 @@
     taskId,
     photoIndex
   ) {
+
     const task =
       projectTasks.find(
         function(item) {
@@ -3767,6 +3960,7 @@
 
 
   function displayProjectTasks() {
+
     const container =
       document.getElementById(
         "projectTaskList"
@@ -3780,16 +3974,19 @@
       projectTasks.length ===
       0
     ) {
+
       container.innerHTML =
         '<p class="task-empty">No project tasks yet.</p>';
 
       return;
     }
 
-    container.innerHTML = "";
+    container.innerHTML =
+      "";
 
     projectTasks.forEach(
       function(task) {
+
         const div =
           document.createElement(
             "div"
@@ -3803,12 +4000,14 @@
               : ""
           );
 
-        let photosHTML = "";
+        let photosHTML =
+          "";
 
         if (
           task.photos &&
           task.photos.length > 0
         ) {
+
           photosHTML =
             '<div style="margin-top:10px;">' +
 
@@ -3818,12 +4017,12 @@
                   photo,
                   index
                 ) {
+
                   return (
                     '<span class="task-photo-wrap">' +
 
                     '<img class="task-photo" src="' +
                     photo +
-
                     '" alt="Photo for ' +
                     escapeHtml(
                       task.title
@@ -3842,31 +4041,31 @@
 
                     "</span>"
                   );
+
                 }
               )
               .join("") +
 
             "</div>";
+
         }
 
         const notesHTML =
           task.notes
 
             ? '<div class="info-box"><strong>Notes:</strong><br>' +
-
               escapeHtml(
                 task.notes
               ).replace(
                 /\n/g,
                 "<br>"
               ) +
-
               "</div>"
 
             : "";
 
-
-        let beginnerHTML = "";
+        let beginnerHTML =
+          "";
 
         if (
           task.beginnerMode ||
@@ -3893,7 +4092,6 @@
 
             "</div>";
 
-
           beginnerHTML +=
             '<div class="detail-block"><strong>👣 Detailed Instructions</strong><br>' +
 
@@ -3910,79 +4108,69 @@
 
             "</div>";
 
-
           if (
             task.warning
           ) {
+
             beginnerHTML +=
               '<div class="detail-block warning-detail"><strong>⚠️ Warning</strong><br>' +
-
               escapeHtml(
                 task.warning
               ).replace(
                 /\n/g,
                 "<br>"
               ) +
-
               "</div>";
-          }
 
+          }
 
           if (
             task.photoGuide
           ) {
+
             beginnerHTML +=
               '<div class="detail-block"><strong>📷 What to Photograph</strong><br>' +
-
               escapeHtml(
                 task.photoGuide
               ).replace(
                 /\n/g,
                 "<br>"
               ) +
-
               "</div>";
-          }
 
+          }
 
           if (
             task.reassemblyNotes
           ) {
+
             beginnerHTML +=
               '<div class="detail-block"><strong>🔧 Reassembly Notes</strong><br>' +
-
               escapeHtml(
                 task.reassemblyNotes
               ).replace(
                 /\n/g,
                 "<br>"
               ) +
-
               "</div>";
+
           }
 
         }
 
-
         div.innerHTML =
-
           '<div class="project-task-title">' +
-
           escapeHtml(
             task.title
           ) +
-
           "</div>" +
 
           notesHTML +
 
           beginnerHTML +
 
-
           '<button onclick="toggleProjectTask(' +
-
           task.id +
-
           ')">' +
 
           (
@@ -3993,26 +4181,19 @@
 
           "</button>" +
 
-
           '<button type="button" onclick="editProjectTask(' +
-
           task.id +
-
           ')">' +
 
           "✏️ Edit Task" +
 
           "</button>" +
 
-
           '<label style="display:inline-block;margin:4px 0 0 0;">' +
 
           '<input type="file" accept="image/*" capture="environment" ' +
-
           'style="display:none;" onchange="addTaskPhoto(' +
-
           task.id +
-
           ', this)">' +
 
           '<button type="button" onclick="this.previousElementSibling.click()">' +
@@ -4023,24 +4204,520 @@
 
           "</label>" +
 
-
           '<button class="danger" onclick="deleteProjectTask(' +
-
           task.id +
-
           ')">' +
 
           "Delete Task" +
 
           "</button>" +
 
-
           photosHTML;
-
 
         container.appendChild(
           div
         );
+
       }
     );
   }
+
+
+  /*
+   * REASSEMBLE
+   */
+
+  let reassembleIndex =
+    0;
+
+
+  function getReassembleTasks() {
+
+    return projectTasks
+      .slice()
+      .reverse();
+
+  }
+
+
+  function startReassemble() {
+
+    if (
+      projectTasks.length ===
+      0
+    ) {
+
+      alert(
+        "Add at least one project task before starting Reassemble."
+      );
+
+      return;
+    }
+
+    reassembleIndex =
+      0;
+
+    document
+      .getElementById(
+        "reassembleSection"
+      )
+      .classList.remove(
+        "hidden"
+      );
+
+    displayReassembleStep();
+
+    document
+      .getElementById(
+        "reassembleSection"
+      )
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+
+  }
+
+
+  function displayReassembleStep() {
+
+    const reverseTasks =
+      getReassembleTasks();
+
+    const card =
+      document.getElementById(
+        "reassembleStepCard"
+      );
+
+    const bar =
+      document.getElementById(
+        "reassembleProgressBar"
+      );
+
+    const text =
+      document.getElementById(
+        "reassembleProgressText"
+      );
+
+    if (
+      !card ||
+      reverseTasks.length ===
+      0
+    ) {
+      return;
+    }
+
+    if (
+      reassembleIndex <
+      0
+    ) {
+      reassembleIndex =
+        0;
+    }
+
+    if (
+      reassembleIndex >=
+      reverseTasks.length
+    ) {
+
+      reassembleIndex =
+        reverseTasks.length - 1;
+
+    }
+
+    const task =
+      reverseTasks[
+        reassembleIndex
+      ];
+
+    const doneCount =
+      reverseTasks.filter(
+        function(item) {
+          return (
+            !!item.reassembled
+          );
+        }
+      ).length;
+
+    const percent =
+      Math.round(
+        (
+          doneCount /
+          reverseTasks.length
+        ) *
+        100
+      );
+
+    if (bar) {
+
+      bar.style.width =
+        percent + "%";
+
+    }
+
+    if (text) {
+
+      text.textContent =
+        percent +
+        "% reassembled (" +
+        doneCount +
+        " of " +
+        reverseTasks.length +
+        ")";
+
+    }
+
+    let notesHTML =
+      task.notes
+
+        ? '<div class="info-box"><strong>Saved Notes:</strong><br>' +
+          escapeHtml(
+            task.notes
+          ).replace(
+            /\n/g,
+            "<br>"
+          ) +
+          "</div>"
+
+        : '<div class="info-box">No notes were saved for this step.</div>';
+
+    let beginnerHTML =
+      "";
+
+    if (task.tools) {
+
+      beginnerHTML +=
+        '<div class="detail-block"><strong>🧰 Tools Needed:</strong><br>' +
+        escapeHtml(
+          task.tools
+        ).replace(
+          /\n/g,
+          "<br>"
+        ) +
+        "</div>";
+
+    }
+
+    if (
+      task.detailedSteps
+    ) {
+
+      beginnerHTML +=
+        '<div class="detail-block"><strong>👣 Step-by-Step:</strong><br>' +
+        escapeHtml(
+          task.detailedSteps
+        ).replace(
+          /\n/g,
+          "<br>"
+        ) +
+        "</div>";
+
+    }
+
+    if (
+      task.warning
+    ) {
+
+      beginnerHTML +=
+        '<div class="detail-block warning-detail"><strong>⚠️ Watch Out:</strong><br>' +
+        escapeHtml(
+          task.warning
+        ).replace(
+          /\n/g,
+          "<br>"
+        ) +
+        "</div>";
+
+    }
+
+    if (
+      task.photoGuide
+    ) {
+
+      beginnerHTML +=
+        '<div class="detail-block"><strong>📷 Photo Reminder:</strong><br>' +
+        escapeHtml(
+          task.photoGuide
+        ).replace(
+          /\n/g,
+          "<br>"
+        ) +
+        "</div>";
+
+    }
+
+    if (
+      task.reassemblyNotes
+    ) {
+
+      beginnerHTML +=
+        '<div class="detail-block"><strong>🔧 Reassembly Note:</strong><br>' +
+        escapeHtml(
+          task.reassemblyNotes
+        ).replace(
+          /\n/g,
+          "<br>"
+        ) +
+        "</div>";
+
+    }
+
+    let photosHTML =
+      "";
+
+    if (
+      task.photos &&
+      task.photos.length
+    ) {
+
+      photosHTML =
+        '<div><strong>Saved Photos:</strong></div>' +
+
+        '<div class="reassemble-photos">' +
+
+        task.photos
+          .map(
+            function(photo) {
+
+              return (
+                '<img src="' +
+                photo +
+                '" alt="Saved reassembly reference photo">'
+              );
+
+            }
+          )
+          .join("") +
+
+        "</div>";
+
+    } else {
+
+      photosHTML =
+        '<div class="info-box">No photos were saved for this step.</div>';
+
+    }
+
+    const isLast =
+      reassembleIndex ===
+      reverseTasks.length - 1;
+
+    const isFirst =
+      reassembleIndex ===
+      0;
+
+    card.innerHTML =
+      '<div class="reassemble-step-number">' +
+      "Reassembly Step " +
+      (
+        reassembleIndex + 1
+      ) +
+      " of " +
+      reverseTasks.length +
+      "</div>" +
+
+      '<div class="reassemble-title">' +
+      escapeHtml(
+        task.title
+      ) +
+      "</div>" +
+
+      notesHTML +
+
+      beginnerHTML +
+
+      photosHTML +
+
+      (
+        task.reassembled
+
+          ? '<div class="reassemble-complete">✓ This step is marked reassembled.</div>'
+
+          : ""
+      ) +
+
+      '<div class="reassemble-actions">' +
+
+      (
+        !isFirst
+
+          ? '<button type="button" onclick="previousReassembleStep()">← Previous Step</button>'
+
+          : ""
+      ) +
+
+      '<button type="button" onclick="toggleReassembledCurrent()">' +
+
+      (
+        task.reassembled
+          ? "↩ Mark Not Reassembled"
+          : "✓ Mark Reassembled"
+      ) +
+
+      "</button>" +
+
+      (
+        !isLast
+
+          ? '<button type="button" onclick="nextReassembleStep()">Next Step →</button>'
+
+          : ""
+      ) +
+
+      "</div>";
+
+  }
+
+
+  function toggleReassembledCurrent() {
+
+    const reverseTasks =
+      getReassembleTasks();
+
+    const current =
+      reverseTasks[
+        reassembleIndex
+      ];
+
+    if (!current) {
+      return;
+    }
+
+    const original =
+      projectTasks.find(
+        function(item) {
+          return (
+            item.id ===
+            current.id
+          );
+        }
+      );
+
+    if (!original) {
+      return;
+    }
+
+    original.reassembled =
+      !original.reassembled;
+
+    saveProjectTasks();
+    displayReassembleStep();
+  }
+
+
+  function nextReassembleStep() {
+
+    const reverseTasks =
+      getReassembleTasks();
+
+    if (
+      reassembleIndex <
+      reverseTasks.length - 1
+    ) {
+
+      reassembleIndex++;
+
+      displayReassembleStep();
+
+    }
+  }
+
+
+  function previousReassembleStep() {
+
+    if (
+      reassembleIndex >
+      0
+    ) {
+
+      reassembleIndex--;
+
+      displayReassembleStep();
+
+    }
+  }
+
+
+  function exitReassemble() {
+
+    document
+      .getElementById(
+        "reassembleSection"
+      )
+      .classList.add(
+        "hidden"
+      );
+
+    document
+      .getElementById(
+        "projectProgressSection"
+      )
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+
+  }
+
+
+  /*
+   * HELPERS
+   */
+
+  function escapeHtml(
+    text
+  ) {
+
+    return String(
+      text || ""
+    )
+      .replace(
+        /&/g,
+        "&amp;"
+      )
+      .replace(
+        /</g,
+        "&lt;"
+      )
+      .replace(
+        />/g,
+        "&gt;"
+      )
+      .replace(
+        /"/g,
+        "&quot;"
+      )
+      .replace(
+        /'/g,
+        "&#039;"
+      );
+  }
+
+
+  /*
+   * STARTUP
+   */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+      loadProjectDetails();
+
+      displayProjectTasks();
+
+      displayProjectParts();
+
+      updateProjectProgress();
+
+      displayHistory();
+
+      if (vehicle) {
+        displayVehicle();
+      }
+
+    }
+  );
+
+</script>
+
+</body>
+</html>
