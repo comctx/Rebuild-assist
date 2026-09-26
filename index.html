@@ -787,6 +787,29 @@
       font-size: .9rem;
     }
 
+    .instruction-actions {
+      margin-top: 10px;
+      gap: 8px;
+    }
+
+    .instruction-actions button {
+      min-height: 38px;
+      padding: 8px 11px;
+      font-size: .9rem;
+    }
+
+    .custom-instruction-badge {
+      display: inline-block;
+      margin-top: 7px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #ecf8f0;
+      border: 1px solid #b7e0c3;
+      color: #126435;
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
     .reassemble-card .photo-grid {
       margin-top: 16px;
     }
@@ -3215,6 +3238,10 @@ function normalizeProject() {
         step.reassembled =
           !!step.reassembled;
 
+        step.customReassemblyInstruction =
+          step.customReassemblyInstruction ||
+          "";
+
         step.notes =
           step.notes ||
           "";
@@ -4248,6 +4275,9 @@ async function saveNewStep() {
 
     reassembled:
       false,
+
+    customReassemblyInstruction:
+      "",
 
     createdAt:
       new Date()
@@ -8978,10 +9008,20 @@ async function renderReassembleStep(
   }
 
 
-  const reassemblyInstruction =
+  const automaticInstruction =
     getReassemblyInstruction(
       step.title
     );
+
+  const reassemblyInstruction =
+    step.customReassemblyInstruction
+    ?
+    step.customReassemblyInstruction
+    :
+    automaticInstruction;
+
+  const hasCustomInstruction =
+    !!step.customReassemblyInstruction;
 
 
   let stepAudioHtml =
@@ -9040,6 +9080,33 @@ async function renderReassembleStep(
 
       <div class="reassemble-title">
         ${escapeHtml(reassemblyInstruction)}
+      </div>
+
+      ${
+        hasCustomInstruction
+        ?
+        '<div class="custom-instruction-badge">Custom instruction</div>'
+        :
+        ""
+      }
+
+      <div class="toolbar instruction-actions">
+
+        <button
+          id="editReassemblyInstructionButton"
+          type="button"
+          class="secondary">
+          ✏️ Edit Instruction
+        </button>
+
+        <button
+          id="resetReassemblyInstructionButton"
+          type="button"
+          class="ghost"
+          ${hasCustomInstruction ? "" : "disabled"}>
+          ↺ Use Automatic Wording
+        </button>
+
       </div>
 
       <div class="original-step-reference">
@@ -9219,6 +9286,90 @@ async function renderReassembleStep(
 
     </div>
     `;
+
+
+  document
+    .getElementById(
+      "editReassemblyInstructionButton"
+    )
+    .onclick =
+    async function() {
+
+      const updated =
+        prompt(
+          "Reassembly instruction:",
+          reassemblyInstruction
+        );
+
+      if (
+        updated ===
+        null
+      ) {
+
+        return;
+
+      }
+
+      const clean =
+        updated.trim();
+
+      if (!clean) {
+
+        alert(
+          "Reassembly instruction cannot be blank."
+        );
+
+        return;
+
+      }
+
+      step.customReassemblyInstruction =
+        clean;
+
+      await saveCurrentProject();
+
+      await renderReassembleStep(
+        index
+      );
+
+    };
+
+
+  document
+    .getElementById(
+      "resetReassemblyInstructionButton"
+    )
+    .onclick =
+    async function() {
+
+      if (
+        !step.customReassemblyInstruction
+      ) {
+
+        return;
+
+      }
+
+      if (
+        !confirm(
+          "Use the automatic reassembly wording for this step again?"
+        )
+      ) {
+
+        return;
+
+      }
+
+      step.customReassemblyInstruction =
+        "";
+
+      await saveCurrentProject();
+
+      await renderReassembleStep(
+        index
+      );
+
+    };
 
 
   document
