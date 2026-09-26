@@ -585,6 +585,12 @@
           📂 Continue Project
         </button>
 
+        <button
+          class="secondary"
+          onclick="chooseBackupFile()">
+          ♻️ Restore Backup
+        </button>
+
       </div>
 
     </div>
@@ -594,8 +600,8 @@
       <strong>One simple system for any project.</strong>
 
       <p class="muted">
-        No car section and no category required.
-        The project name is the reference.
+        Start a project, save each step as you work, and use Reassemble
+        when it is time to put everything back together.
       </p>
 
     </div>
@@ -692,6 +698,12 @@
           class="secondary"
           onclick="renameCurrentProject()">
           ✏️ Rename
+        </button>
+
+        <button
+          class="secondary"
+          onclick="backupCurrentProject()">
+          💾 Backup Project
         </button>
 
         <button
@@ -1209,6 +1221,13 @@
     </section>
 
   </section>
+
+  <input
+    id="restoreBackupInput"
+    type="file"
+    accept=".json,application/json"
+    class="hidden"
+    onchange="restoreProjectBackup(event)">
 
 </main>
 
@@ -1915,6 +1934,684 @@ function deleteAsset(assetId) {
 
 
 
+function blobToBase64(blob) {
+
+  return new Promise(
+    function(resolve, reject) {
+
+      const reader =
+        new FileReader();
+
+      reader.onload =
+        function() {
+
+          const result =
+            String(
+              reader.result ||
+              ""
+            );
+
+          const comma =
+            result.indexOf(
+              ","
+            );
+
+          resolve(
+            comma >= 0
+            ?
+            result.slice(
+              comma + 1
+            )
+            :
+            result
+          );
+
+        };
+
+      reader.onerror =
+        function() {
+
+          reject(
+            reader.error
+          );
+
+        };
+
+      reader.readAsDataURL(
+        blob
+      );
+
+    }
+  );
+
+}
+
+
+
+function base64ToBlob(
+  base64,
+  type
+) {
+
+  const binary =
+    atob(
+      base64
+    );
+
+  const bytes =
+    new Uint8Array(
+      binary.length
+    );
+
+  for (
+    let i = 0;
+    i < binary.length;
+    i += 1
+  ) {
+
+    bytes[i] =
+      binary.charCodeAt(
+        i
+      );
+
+  }
+
+  return new Blob(
+    [bytes],
+    {
+      type:
+        type ||
+        "application/octet-stream"
+    }
+  );
+
+}
+
+
+
+function collectProjectAssetIds(
+  project
+) {
+
+  const ids =
+    new Set();
+
+
+  function add(id) {
+
+    if (id) {
+
+      ids.add(
+        id
+      );
+
+    }
+
+  }
+
+
+  for (
+    const step
+    of project.steps || []
+  ) {
+
+    add(
+      step.audioAssetId
+    );
+
+    for (
+      const photo
+      of step.photos || []
+    ) {
+
+      add(
+        photo.assetId
+      );
+
+      add(
+        photo.markupAssetId
+      );
+
+      add(
+        photo.audioAssetId
+      );
+
+    }
+
+  }
+
+
+  for (
+    const note
+    of project.voiceNotes || []
+  ) {
+
+    add(
+      note.audioAssetId
+    );
+
+  }
+
+
+  return Array.from(
+    ids
+  );
+
+}
+
+
+
+function safeBackupFilename(
+  name
+) {
+
+  const clean =
+    String(
+      name ||
+      "project"
+    )
+    .replace(
+      /[^a-z0-9_-]+/gi,
+      "_"
+    )
+    .replace(
+      /^_+|_+$/g,
+      ""
+    )
+    .slice(
+      0,
+      60
+    ) ||
+    "project";
+
+  return (
+    clean +
+    "_rebuild_assistant_backup.json"
+  );
+
+}
+
+
+
+async function backupCurrentProject() {
+
+  if (!currentProject) {
+
+    alert(
+      "Open a project first."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    await saveCurrentProject();
+
+    const assetIds =
+      collectProjectAssetIds(
+        currentProject
+      );
+
+    const assets =
+      [];
+
+
+    for (
+      const assetId
+      of assetIds
+    ) {
+
+      const asset =
+        await getAsset(
+          assetId
+        );
+
+      if (
+        !asset ||
+        !asset.blob
+      ) {
+
+        continue;
+
+      }
+
+      assets.push({
+
+        id:
+          asset.id,
+
+        meta:
+          asset.meta ||
+          {},
+
+        createdAt:
+          asset.createdAt ||
+          null,
+
+        type:
+          asset.blob.type ||
+          "application/octet-stream",
+
+        data:
+          await blobToBase64(
+            asset.blob
+          )
+
+      });
+
+    }
+
+
+    const backup = {
+
+      format:
+        "RebuildAssistantBackup",
+
+      version:
+        1,
+
+      exportedAt:
+        new Date()
+          .toISOString(),
+
+      project:
+        currentProject,
+
+      assets:
+        assets
+
+    };
+
+
+    const blob =
+      new Blob(
+        [
+          JSON.stringify(
+            backup
+          )
+        ],
+        {
+          type:
+            "application/json"
+        }
+      );
+
+
+    const url =
+      URL.createObjectURL(
+        blob
+      );
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+    link.href =
+      url;
+
+    link.download =
+      safeBackupFilename(
+        currentProject.name
+      );
+
+    document.body.appendChild(
+      link
+    );
+
+    link.click();
+
+    link.remove();
+
+    setTimeout(
+      function() {
+
+        URL.revokeObjectURL(
+          url
+        );
+
+      },
+      1000
+    );
+
+
+    alert(
+      "Backup created. Keep the downloaded backup file somewhere safe."
+    );
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Backup failed:",
+      error
+    );
+
+    alert(
+      "The backup could not be created."
+    );
+
+  }
+
+}
+
+
+
+function chooseBackupFile() {
+
+  const input =
+    document.getElementById(
+      "restoreBackupInput"
+    );
+
+  if (!input) {
+
+    return;
+
+  }
+
+  input.value =
+    "";
+
+  input.click();
+
+}
+
+
+
+function replaceAssetReferences(
+  project,
+  idMap
+) {
+
+  function replace(id) {
+
+    if (
+      !id ||
+      !idMap[id]
+    ) {
+
+      return id ||
+      null;
+
+    }
+
+    return (
+      idMap[id]
+    );
+
+  }
+
+
+  for (
+    const step
+    of project.steps || []
+  ) {
+
+    step.audioAssetId =
+      replace(
+        step.audioAssetId
+      );
+
+    for (
+      const photo
+      of step.photos || []
+    ) {
+
+      photo.assetId =
+        replace(
+          photo.assetId
+        );
+
+      photo.markupAssetId =
+        replace(
+          photo.markupAssetId
+        );
+
+      photo.audioAssetId =
+        replace(
+          photo.audioAssetId
+        );
+
+    }
+
+  }
+
+
+  for (
+    const note
+    of project.voiceNotes || []
+  ) {
+
+    note.audioAssetId =
+      replace(
+        note.audioAssetId
+      );
+
+  }
+
+}
+
+
+
+async function restoreProjectBackup(
+  event
+) {
+
+  const input =
+    event &&
+    event.target;
+
+  const file =
+    input &&
+    input.files &&
+    input.files[0];
+
+
+  if (!file) {
+
+    return;
+
+  }
+
+
+  try {
+
+    const text =
+      await file.text();
+
+    const backup =
+      JSON.parse(
+        text
+      );
+
+
+    if (
+      !backup ||
+      backup.format !==
+      "RebuildAssistantBackup" ||
+      !backup.project
+    ) {
+
+      throw new Error(
+        "Not a Rebuild Assistant backup."
+      );
+
+    }
+
+
+    const project =
+      JSON.parse(
+        JSON.stringify(
+          backup.project
+        )
+      );
+
+
+    project.id =
+      makeId(
+        "project"
+      );
+
+    project.createdAt =
+      new Date()
+        .toISOString();
+
+    project.updatedAt =
+      new Date()
+        .toISOString();
+
+
+    const idMap =
+      {};
+
+
+    for (
+      const savedAsset
+      of backup.assets || []
+    ) {
+
+      if (
+        !savedAsset ||
+        !savedAsset.id ||
+        !savedAsset.data
+      ) {
+
+        continue;
+
+      }
+
+
+      const newId =
+        makeId(
+          "asset"
+        );
+
+      const asset = {
+
+        id:
+          newId,
+
+        blob:
+          base64ToBlob(
+            savedAsset.data,
+            savedAsset.type
+          ),
+
+        meta:
+          savedAsset.meta ||
+          {},
+
+        createdAt:
+          savedAsset.createdAt ||
+          new Date()
+            .toISOString()
+
+      };
+
+
+      await new Promise(
+        function(resolve, reject) {
+
+          const transaction =
+            db.transaction(
+              ASSET_STORE,
+              "readwrite"
+            );
+
+          const request =
+            transaction
+              .objectStore(
+                ASSET_STORE
+              )
+              .put(
+                asset
+              );
+
+          request.onsuccess =
+            function() {
+
+              resolve();
+
+            };
+
+          request.onerror =
+            function() {
+
+              reject(
+                request.error
+              );
+
+            };
+
+        }
+      );
+
+
+      idMap[
+        savedAsset.id
+      ] =
+        newId;
+
+    }
+
+
+    replaceAssetReferences(
+      project,
+      idMap
+    );
+
+
+    await putProject(
+      project
+    );
+
+
+    alert(
+      'Project restored: "' +
+      project.name +
+      '"'
+    );
+
+
+    await openProject(
+      project.id
+    );
+
+  }
+
+  catch(error) {
+
+    console.error(
+      "Restore failed:",
+      error
+    );
+
+    alert(
+      "That file could not be restored. Please choose a Rebuild Assistant backup file."
+    );
+
+  }
+
+  finally {
+
+    if (input) {
+
+      input.value =
+        "";
+
+    }
+
+  }
+
+}
+
+
+
 let currentProject =
   null;
 
@@ -2611,6 +3308,17 @@ async function deleteProject(
       'Delete "' +
       project.name +
       '" and all saved photos and audio?'
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      "This permanently removes the project from this device. This cannot be undone. Delete it anyway?"
     )
   ) {
 
