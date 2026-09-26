@@ -788,6 +788,69 @@
       padding-top: 8px;
     }
 
+    .completion-panel {
+      text-align: center;
+      padding: 26px 16px 18px;
+    }
+
+    .completion-check {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #eaf7ef;
+      border: 1px solid #b9dfc6;
+      font-size: 2rem;
+      box-shadow: 0 5px 16px rgba(23,114,69,.10);
+    }
+
+    .completion-panel h3 {
+      margin: 0 0 8px;
+      font-size: 1.55rem;
+      color: #143b68;
+    }
+
+    .completion-summary {
+      max-width: 620px;
+      margin: 0 auto 16px;
+    }
+
+    .completion-actions {
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .completion-actions button {
+      min-width: 170px;
+    }
+
+    .completion-danger {
+      max-width: 680px;
+      margin: 24px auto 0;
+      padding: 16px;
+      text-align: left;
+      background: #fff7f6;
+      border: 1px solid #f0c3bd;
+      border-radius: 14px;
+    }
+
+    .completion-danger strong {
+      display: block;
+      color: #8f1d15;
+      margin-bottom: 5px;
+    }
+
+    .completion-danger p {
+      margin: 0 0 12px;
+      color: #6f3a35;
+    }
+
+    .completion-danger .danger {
+      width: 100%;
+    }
+
     #beginnerModeButton.good {
       box-shadow: 0 4px 12px rgba(23,114,69,.18);
     }
@@ -875,6 +938,15 @@
 
       .reassemble-card .toolbar button {
         min-height: 48px;
+      }
+
+      .completion-actions button {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .completion-panel {
+        padding: 20px 4px 10px;
       }
 
       .photo-card img {
@@ -9156,31 +9228,59 @@ function renderReassemblyComplete() {
     `
     <div class="reassemble-card">
 
-      <div
-        style="text-align:center;
-               padding:22px 10px;">
+      <div class="completion-panel">
 
-        <div
-          style="font-size:2.4rem;
-                 margin-bottom:8px;">
+        <div class="completion-check">
           ✅
         </div>
 
-        <h3
-          style="margin:0 0 8px;">
+        <h3>
           Reassembly Complete
         </h3>
 
-        <p class="muted">
+        <p class="muted completion-summary">
           All saved disassembly steps have been reassembled.
+          Your project is still safely stored with its photos, notes,
+          parts information and audio so you can refer to it later.
         </p>
 
-        <button
-          type="button"
-          class="good"
-          onclick="closeReassembly()">
-          Close Reassembly
-        </button>
+        <div class="toolbar completion-actions">
+
+          <button
+            type="button"
+            class="good"
+            onclick="closeReassembly()">
+            Keep Project &amp; Close
+          </button>
+
+          <button
+            type="button"
+            class="secondary"
+            onclick="backupCurrentProject()">
+            💾 Back Up Project
+          </button>
+
+        </div>
+
+        <div class="completion-danger">
+
+          <strong>
+            Finished with this project?
+          </strong>
+
+          <p class="small">
+            Delete it only if you no longer need the saved steps,
+            photos, notes or audio. Deleting is permanent on this device.
+          </p>
+
+          <button
+            type="button"
+            class="danger"
+            onclick="deleteCompletedProject()">
+            Delete Project Permanently
+          </button>
+
+        </div>
 
       </div>
 
@@ -9201,6 +9301,31 @@ function closeReassembly() {
     top: 0,
     behavior: "smooth"
   });
+
+}
+
+
+
+async function deleteCompletedProject() {
+
+  if (!currentProject) {
+
+    return;
+
+  }
+
+  const projectId =
+    currentProject.id;
+
+  await deleteProject(
+    projectId
+  );
+
+  if (!currentProject) {
+
+    await showProjectPicker();
+
+  }
 
 }
 
