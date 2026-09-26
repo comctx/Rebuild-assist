@@ -1,0 +1,140 @@
+workflows:
+  rebuild-assistant-testflight:
+    name: Rebuild Assistant TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    integrations:
+      app_store_connect: Codemagic
+
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.donaldreckman.rebuildassistant
+      node: 22
+      xcode: latest
+      cocoapods: default
+      vars:
+        BUNDLE_ID: "com.donaldreckman.rebuildassistant"
+        APP_NAME: "Rebuild Assistant"
+
+    scripts:
+      - name: Create Rebuild Assistant iOS project
+        script: |
+          set -eu
+
+          npm init -y
+          npm install @capacitor/core@latest @capacitor/cli@latest @capacitor/ios@latest
+
+          rm -rf www ios
+          mkdir -p www
+          cp index.html www/index.html
+
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.donaldreckman.rebuildassistant",
+            "appName": "Rebuild Assistant",
+            "webDir": "www"
+          }
+          EOF
+
+          npx cap add ios
+          npx cap sync ios
+
+          PLIST="ios/App/App/Info.plist"
+
+          /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string Rebuild Assistant uses the camera when you choose to photograph a disassembly or reassembly step." "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :NSCameraUsageDescription Rebuild Assistant uses the camera when you choose to photograph a disassembly or reassembly step." "$PLIST"
+
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string Rebuild Assistant lets you choose photos to document project steps." "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :NSPhotoLibraryUsageDescription Rebuild Assistant lets you choose photos to document project steps." "$PLIST"
+
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryAddUsageDescription string Rebuild Assistant can save project images when you choose to save them." "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :NSPhotoLibraryAddUsageDescription Rebuild Assistant can save project images when you choose to save them." "$PLIST"
+
+          /usr/libexec/PlistBuddy -c "Add :NSMicrophoneUsageDescription string Rebuild Assistant uses the microphone when you choose to record an audio note." "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :NSMicrophoneUsageDescription Rebuild Assistant uses the microphone when you choose to record an audio note." "$PLIST"
+
+          /usr/libexec/PlistBuddy -c "Add :NSSpeechRecognitionUsageDescription string Rebuild Assistant uses speech recognition when you choose to dictate a project note." "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :NSSpeechRecognitionUsageDescription Rebuild Assistant uses speech recognition when you choose to dictate a project note." "$PLIST"
+
+          /usr/libexec/PlistBuddy -c "Add :ITSAppUsesNonExemptEncryption bool false" "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :ITSAppUsesNonExemptEncryption false" "$PLIST"
+
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion ${PROJECT_BUILD_NUMBER}" "$PLIST"
+
+      - name: Add Rebuild Assistant app icon
+        script: |
+          set -eu
+
+          ICON_SOURCE="$CM_BUILD_DIR/rebuild-assistant-icon.png"
+          ICON_DIR="$CM_BUILD_DIR/ios/App/App/Assets.xcassets/AppIcon.appiconset"
+
+          test -f "$ICON_SOURCE"
+          mkdir -p "$ICON_DIR"
+
+          sips -z 40 40 "$ICON_SOURCE" --out "$ICON_DIR/Icon-20@2x.png"
+          sips -z 60 60 "$ICON_SOURCE" --out "$ICON_DIR/Icon-20@3x.png"
+          sips -z 58 58 "$ICON_SOURCE" --out "$ICON_DIR/Icon-29@2x.png"
+          sips -z 87 87 "$ICON_SOURCE" --out "$ICON_DIR/Icon-29@3x.png"
+          sips -z 80 80 "$ICON_SOURCE" --out "$ICON_DIR/Icon-40@2x.png"
+          sips -z 120 120 "$ICON_SOURCE" --out "$ICON_DIR/Icon-40@3x.png"
+          sips -z 120 120 "$ICON_SOURCE" --out "$ICON_DIR/Icon-60@2x.png"
+          sips -z 180 180 "$ICON_SOURCE" --out "$ICON_DIR/Icon-60@3x.png"
+          sips -z 20 20 "$ICON_SOURCE" --out "$ICON_DIR/Icon-20.png"
+          sips -z 29 29 "$ICON_SOURCE" --out "$ICON_DIR/Icon-29.png"
+          sips -z 40 40 "$ICON_SOURCE" --out "$ICON_DIR/Icon-40.png"
+          sips -z 76 76 "$ICON_SOURCE" --out "$ICON_DIR/Icon-76.png"
+          sips -z 152 152 "$ICON_SOURCE" --out "$ICON_DIR/Icon-76@2x.png"
+          sips -z 167 167 "$ICON_SOURCE" --out "$ICON_DIR/Icon-83.5@2x.png"
+          sips -z 1024 1024 "$ICON_SOURCE" --out "$ICON_DIR/Icon-1024.png"
+
+          cat > "$ICON_DIR/Contents.json" <<'EOF'
+          {
+            "images": [
+              {"idiom":"iphone","size":"20x20","scale":"2x","filename":"Icon-20@2x.png"},
+              {"idiom":"iphone","size":"20x20","scale":"3x","filename":"Icon-20@3x.png"},
+              {"idiom":"iphone","size":"29x29","scale":"2x","filename":"Icon-29@2x.png"},
+              {"idiom":"iphone","size":"29x29","scale":"3x","filename":"Icon-29@3x.png"},
+              {"idiom":"iphone","size":"40x40","scale":"2x","filename":"Icon-40@2x.png"},
+              {"idiom":"iphone","size":"40x40","scale":"3x","filename":"Icon-40@3x.png"},
+              {"idiom":"iphone","size":"60x60","scale":"2x","filename":"Icon-60@2x.png"},
+              {"idiom":"iphone","size":"60x60","scale":"3x","filename":"Icon-60@3x.png"},
+              {"idiom":"ipad","size":"20x20","scale":"1x","filename":"Icon-20.png"},
+              {"idiom":"ipad","size":"20x20","scale":"2x","filename":"Icon-20@2x.png"},
+              {"idiom":"ipad","size":"29x29","scale":"1x","filename":"Icon-29.png"},
+              {"idiom":"ipad","size":"29x29","scale":"2x","filename":"Icon-29@2x.png"},
+              {"idiom":"ipad","size":"40x40","scale":"1x","filename":"Icon-40.png"},
+              {"idiom":"ipad","size":"40x40","scale":"2x","filename":"Icon-40@2x.png"},
+              {"idiom":"ipad","size":"76x76","scale":"1x","filename":"Icon-76.png"},
+              {"idiom":"ipad","size":"76x76","scale":"2x","filename":"Icon-76@2x.png"},
+              {"idiom":"ipad","size":"83.5x83.5","scale":"2x","filename":"Icon-83.5@2x.png"},
+              {"idiom":"ios-marketing","size":"1024x1024","scale":"1x","filename":"Icon-1024.png"}
+            ],
+            "info": {
+              "author": "xcode",
+              "version": 1
+            }
+          }
+          EOF
+
+      - name: Apply Apple signing
+        script: |
+          set -eu
+          cd "$CM_BUILD_DIR/ios/App"
+          xcode-project use-profiles
+
+      - name: Build signed Rebuild Assistant
+        script: |
+          set -eu
+          cd "$CM_BUILD_DIR/ios/App"
+          xcode-project build-ipa --workspace "App.xcworkspace" --scheme "App"
+
+    artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
