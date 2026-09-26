@@ -768,6 +768,25 @@
       line-height: 1.2;
     }
 
+    .reassemble-instruction-label {
+      margin-top: 10px;
+      font-size: .76rem;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+
+    .original-step-reference {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f7f8fa;
+      border-left: 4px solid #c8d2df;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
     .reassemble-card .photo-grid {
       margin-top: 16px;
     }
@@ -8682,6 +8701,139 @@ async function renderReassemble() {
 
 
 
+function getReassemblyInstruction(
+  title
+) {
+
+  const original =
+    String(
+      title ||
+      ""
+    )
+    .trim();
+
+
+  if (!original) {
+
+    return (
+      "Reverse this step."
+    );
+
+  }
+
+
+  const rules = [
+
+    [
+      /^(remove|removed)\s+/i,
+      "Install "
+    ],
+
+    [
+      /^(take off|took off)\s+/i,
+      "Put on "
+    ],
+
+    [
+      /^(take out|took out)\s+/i,
+      "Put back "
+    ],
+
+    [
+      /^(disconnect|disconnected)\s+/i,
+      "Reconnect "
+    ],
+
+    [
+      /^(unplug|unplugged)\s+/i,
+      "Plug in "
+    ],
+
+    [
+      /^(detach|detached)\s+/i,
+      "Reattach "
+    ],
+
+    [
+      /^(loosen|loosened)\s+/i,
+      "Tighten "
+    ],
+
+    [
+      /^(unscrew|unscrewed)\s+/i,
+      "Screw in "
+    ],
+
+    [
+      /^(unbolt|unbolted)\s+/i,
+      "Bolt back on "
+    ],
+
+    [
+      /^(slide out|slid out)\s+/i,
+      "Slide in "
+    ],
+
+    [
+      /^(pull out|pulled out)\s+/i,
+      "Push in "
+    ],
+
+    [
+      /^(open|opened)\s+/i,
+      "Close "
+    ],
+
+    [
+      /^(lower|lowered)\s+/i,
+      "Raise "
+    ],
+
+    [
+      /^(raise|raised)\s+/i,
+      "Lower "
+    ]
+
+  ];
+
+
+  for (
+    const rule
+    of rules
+  ) {
+
+    const pattern =
+      rule[0];
+
+    const replacement =
+      rule[1];
+
+
+    if (
+      pattern.test(
+        original
+      )
+    ) {
+
+      return original.replace(
+        pattern,
+        replacement
+      );
+
+    }
+
+  }
+
+
+  return (
+    "Reverse this step: " +
+    original
+  );
+
+}
+
+
+
 async function renderReassembleStep(
   index
 ) {
@@ -8826,6 +8978,12 @@ async function renderReassembleStep(
   }
 
 
+  const reassemblyInstruction =
+    getReassemblyInstruction(
+      step.title
+    );
+
+
   let stepAudioHtml =
     "";
 
@@ -8876,7 +9034,16 @@ async function renderReassembleStep(
       </div>
 
 
+      <div class="reassemble-instruction-label">
+        Do this now
+      </div>
+
       <div class="reassemble-title">
+        ${escapeHtml(reassemblyInstruction)}
+      </div>
+
+      <div class="original-step-reference">
+        <strong>Original disassembly step:</strong>
         ${escapeHtml(step.title)}
       </div>
 
