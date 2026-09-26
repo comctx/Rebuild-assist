@@ -512,6 +512,278 @@
       padding: 30px 12px 42px;
     }
 
+    /* Polished app shell */
+
+    body {
+      background:
+        radial-gradient(circle at top, #eef6ff 0, var(--bg) 420px);
+    }
+
+    header {
+      border-bottom: 1px solid rgba(255,255,255,.16);
+    }
+
+    .brand-copyline {
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #cfe4ff;
+      margin-bottom: 2px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 34px 22px;
+      border-color: #cdddf2;
+      background:
+        linear-gradient(145deg, #ffffff 0%, #f5f9ff 72%, #eaf3ff 100%);
+    }
+
+    .hero::after {
+      content: "🧰";
+      position: absolute;
+      right: -18px;
+      bottom: -30px;
+      font-size: 120px;
+      opacity: .055;
+      transform: rotate(-9deg);
+      pointer-events: none;
+    }
+
+    .hero-kicker,
+    .section-kicker {
+      display: inline-block;
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--blue);
+      background: var(--soft);
+      border: 1px solid #cfe0f7;
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+    }
+
+    .hero h2 {
+      font-size: clamp(1.8rem, 5vw, 2.45rem);
+      line-height: 1.08;
+      color: #102f57;
+    }
+
+    .hero p {
+      font-size: 1.03rem;
+      max-width: 680px;
+    }
+
+    .home-actions {
+      margin-top: 20px;
+    }
+
+    .home-actions button {
+      min-height: 52px;
+      padding: 13px 18px;
+      box-shadow: 0 6px 16px rgba(11,75,155,.10);
+    }
+
+    .home-actions button:first-child {
+      font-size: 1.03rem;
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+
+    .quick-guide {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .quick-guide-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdff;
+      padding: 15px;
+    }
+
+    .quick-guide-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      font-weight: 850;
+      margin-bottom: 9px;
+    }
+
+    .quick-guide-item strong {
+      display: block;
+      color: #183d69;
+      margin-bottom: 4px;
+    }
+
+    .project-summary-card {
+      border-color: #c8d8ec;
+      background:
+        linear-gradient(135deg, #ffffff 0%, #f7fbff 100%);
+      box-shadow: 0 10px 28px rgba(23,32,51,.09);
+    }
+
+    .project-summary-card h2 {
+      font-size: clamp(1.45rem, 4vw, 2rem);
+      color: #12365f;
+    }
+
+    .project-actions button {
+      min-height: 42px;
+    }
+
+    .tabbar {
+      border: 1px solid rgba(199,211,229,.85);
+      border-radius: 14px;
+      padding: 7px;
+      margin: 14px 0;
+      box-shadow: 0 5px 16px rgba(23,32,51,.06);
+    }
+
+    .tabbar button {
+      border: 1px solid transparent;
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+    }
+
+    .tabbar button:hover {
+      transform: translateY(-1px);
+    }
+
+    .tabbar button.active {
+      box-shadow: 0 4px 12px rgba(11,75,155,.20);
+    }
+
+    button {
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    }
+
+    button:not(:disabled):hover {
+      filter: brightness(.98);
+      box-shadow: 0 4px 12px rgba(23,32,51,.10);
+    }
+
+    button:not(:disabled):active {
+      transform: translateY(1px);
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(13,99,204,.22);
+      outline-offset: 2px;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--blue2);
+      box-shadow: 0 0 0 3px rgba(13,99,204,.10);
+    }
+
+    .project-row {
+      align-items: center;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .project-row:hover {
+      border-color: #b9cae2;
+      box-shadow: 0 6px 18px rgba(23,32,51,.07);
+    }
+
+    .project-row .pill {
+      margin-left: 6px;
+      background: #eaf7ef;
+      color: #126435;
+      border: 1px solid #c1e4cc;
+    }
+
+    .reassemble-shell-card {
+      border-color: #c7d9ef;
+      box-shadow: 0 12px 30px rgba(23,32,51,.10);
+    }
+
+    .reassemble-intro {
+      max-width: 680px;
+    }
+
+    .reassemble-progress-box {
+      padding: 14px;
+      border-radius: 14px;
+      background: #f7faff;
+      border: 1px solid #d6e3f3;
+      margin: 14px 0 16px;
+    }
+
+    .reassemble-progress-box .progress-track {
+      height: 20px;
+    }
+
+    #reassemblyProgressText {
+      font-weight: 750;
+      color: #294d77;
+    }
+
+    .reassemble-card {
+      border-color: #9fbce0;
+      box-shadow: 0 8px 24px rgba(23,32,51,.08);
+      padding: 20px;
+    }
+
+    .reassemble-title {
+      margin-top: 4px;
+      color: #143b68;
+      line-height: 1.2;
+    }
+
+    .reassemble-card .photo-grid {
+      margin-top: 16px;
+    }
+
+    .reassemble-card .checkline {
+      background: #f3f8ff;
+      border: 1px solid #d4e4f8;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .reassemble-card .checkline label {
+      font-weight: 800;
+      color: #173f70;
+    }
+
+    .reassemble-card .toolbar {
+      padding-top: 8px;
+    }
+
+    #beginnerModeButton.good {
+      box-shadow: 0 4px 12px rgba(23,114,69,.18);
+    }
+
+    @media (max-width: 760px) {
+      .quick-guide {
+        grid-template-columns: 1fr;
+      }
+
+      .project-summary-card .toolbar {
+        width: 100%;
+      }
+
+      .project-summary-card .toolbar button {
+        flex: 1 1 calc(50% - 8px);
+      }
+    }
+
     @media (max-width: 650px) {
       .shell {
         padding-left: 10px;
@@ -520,6 +792,20 @@
 
       .card {
         padding: 14px;
+      }
+
+      .hero {
+        padding: 26px 16px;
+      }
+
+      .brand {
+        align-items: flex-start;
+      }
+
+      .brand-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
       }
 
       .home-actions button {
@@ -536,6 +822,23 @@
       .tabbar {
         overflow-x: auto;
         flex-wrap: nowrap;
+        scrollbar-width: thin;
+      }
+
+      .tabbar button {
+        min-height: 46px;
+      }
+
+      .project-summary-card .toolbar button {
+        flex: 1 1 100%;
+      }
+
+      .reassemble-card {
+        padding: 16px;
+      }
+
+      .reassemble-card .toolbar button {
+        min-height: 48px;
       }
 
       .photo-card img {
@@ -553,6 +856,7 @@
       <div class="brand-icon">🧰</div>
 
       <div>
+        <div class="brand-copyline">A DONCO-BAYCITY™ App</div>
         <h1>Rebuild Assistant</h1>
         <p>Take it apart. Remember it. Put it back together.</p>
       </div>
@@ -566,11 +870,14 @@
 
     <div class="card hero">
 
-      <h2>Your project memory system</h2>
+      <div class="hero-kicker">Simple step-by-step project memory</div>
+
+      <h2>Take it apart with confidence.</h2>
 
       <p>
-        Document disassembly with photos, audio, voice-to-text and photo markup,
-        then let Rebuild Assistant guide you back through everything in reverse order.
+        Save each step with photos and notes as you work.
+        When it is time to put everything back together,
+        Rebuild Assistant guides you through the steps in reverse order.
       </p>
 
       <div class="home-actions">
@@ -597,12 +904,37 @@
 
     <div class="card">
 
+      <div class="section-kicker">How it works</div>
+
       <strong>One simple system for any project.</strong>
 
-      <p class="muted">
-        Start a project, save each step as you work, and use Reassemble
-        when it is time to put everything back together.
-      </p>
+      <div class="quick-guide">
+
+        <div class="quick-guide-item">
+          <div class="quick-guide-number">1</div>
+          <strong>Start a project</strong>
+          <div class="muted small">
+            Give the project a name so you can find it again.
+          </div>
+        </div>
+
+        <div class="quick-guide-item">
+          <div class="quick-guide-number">2</div>
+          <strong>Save each step</strong>
+          <div class="muted small">
+            Add photos, notes, fasteners and anything you need to remember.
+          </div>
+        </div>
+
+        <div class="quick-guide-item">
+          <div class="quick-guide-number">3</div>
+          <strong>Reassemble</strong>
+          <div class="muted small">
+            Follow your saved steps in reverse until the project is complete.
+          </div>
+        </div>
+
+      </div>
 
     </div>
 
@@ -655,9 +987,15 @@
 
       <div class="section-heading">
 
-        <h2 style="margin:0">
-          Continue Project
-        </h2>
+        <div>
+          <div class="section-kicker">Saved projects</div>
+          <h2 style="margin:0">
+            Continue Project
+          </h2>
+          <div class="muted small" style="margin-top:5px">
+            Open a project to continue where you left off.
+          </div>
+        </div>
 
         <button
           class="secondary"
@@ -678,7 +1016,7 @@
     id="projectView"
     class="hidden">
 
-    <div class="card project-heading">
+    <div class="card project-heading project-summary-card">
 
       <div>
 
@@ -692,7 +1030,7 @@
 
       </div>
 
-      <div class="toolbar">
+      <div class="toolbar project-actions">
 
         <button
           class="secondary"
@@ -1156,7 +1494,7 @@
       id="tab-reassemble"
       class="tabpage hidden">
 
-      <div class="card">
+      <div class="card reassemble-shell-card">
 
         <div class="section-heading">
 
@@ -1166,8 +1504,9 @@
               Reassemble
             </h3>
 
-            <div class="muted">
-              Your saved disassembly steps appear in reverse order.
+            <div class="muted reassemble-intro">
+              Work through one saved step at a time.
+              Photos, notes and fastener details stay with the step so you can put it back the way it came apart.
             </div>
 
           </div>
@@ -1194,23 +1533,24 @@
         </div>
 
 
-        <div
-          class="progress-track"
-          style="margin-top:14px">
+        <div class="reassemble-progress-box">
 
-          <div
-            class="progress-bar"
-            id="reassemblyProgressBar">
+          <div class="progress-track">
+
+            <div
+              class="progress-bar"
+              id="reassemblyProgressBar">
+            </div>
+
           </div>
 
-        </div>
+          <div
+            id="reassemblyProgressText"
+            class="muted"
+            style="margin-top:8px">
+            0% reassembled
+          </div>
 
-
-        <div
-          id="reassemblyProgressText"
-          class="muted"
-          style="margin:8px 0 14px">
-          0% reassembled
         </div>
 
 
