@@ -8,9 +8,6 @@ workflows:
       app_store_connect: Codemagic
 
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.donaldreckman.rebuildassistant
       node: 22
       xcode: latest
       cocoapods: default
@@ -118,9 +115,17 @@ workflows:
           }
           EOF
 
-      - name: Apply Apple signing
+      - name: Prepare Apple signing
         script: |
           set -eu
+          keychain initialize
+
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+
+          keychain add-certificates
+
           cd "$CM_BUILD_DIR/ios/App"
           xcode-project use-profiles
 
