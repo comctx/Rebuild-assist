@@ -1370,9 +1370,11 @@
             id="stepPhotoInput"
             type="file"
             accept="image/*"
-            capture="environment"
             multiple>
 
+          <div class="muted small" style="margin-top:6px">
+            You can take a new photo, choose one from your Photo Library, or choose an image file.
+          </div>
 
           <div class="notice small">
             After the step is saved, each photo can have its own
@@ -1780,6 +1782,15 @@
       <button onclick="openMarkup()">
         ✏️ Mark Up Photo
       </button>
+
+      <label class="button-label secondary">
+        🖼️ Replace Photo
+        <input
+          class="sr-only"
+          type="file"
+          accept="image/*"
+          onchange="replaceCurrentPhoto(this)">
+      </label>
 
       <button
         id="photoRecordBtn"
@@ -4919,13 +4930,12 @@ async function renderSteps() {
 
         <label class="button-label secondary">
 
-          📷 Add Photo
+          📷 Add Photo / Choose Existing
 
           <input
             class="sr-only"
             type="file"
             accept="image/*"
-            capture="environment"
             multiple
             data-add-photo>
 
@@ -7485,6 +7495,89 @@ function closePhotoDialog() {
 }
 
 
+
+async function replaceCurrentPhoto(input) {
+
+  const photo =
+    getCurrentPhoto();
+
+  const file =
+    input &&
+    input.files &&
+    input.files[0];
+
+  if (
+    !photo ||
+    !file
+  ) {
+
+    return;
+
+  }
+
+  const stepId =
+    currentPhotoContext.stepId;
+
+  const photoId =
+    currentPhotoContext.photoId;
+
+
+  if (
+    photo.assetId
+  ) {
+
+    await deleteAsset(
+      photo.assetId
+    );
+
+  }
+
+
+  if (
+    photo.markupAssetId
+  ) {
+
+    await deleteAsset(
+      photo.markupAssetId
+    );
+
+  }
+
+
+  photo.assetId =
+    await putAsset(
+      file,
+      {
+        type:
+          "photo",
+
+        name:
+          file.name
+      }
+    );
+
+
+  photo.markupAssetId =
+    null;
+
+
+  input.value =
+    "";
+
+
+  await saveCurrentProject();
+
+
+  closePhotoDialog();
+
+  await renderAll();
+
+  await openPhotoDialog(
+    stepId,
+    photoId
+  );
+
+}
 
 async function deleteCurrentPhoto() {
 
