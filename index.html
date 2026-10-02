@@ -1377,8 +1377,9 @@
           </div>
 
           <div class="notice small">
-            After the step is saved, each photo can have its own
-            audio note, transcript, written note and markup.
+            After you save the step, the first new photo opens automatically
+            so you can retake or replace it, mark it up, or add notes
+            without going back to find it.
           </div>
 
 
@@ -1749,7 +1750,7 @@
   <div class="dialog-head">
 
     <h3>
-      Photo Notes & Markup
+      Photo Preview & Edit
     </h3>
 
     <button
@@ -1780,11 +1781,11 @@
       style="margin-top:10px">
 
       <button onclick="openMarkup()">
-        ✏️ Mark Up Photo
+        ✏️ Edit / Mark Up
       </button>
 
       <label class="button-label secondary">
-        🖼️ Replace Photo
+        📷 Retake / Replace
         <input
           class="sr-only"
           type="file"
@@ -1841,7 +1842,7 @@
     <div class="toolbar">
 
       <button onclick="savePhotoDetails()">
-        Save Photo Notes
+        ✓ Use Photo / Save Notes
       </button>
 
       <button
@@ -4421,6 +4422,19 @@ async function saveNewStep() {
 
   await renderAll();
 
+
+  if (
+    step.photos.length >
+    0
+  ) {
+
+    await openPhotoDialog(
+      step.id,
+      step.photos[0].id
+    );
+
+  }
+
 }
 
 
@@ -4677,6 +4691,10 @@ async function addPhotosToStep(
   }
 
 
+  let firstNewPhotoId =
+    null;
+
+
   for (
     const file
     of Array.from(
@@ -4697,12 +4715,16 @@ async function addPhotosToStep(
       );
 
 
+    const photoId =
+      makeId(
+        "photo"
+      );
+
+
     step.photos.push({
 
       id:
-        makeId(
-          "photo"
-        ),
+        photoId,
 
       assetId:
         assetId,
@@ -4721,6 +4743,16 @@ async function addPhotosToStep(
 
     });
 
+
+    if (
+      !firstNewPhotoId
+    ) {
+
+      firstNewPhotoId =
+        photoId;
+
+    }
+
   }
 
 
@@ -4731,6 +4763,18 @@ async function addPhotosToStep(
   await saveCurrentProject();
 
   await renderAll();
+
+
+  if (
+    firstNewPhotoId
+  ) {
+
+    await openPhotoDialog(
+      stepId,
+      firstNewPhotoId
+    );
+
+  }
 
 }
 
