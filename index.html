@@ -2168,55 +2168,33 @@ function getAllProjects() {
 
 
 
-function putProject(project) {
-
-  project.updatedAt =
-    new Date()
-      .toISOString();
-
-
-  return new Promise(
-    function(resolve, reject) {
-
-      const transaction =
-        db.transaction(
-          PROJECT_STORE,
-          "readwrite"
-        );
-
-      const request =
-        transaction
-          .objectStore(
-            PROJECT_STORE
-          )
-          .put(
-            project
-          );
-
-
-      request.onsuccess =
-        function() {
-
-          resolve();
-
-        };
-
-
-      request.onerror =
-        function() {
-
-          reject(
-            request.error
-          );
-
-        };
-
-    }
-  );
-
+// Resolve writes only after IndexedDB commits the entire transaction.
+async function commitStoredValue(storeName, value, result) {
+  try {
+    await new Promise(function(resolve, reject) {
+      const transaction = db.transaction(storeName, "readwrite");
+      transaction.oncomplete = function() { resolve(); };
+      transaction.onabort = function() {
+        reject(transaction.error || new Error("Storage transaction was aborted."));
+      };
+      transaction.onerror = function() {
+        reject(transaction.error || new Error("Storage transaction failed."));
+      };
+      transaction.objectStore(storeName).put(value);
+    });
+    return result;
+  } catch (error) {
+    const message = document.getElementById("notesSaved");
+    if (message) message.classList.add("hidden");
+    alert("Could not save your changes on this device. Keep the app open and try again. Your latest changes may not be stored.");
+    throw error;
+  }
 }
 
-
+function putProject(project) {
+  project.updatedAt = new Date().toISOString();
+  return commitStoredValue(PROJECT_STORE, project);
+}
 
 function deleteProjectRecord(
   projectId
@@ -2265,75 +2243,15 @@ function deleteProjectRecord(
 
 
 
-function putAsset(
-  blob,
-  meta = {}
-) {
-
+function putAsset(blob, meta = {}) {
   const asset = {
-
-    id:
-      makeId(
-        "asset"
-      ),
-
-    blob:
-      blob,
-
-    meta:
-      meta,
-
-    createdAt:
-      new Date()
-        .toISOString()
-
+    id: makeId("asset"),
+    blob: blob,
+    meta: meta,
+    createdAt: new Date().toISOString()
   };
-
-
-  return new Promise(
-    function(resolve, reject) {
-
-      const transaction =
-        db.transaction(
-          ASSET_STORE,
-          "readwrite"
-        );
-
-      const request =
-        transaction
-          .objectStore(
-            ASSET_STORE
-          )
-          .put(
-            asset
-          );
-
-
-      request.onsuccess =
-        function() {
-
-          resolve(
-            asset.id
-          );
-
-        };
-
-
-      request.onerror =
-        function() {
-
-          reject(
-            request.error
-          );
-
-        };
-
-    }
-  );
-
+  return commitStoredValue(ASSET_STORE, asset, asset.id);
 }
-
-
 
 function getAsset(assetId) {
 
