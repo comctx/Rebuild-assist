@@ -1021,6 +1021,12 @@
 </header>
 
 <main class="shell">
+  <details class="card">
+    <summary><strong>Storage, privacy and safe use</strong></summary>
+    <p>Projects, photos, notes and recordings are stored in this browser on this device. Clearing site data or losing the device can remove them. Export backups regularly and keep them somewhere safe. Backup files contain your photos, notes and audio and are not encrypted by this app.</p>
+    <p>Optional speech-to-text uses your browser or device provider's recognition service. Audio may be sent to that provider for processing. You can decline transcription and still record audio locally.</p>
+    <p>Rebuild Assistant organizes your records. Automatic reassembly wording is a simple reversal of your step titles, not verified repair advice. Follow manufacturer instructions and required safety checks; a completed checklist does not verify a safe repair.</p>
+  </details>
 
   <section id="homeView">
 
@@ -2602,7 +2608,7 @@ async function backupCurrentProject() {
         !asset.blob
       ) {
 
-        continue;
+        throw new Error("Backup is missing a referenced photo or recording.");
 
       }
 
@@ -2720,7 +2726,7 @@ async function backupCurrentProject() {
     );
 
     alert(
-      "The backup could not be created."
+      "The backup could not be created. A saved photo or recording may be missing, or storage could not be read. Keep your project and try again."
     );
 
   }
@@ -2880,6 +2886,20 @@ async function restoreProjectBackup(
       );
 
 
+    if (!Array.isArray(project.steps) || !Array.isArray(project.tasks) ||
+        !Array.isArray(project.parts) || !Array.isArray(backup.assets)) {
+      throw new Error("Invalid project backup structure.");
+    }
+    const availableAssets = new Map(backup.assets.map(function(asset) {
+      return [asset && asset.id, asset];
+    }));
+    for (const assetId of collectProjectAssetIds(project)) {
+      const saved = availableAssets.get(assetId);
+      if (!saved || typeof saved.data !== "string") {
+        throw new Error("Backup is missing a referenced photo or recording.");
+      }
+    }
+
     project.id =
       makeId(
         "project"
@@ -2906,7 +2926,7 @@ async function restoreProjectBackup(
       if (
         !savedAsset ||
         !savedAsset.id ||
-        !savedAsset.data
+        typeof savedAsset.data !== "string"
       ) {
 
         continue;
@@ -2942,43 +2962,7 @@ async function restoreProjectBackup(
       };
 
 
-      await new Promise(
-        function(resolve, reject) {
-
-          const transaction =
-            db.transaction(
-              ASSET_STORE,
-              "readwrite"
-            );
-
-          const request =
-            transaction
-              .objectStore(
-                ASSET_STORE
-              )
-              .put(
-                asset
-              );
-
-          request.onsuccess =
-            function() {
-
-              resolve();
-
-            };
-
-          request.onerror =
-            function() {
-
-              reject(
-                request.error
-              );
-
-            };
-
-        }
-      );
-
+      await commitStoredValue(ASSET_STORE, asset);
 
       idMap[
         savedAsset.id
@@ -3020,7 +3004,7 @@ async function restoreProjectBackup(
     );
 
     alert(
-      "That file could not be restored. Please choose a Rebuild Assistant backup file."
+      "Restore did not complete. The file may be invalid or incomplete, or device storage may be unavailable. Keep the backup file and try again."
     );
 
   }
@@ -6431,6 +6415,10 @@ function renderProgress() {
 
 
 
+function allowSpeechTranscription() {
+  return confirm("Enable speech-to-text for this recording? Your browser or device provider may send audio to its service for processing. Choose Cancel to skip transcription; audio recording can still continue locally.");
+}
+
 function getSpeechRecognitionClass() {
 
   return (
@@ -6464,6 +6452,8 @@ function dictateInto(
 
   }
 
+
+  if (!allowSpeechTranscription()) return;
 
   const textarea =
     document.getElementById(
@@ -6666,6 +6656,9 @@ async function startAudioRecording(
 
   try {
 
+    const transcribe = !!transcriptTextareaId &&
+      !!getSpeechRecognitionClass() && allowSpeechTranscription();
+
     recordingTarget =
       target;
 
@@ -6704,9 +6697,7 @@ async function startAudioRecording(
       };
 
 
-    startLiveRecognition(
-      transcriptTextareaId
-    );
+    if (transcribe) startLiveRecognition(transcriptTextareaId);
 
 
     mediaRecorder.onstop =
@@ -6781,10 +6772,15 @@ async function startAudioRecording(
               "generalRecordingStatus"
             )
             .textContent =
-            "Voice note recorded and saved.";
+            "Voice note recorded. Saving…";
 
 
-          await savePendingGeneralVoiceNote();
+          try {
+            await savePendingGeneralVoiceNote();
+            document.getElementById("generalRecordingStatus").textContent = "Voice note saved on this device.";
+          } catch (error) {
+            document.getElementById("generalRecordingStatus").textContent = "Voice note could not be saved. Keep the app open and try again.";
+          }
 
         }
 
@@ -9130,7 +9126,7 @@ async function renderReassembleStep(
 
 
       <div class="reassemble-instruction-label">
-        Do this now
+        Suggested reversal — verify before use
       </div>
 
       <div class="reassemble-title">
@@ -9608,13 +9604,11 @@ function renderReassemblyComplete() {
         </div>
 
         <h3>
-          Reassembly Complete
+          Recorded Steps Checked Off
         </h3>
 
         <p class="muted completion-summary">
-          All saved disassembly steps have been reassembled.
-          Your project is still safely stored with its photos, notes,
-          parts information and audio so you can refer to it later.
+          You have marked all recorded steps as reassembled. This does not verify that the repair is complete or safe. Check manufacturer instructions before use. Your project remains available on this device; export a backup to keep a separate copy.
         </p>
 
         <div class="toolbar completion-actions">
