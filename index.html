@@ -2194,13 +2194,21 @@ function putProject(project) {
           );
 
 
-      request.onsuccess =
+      transaction.oncomplete =
         function() {
 
           resolve();
 
         };
 
+
+      transaction.onabort = function() {
+        reject(transaction.error || new Error("The database write was interrupted."));
+      };
+
+      transaction.onerror = function() {
+        reject(transaction.error || new Error("The database write failed."));
+      };
 
       request.onerror =
         function() {
@@ -2241,13 +2249,21 @@ function deleteProjectRecord(
           );
 
 
-      request.onsuccess =
+      transaction.oncomplete =
         function() {
 
           resolve();
 
         };
 
+
+      transaction.onabort = function() {
+        reject(transaction.error || new Error("The database write was interrupted."));
+      };
+
+      transaction.onerror = function() {
+        reject(transaction.error || new Error("The database write failed."));
+      };
 
       request.onerror =
         function() {
@@ -2309,7 +2325,7 @@ function putAsset(
           );
 
 
-      request.onsuccess =
+      transaction.oncomplete =
         function() {
 
           resolve(
@@ -2318,6 +2334,14 @@ function putAsset(
 
         };
 
+
+      transaction.onabort = function() {
+        reject(transaction.error || new Error("The database write was interrupted."));
+      };
+
+      transaction.onerror = function() {
+        reject(transaction.error || new Error("The database write failed."));
+      };
 
       request.onerror =
         function() {
@@ -2420,13 +2444,21 @@ function deleteAsset(assetId) {
           );
 
 
-      request.onsuccess =
+      transaction.oncomplete =
         function() {
 
           resolve();
 
         };
 
+
+      transaction.onabort = function() {
+        reject(transaction.error || new Error("The database write was interrupted."));
+      };
+
+      transaction.onerror = function() {
+        reject(transaction.error || new Error("The database write failed."));
+      };
 
       request.onerror =
         function() {
@@ -2644,169 +2676,50 @@ function safeBackupFilename(
 
 
 async function backupCurrentProject() {
-
   if (!currentProject) {
-
-    alert(
-      "Open a project first."
-    );
-
+    alert("Open a project first.");
     return;
-
   }
-
-
   try {
-
-    await saveCurrentProject();
-
-    const assetIds =
-      collectProjectAssetIds(
-        currentProject
-      );
-
-    const assets =
-      [];
-
-
-    for (
-      const assetId
-      of assetIds
-    ) {
-
-      const asset =
-        await getAsset(
-          assetId
-        );
-
-      if (
-        !asset ||
-        !asset.blob
-      ) {
-
+    // Freeze the project so edits made during export cannot change its references.
+    const project = JSON.parse(JSON.stringify(currentProject));
+    await putProject(project);
+    const assets = [];
+    const missing = [];
+    for (const assetId of collectProjectAssetIds(project)) {
+      const asset = await getAsset(assetId);
+      if (!asset || !asset.blob) {
+        missing.push(assetId);
         continue;
-
       }
-
       assets.push({
-
-        id:
-          asset.id,
-
-        meta:
-          asset.meta ||
-          {},
-
-        createdAt:
-          asset.createdAt ||
-          null,
-
-        type:
-          asset.blob.type ||
-          "application/octet-stream",
-
-        data:
-          await blobToBase64(
-            asset.blob
-          )
-
+        id: asset.id,
+        meta: asset.meta || {},
+        createdAt: asset.createdAt || null,
+        type: asset.blob.type || "application/octet-stream",
+        data: await blobToBase64(asset.blob)
       });
-
     }
-
-
-    const backup = {
-
-      format:
-        "RebuildAssistantBackup",
-
-      version:
-        1,
-
-      exportedAt:
-        new Date()
-          .toISOString(),
-
-      project:
-        currentProject,
-
-      assets:
-        assets
-
-    };
-
-
-    const blob =
-      new Blob(
-        [
-          JSON.stringify(
-            backup
-          )
-        ],
-        {
-          type:
-            "application/json"
-        }
-      );
-
-
-    const url =
-      URL.createObjectURL(
-        blob
-      );
-
-    const link =
-      document.createElement(
-        "a"
-      );
-
-    link.href =
-      url;
-
-    link.download =
-      safeBackupFilename(
-        currentProject.name
-      );
-
-    document.body.appendChild(
-      link
-    );
-
+    if (missing.length) {
+      alert("Backup stopped: " + missing.length + " referenced photo(s) or recording(s) could not be found. No incomplete backup was downloaded. Keep any earlier backups. Missing references: " + missing.join(", "));
+      return;
+    }
+    const backup = {format: "RebuildAssistantBackup", version: 1,
+      exportedAt: new Date().toISOString(), project, assets};
+    const blob = new Blob([JSON.stringify(backup)], {type: "application/json"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = safeBackupFilename(project.name);
+    document.body.appendChild(link);
     link.click();
-
     link.remove();
-
-    setTimeout(
-      function() {
-
-        URL.revokeObjectURL(
-          url
-        );
-
-      },
-      1000
-    );
-
-
-    alert(
-      "Backup created. Keep the downloaded backup file somewhere safe."
-    );
-
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+    alert("Backup download requested. Check that the file finished downloading, then keep it somewhere safe.");
+  } catch (error) {
+    console.error("Backup failed:", error);
+    alert("The backup could not be created. Keep this page open and try again. Keep any earlier backups.");
   }
-
-  catch(error) {
-
-    console.error(
-      "Backup failed:",
-      error
-    );
-
-    alert(
-      "The backup could not be created."
-    );
-
-  }
-
 }
 
 
@@ -2908,216 +2821,79 @@ function replaceAssetReferences(
 
 
 
-async function restoreProjectBackup(
-  event
-) {
-
-  const input =
-    event &&
-    event.target;
-
-  const file =
-    input &&
-    input.files &&
-    input.files[0];
-
-
-  if (!file) {
-
-    return;
-
-  }
-
-
+async function restoreProjectBackup(event) {
+  const input = event && event.target;
+  const file = input && input.files && input.files[0];
+  if (!file) return;
+  let restoredId = null;
   try {
-
-    const text =
-      await file.text();
-
-    const backup =
-      JSON.parse(
-        text
-      );
-
-
-    if (
-      !backup ||
-      backup.format !==
-      "RebuildAssistantBackup" ||
-      !backup.project
-    ) {
-
-      throw new Error(
-        "Not a Rebuild Assistant backup."
-      );
-
+    const backup = JSON.parse(await file.text());
+    if (!backup || backup.format !== "RebuildAssistantBackup" || backup.version !== 1 ||
+        !backup.project || typeof backup.project.name !== "string" ||
+        !Array.isArray(backup.assets)) {
+      throw new Error("This is not a supported Rebuild Assistant backup.");
     }
-
-
-    const project =
-      JSON.parse(
-        JSON.stringify(
-          backup.project
-        )
-      );
-
-
-    project.id =
-      makeId(
-        "project"
-      );
-
-    project.createdAt =
-      new Date()
-        .toISOString();
-
-    project.updatedAt =
-      new Date()
-        .toISOString();
-
-
-    const idMap =
-      {};
-
-
-    for (
-      const savedAsset
-      of backup.assets || []
-    ) {
-
-      if (
-        !savedAsset ||
-        !savedAsset.id ||
-        !savedAsset.data
-      ) {
-
-        continue;
-
+    const project = JSON.parse(JSON.stringify(backup.project));
+    for (const key of ["steps", "tasks", "parts", "voiceNotes"]) {
+      if (!Array.isArray(project[key]) || project[key].some(item => !item || typeof item !== "object" || Array.isArray(item))) {
+        throw new Error("The backup contains invalid project records.");
       }
-
-
-      const newId =
-        makeId(
-          "asset"
-        );
-
-      const asset = {
-
-        id:
-          newId,
-
-        blob:
-          base64ToBlob(
-            savedAsset.data,
-            savedAsset.type
-          ),
-
-        meta:
-          savedAsset.meta ||
-          {},
-
-        createdAt:
-          savedAsset.createdAt ||
-          new Date()
-            .toISOString()
-
+    }
+    for (const step of project.steps) {
+      if (!Array.isArray(step.photos) || step.photos.some(photo => !photo || typeof photo !== "object" || Array.isArray(photo))) {
+        throw new Error("The backup contains invalid photo records.");
+      }
+    }
+    // Validate and decode all media before writing anything to the database.
+    const idMap = Object.create(null);
+    const assets = [];
+    const seen = new Set();
+    for (const saved of backup.assets) {
+      if (!saved || typeof saved.id !== "string" || !saved.id || seen.has(saved.id) ||
+          typeof saved.data !== "string" || !saved.data.length) {
+        throw new Error("The backup contains missing, duplicate, or invalid media records.");
+      }
+      seen.add(saved.id);
+      const blob = base64ToBlob(saved.data, saved.type);
+      const id = makeId("asset");
+      idMap[saved.id] = id;
+      assets.push({id, blob, meta: saved.meta || {},
+        createdAt: saved.createdAt || new Date().toISOString()});
+    }
+    const missing = collectProjectAssetIds(project).filter(id => !seen.has(id));
+    if (missing.length) {
+      throw new Error("The backup is incomplete: " + missing.length + " referenced photo(s) or recording(s) are missing. Nothing was restored. Choose another backup.");
+    }
+    replaceAssetReferences(project, idMap);
+    project.id = makeId("project");
+    project.createdAt = project.updatedAt = new Date().toISOString();
+    // A single transaction prevents partially restored projects or orphaned media.
+    await new Promise(function(resolve, reject) {
+      const transaction = db.transaction([PROJECT_STORE, ASSET_STORE], "readwrite");
+      transaction.oncomplete = resolve;
+      transaction.onabort = function() {
+        reject(transaction.error || new Error("Restore was interrupted. Nothing was restored."));
       };
-
-
-      await new Promise(
-        function(resolve, reject) {
-
-          const transaction =
-            db.transaction(
-              ASSET_STORE,
-              "readwrite"
-            );
-
-          const request =
-            transaction
-              .objectStore(
-                ASSET_STORE
-              )
-              .put(
-                asset
-              );
-
-          request.onsuccess =
-            function() {
-
-              resolve();
-
-            };
-
-          request.onerror =
-            function() {
-
-              reject(
-                request.error
-              );
-
-            };
-
-        }
-      );
-
-
-      idMap[
-        savedAsset.id
-      ] =
-        newId;
-
-    }
-
-
-    replaceAssetReferences(
-      project,
-      idMap
-    );
-
-
-    await putProject(
-      project
-    );
-
-
-    alert(
-      'Project restored: "' +
-      project.name +
-      '"'
-    );
-
-
-    await openProject(
-      project.id
-    );
-
+      transaction.onerror = function() {
+        reject(transaction.error || new Error("Restore failed. Nothing was restored."));
+      };
+      try {
+        for (const asset of assets) transaction.objectStore(ASSET_STORE).put(asset);
+        transaction.objectStore(PROJECT_STORE).put(project);
+      } catch (error) {
+        transaction.abort();
+        reject(error);
+      }
+    });
+    restoredId = project.id;
+    alert('Project restored: "' + project.name + '"');
+  } catch (error) {
+    console.error("Restore failed:", error);
+    alert("That file could not be restored. " + error.message);
+  } finally {
+    if (input) input.value = "";
   }
-
-  catch(error) {
-
-    console.error(
-      "Restore failed:",
-      error
-    );
-
-    alert(
-      "That file could not be restored. Please choose a Rebuild Assistant backup file."
-    );
-
-  }
-
-  finally {
-
-    if (input) {
-
-      input.value =
-        "";
-
-    }
-
-  }
-
+  if (restoredId) await openProject(restoredId);
 }
 
 
@@ -3380,17 +3156,13 @@ function releaseObjectUrls() {
 
 
 async function saveCurrentProject() {
-
-  if (
-    currentProject
-  ) {
-
-    await putProject(
-      currentProject
-    );
-
+  if (!currentProject) return;
+  try {
+    await putProject(currentProject);
+  } catch (error) {
+    alert("Couldn't save your latest changes. Keep this page open and try saving again. Your changes are still here, but they may be lost if you close or reload.");
+    throw error;
   }
-
 }
 
 
@@ -9959,3 +9731,4 @@ window.addEventListener(
 
 </body>
 </html>
+
